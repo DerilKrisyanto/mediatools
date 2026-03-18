@@ -324,14 +324,11 @@ class FileConverterController extends Controller
     }
 
     /* =========================================================
-       4. PDF → OFFICE via LibreOffice
-          PDF → Word, Excel, PPT
+    4. PDF → OFFICE via LibreOffice
+    Membutuhkan infilter khusus karena source adalah PDF
     ========================================================= */
-    private function pdfToOffice(
-        $file,
-        string $sessionId,
-        string $targetExt
-    ): array {
+    private function pdfToOffice($file, string $sessionId, string $targetExt): array
+    {
         $this->requireLibreOffice();
 
         $tmpName = "{$sessionId}_input.pdf";
@@ -339,13 +336,114 @@ class FileConverterController extends Controller
         $file->move($this->storageDir, $tmpName);
 
         try {
-            $outputPath = $this->runLibreOffice($tmpPath, $targetExt);
-            $outName    = "{$sessionId}.{$targetExt}";
-            rename($outputPath, $this->storageDir . "/{$outName}");
+            // PDF → DOCX/XLSX/PPTX butuh pendekatan berbeda dari Office → PDF
+            $outputPath = $this->runLibreOfficePdfToOffice(
+                $tmpPath,
+                $targetExt
+            );
+
+            $outName   = "{$sessionId}.{$targetExt}";
+            $finalPath = $this->storageDir . "/{$outName}";
+            rename($outputPath, $finalPath);
+
             return [$outName];
+
         } finally {
             @unlink($tmpPath);
         }
+    }
+
+    /* =========================================================
+    LibreOffice khusus untuk PDF → Office
+    Menggunakan infilter writer_pdf_import
+    ========================================================= */
+    private function runLibreOfficePdfToOffice(
+        string $inputPath,
+        string $targetExt
+    ): string {
+        $profileDir = $this->storageDir . "/lo_{$this->sid($inputPath)}";
+        @mkdir($profileDir, 0777, true);
+
+        // Untuk PDF → Office, LibreOffice butuh 2 langkah:
+        // 1. Import PDF sebagai Draw/Writer document
+        // 2. Export ke target format
+
+        $filterMap = [
+            'docx' => [
+                'infilter'  => 'writer_pdf_import',
+                'outfilter' => 'MS Word 2007 XML',
+                'ext'       => 'docx',
+            ],
+            'xlsx' => [
+                'infilter'  => 'calc_pdf_import',
+                'outfilter' => 'Calc MS Excel 2007 XML',
+                'ext'       => 'xlsx',
+            ],
+            'pptx' => [
+                'infilter'  => 'impress_pdf_import',
+                'outfilter' => 'Impress MS PowerPoint 2007 XML',
+                'ext'       => 'pptx',
+            ],
+        ];
+
+        $filter = $filterMap[$targetExt] ?? null;
+        if (!$filter) {
+            throw new \Exception("Target format tidak didukung: {$targetExt}");
+        }
+
+        $convertTo = $filter['ext'] . ':"' . $filter['outfilter'] . '"';
+
+        $cmd = sprintf(
+            'HOME=/var/www ' .
+            'XDG_CACHE_HOME=/var/www/.cache ' .
+            'XDG_CONFIG_HOME=/var/www/.config ' .
+            '%s --headless --norestore --nofirststartwizard --nolockcheck ' .
+            '-env:UserInstallation=file://%s ' .
+            '--infilter=%s ' .
+            '--convert-to %s ' .
+            '--outdir %s %s 2>&1',
+            escapeshellcmd($this->sofficeBin),
+            escapeshellarg($profileDir),
+            escapeshellarg($filter['infilter']),
+            escapeshellarg($convertTo),
+            escapeshellarg($this->storageDir),
+            escapeshellarg($inputPath)
+        );
+
+        $outputLines = [];
+        $exitCode    = 0;
+        exec($cmd, $outputLines, $exitCode);
+        $output = implode("\n", $outputLines);
+
+        $this->removeDir($profileDir);
+
+        Log::info("LibreOffice PDF→Office", [
+            'cmd'    => $cmd,
+            'output' => $output,
+        ]);
+
+        // Cari output file
+        $baseName   = pathinfo($inputPath, PATHINFO_FILENAME);
+        $outputFile = $this->storageDir . "/{$baseName}.{$targetExt}";
+
+        if (!file_exists($outputFile) || filesize($outputFile) === 0) {
+            // Scan folder untuk file yang mungkin punya nama berbeda
+            $candidates = glob(
+                $this->storageDir . "/{$baseName}*.{$targetExt}"
+            );
+
+            if (!empty($candidates) && filesize($candidates[0]) > 0) {
+                return $candidates[0];
+            }
+
+            throw new \Exception(
+                "Konversi PDF → {$targetExt} gagal. " .
+                "PDF ini mungkin berbasis gambar/scan — gunakan PDF → JPG terlebih dahulu. " .
+                "Detail: " . substr($output, 0, 200)
+            );
+        }
+
+        return $outputFile;
     }
 
     /* =========================================================
