@@ -1,0 +1,632 @@
+/* ============================================================
+   MediaTools — Email Signature Studio
+   signature.css
+   ============================================================ */
+
+/* ── CSS Variables ──────────────────────────────────────── */
+:root {
+    --sig-bg:        #040f0f;
+    --sig-card:      #0b2323;
+    --sig-border:    rgba(255, 255, 255, 0.06);
+    --sig-accent:    #a3e635;
+    --sig-accent-dim:rgba(163, 230, 53, 0.12);
+    --sig-glow:      rgba(163, 230, 53, 0.25);
+    --sig-text:      #f0fdf4;
+    --sig-muted:     #6b7280;
+    --sig-dim:       #9ca3af;
+    --ease-bounce:   cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    --ease-smooth:   cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Shell ──────────────────────────────────────────────── */
+.sig-shell {
+    background: var(--sig-bg);
+    min-height: 100vh;
+    padding-top: 90px;
+    padding-bottom: 60px;
+}
+
+/* ── Top Bar ────────────────────────────────────────────── */
+.sig-topbar {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-bottom: 28px;
+    margin-bottom: 36px;
+    border-bottom: 1px solid var(--sig-border);
+}
+
+@media (min-width: 768px) {
+    .sig-topbar { flex-direction: row; align-items: center; justify-content: space-between; }
+}
+
+.sig-topbar-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    background: var(--sig-accent-dim);
+    border: 1px solid rgba(163,230,53,0.25);
+    border-radius: 99px;
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--sig-accent);
+    margin-bottom: 8px;
+}
+
+.sig-topbar-title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: -0.04em;
+    line-height: 1;
+}
+
+.sig-topbar-title span { color: var(--sig-accent); }
+
+.sig-topbar-sub {
+    font-size: 13px;
+    color: var(--sig-muted);
+    font-weight: 500;
+    margin-top: 6px;
+}
+
+/* ── Glass Card ─────────────────────────────────────────── */
+.sig-glass {
+    background: linear-gradient(145deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+    border: 1px solid var(--sig-border);
+    border-radius: 28px;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.4);
+}
+
+/* ── Form Section ───────────────────────────────────────── */
+.sig-section-title {
+    font-size: 9px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.28em;
+    color: rgba(255,255,255,0.25);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.sig-section-title .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--sig-accent);
+    animation: pulse-dot 2s infinite;
+}
+
+/* ── Form Controls ──────────────────────────────────────── */
+.sig-label {
+    display: block;
+    font-size: 9px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: rgba(255,255,255,0.3);
+    margin-bottom: 8px;
+}
+
+.sig-input {
+    width: 100%;
+    padding: 13px 16px;
+    border-radius: 14px;
+    font-size: 13px;
+    font-weight: 500;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: #ffffff;
+    transition: all 0.35s var(--ease-smooth);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    outline: none;
+    -webkit-appearance: none;
+}
+
+.sig-input::placeholder { color: rgba(255,255,255,0.18); }
+
+.sig-input:hover {
+    border-color: rgba(163, 230, 53, 0.25);
+}
+
+.sig-input:focus {
+    border-color: var(--sig-accent);
+    background: rgba(163, 230, 53, 0.04);
+    box-shadow: 0 0 0 4px rgba(163,230,53,0.08);
+    transform: translateY(-1px);
+}
+
+/* Avatar Upload */
+.sig-avatar-wrap {
+    position: relative;
+    width: 72px;
+    height: 72px;
+    flex-shrink: 0;
+}
+
+.sig-avatar-img {
+    width: 72px;
+    height: 72px;
+    border-radius: 16px;
+    object-fit: cover;
+    border: 1px solid rgba(255,255,255,0.1);
+    display: block;
+}
+
+.sig-avatar-overlay {
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    background: rgba(0,0,0,0.65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    cursor: pointer;
+    transition: opacity 0.25s;
+}
+
+.sig-avatar-wrap:hover .sig-avatar-overlay { opacity: 1; }
+
+/* Color Picker */
+.sig-color-label {
+    display: block;
+    font-size: 9px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: rgba(255,255,255,0.3);
+    margin-bottom: 10px;
+}
+
+.sig-colors {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.sig-color-swatch {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.25s var(--ease-bounce);
+    flex-shrink: 0;
+}
+
+.sig-color-swatch:hover    { transform: scale(1.15); }
+.sig-color-swatch.selected { border-color: white; box-shadow: 0 0 0 2px rgba(255,255,255,0.3); }
+
+/* Template Selector */
+.sig-tpl-selector {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.sig-tpl-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 8px;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid var(--sig-border);
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.25s var(--ease-smooth);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.sig-tpl-btn:hover {
+    border-color: rgba(163,230,53,0.3);
+    background: rgba(163,230,53,0.04);
+}
+
+.sig-tpl-btn.active {
+    border-color: var(--sig-accent);
+    background: var(--sig-accent-dim);
+}
+
+.sig-tpl-thumb {
+    width: 100%;
+    height: 44px;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    background: #f1f5f9;
+}
+
+/* Thumbnail mini-previews */
+.thumb-1 {
+    background: white;
+    display: flex;
+    align-items: center;
+    padding: 6px;
+    gap: 5px;
+}
+
+.thumb-1-line {
+    width: 3px; height: 100%;
+    border-radius: 99px;
+}
+
+.thumb-1-text {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex: 1;
+}
+
+.thumb-bar {
+    border-radius: 99px;
+    height: 4px;
+}
+
+.thumb-2 {
+    background: white;
+    display: flex;
+    flex-direction: column;
+}
+
+.thumb-2-header {
+    height: 14px;
+    width: 100%;
+    border-radius: 3px 3px 0 0;
+}
+
+.thumb-2-body {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 5px;
+}
+
+.thumb-3 {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: white;
+    padding: 4px;
+}
+
+.thumb-3-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.thumb-3-right {
+    flex: 1;
+    padding-left: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.sig-tpl-name {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(255,255,255,0.5);
+}
+
+.sig-tpl-btn.active .sig-tpl-name { color: var(--sig-accent); }
+
+/* Save Button */
+.sig-save-btn {
+    width: 100%;
+    padding: 16px;
+    background: var(--sig-accent);
+    color: #040f0f;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 12px;
+    border-radius: 16px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.4s var(--ease-bounce);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    position: relative;
+    overflow: hidden;
+}
+
+.sig-save-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.sig-save-btn:hover:not(:disabled) {
+    background: #bef264;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px var(--sig-glow);
+}
+
+.sig-save-btn:hover::before { opacity: 1; }
+.sig-save-btn:active { transform: translateY(1px); }
+.sig-save-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+
+/* ── Preview Panel ──────────────────────────────────────── */
+.sig-preview-panel {
+    position: sticky;
+    top: 100px;
+}
+
+.sig-preview-wrap {
+    background: linear-gradient(135deg, #0b2323 0%, var(--sig-bg) 100%);
+    border: 1px solid rgba(163,230,53,0.08);
+    border-radius: 32px;
+    padding: 28px;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.5);
+}
+
+.sig-preview-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.sig-live-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.25);
+}
+
+.sig-live-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--sig-accent);
+    box-shadow: 0 0 8px var(--sig-accent);
+    animation: pulse-dot 2s infinite;
+}
+
+.sig-preview-bg {
+    background: #e8edf2;
+    border-radius: 20px;
+    padding: 40px 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    position: relative;
+    box-shadow: inset 0 2px 16px rgba(0,0,0,0.08);
+}
+
+/* Email client chrome UI */
+.sig-preview-bg::before {
+    content: 'Email Client Preview';
+    position: absolute;
+    top: 12px; left: 16px;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(0,0,0,0.2);
+}
+
+/* The actual signature box shown in preview */
+#signature-content {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+    max-width: 100%;
+}
+
+/* ── Action Buttons ─────────────────────────────────────── */
+.sig-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.sig-action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 8px;
+    border-radius: 14px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s var(--ease-bounce);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.sig-action-btn.primary {
+    background: white;
+    color: #0f172a;
+    grid-column: span 2;
+}
+
+.sig-action-btn.primary:hover {
+    background: var(--sig-accent);
+    color: #040f0f;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(163,230,53,0.3);
+}
+
+.sig-action-btn.secondary {
+    background: rgba(255,255,255,0.05);
+    color: rgba(255,255,255,0.6);
+    border: 1px solid var(--sig-border);
+}
+
+.sig-action-btn.secondary:hover {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.sig-action-btn.copy-btn {
+    background: var(--sig-accent-dim);
+    color: var(--sig-accent);
+    border: 1px solid rgba(163,230,53,0.2);
+    grid-column: span 3;
+}
+
+.sig-action-btn.copy-btn:hover {
+    background: var(--sig-accent);
+    color: #040f0f;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px var(--sig-glow);
+}
+
+/* ── Deployment Guide ───────────────────────────────────── */
+.sig-guide {
+    background: rgba(163,230,53,0.04);
+    border: 1px solid rgba(163,230,53,0.1);
+    border-radius: 24px;
+    padding: 24px;
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+    margin-top: 16px;
+}
+
+.sig-guide-icon {
+    width: 44px; height: 44px;
+    background: var(--sig-accent);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 8px 20px var(--sig-glow);
+}
+
+.sig-guide-title {
+    font-size: 9px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--sig-accent);
+    margin-bottom: 6px;
+}
+
+.sig-guide-text {
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    line-height: 1.7;
+}
+
+.sig-guide-text b { color: rgba(255,255,255,0.7); font-weight: 700; }
+
+/* ── How-to steps ───────────────────────────────────────── */
+.sig-steps {
+    counter-reset: steps;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sig-step {
+    counter-increment: steps;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    line-height: 1.5;
+}
+
+.sig-step::before {
+    content: counter(steps);
+    min-width: 20px;
+    height: 20px;
+    background: rgba(163,230,53,0.1);
+    border: 1px solid rgba(163,230,53,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 900;
+    color: var(--sig-accent);
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+/* ── Toast ──────────────────────────────────────────────── */
+#toast {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    min-width: 220px;
+    padding: 14px 24px;
+    border-radius: 20px;
+    font-weight: 800;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 24px 48px rgba(0,0,0,0.5);
+    z-index: 9999;
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    pointer-events: none;
+}
+
+#toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* ── Animations ─────────────────────────────────────────── */
+@keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.4; transform: scale(0.7); }
+}
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 640px) {
+    .sig-actions { grid-template-columns: 1fr 1fr; }
+    .sig-action-btn.primary   { grid-column: span 2; }
+    .sig-action-btn.copy-btn  { grid-column: span 2; }
+    .sig-action-btn.secondary { grid-column: span 2; }
+}
+
+/* ── Print ──────────────────────────────────────────────── */
+@media print {
+    body * { visibility: hidden !important; }
+    #signature-content, #signature-content * { visibility: visible !important; }
+    #signature-content {
+        position: fixed !important;
+        left: 50% !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+    }
+    body { background: white !important; }
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    @page { margin: 0; size: auto; }
+}

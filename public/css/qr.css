@@ -1,0 +1,109 @@
+body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #020d02; }
+        
+/* Overlay halus untuk kesan kedalaman */
+.glass-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(to bottom right, rgba(255,255,255,0.1), transparent);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+.glass-card {
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
+    backdrop-filter: blur(24px);
+    border:1px solid var(--mt-card-border);
+}
+
+.input-field {
+    width: 100%;
+    padding: 16px 20px;
+    border-radius: 18px;
+    font-size: 14px;
+    background: rgba(255, 255, 255, 0.03);
+    border:1px solid var(--mt-card-border);
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: #a3e635;
+    background: rgba(163, 230, 53, 0.05);
+}
+
+.label-style {
+    font-size: 9px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: #64748b;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.style-opt {
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border:1px solid var(--mt-card-border);
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    transition: all 0.3s;
+    color: #94a3b8;
+    cursor:pointer;
+}
+
+.style-opt:hover{
+    border-color:#a3e635;
+    color:white;
+}
+
+.style-opt.active {
+    background: #a3e635;
+    color: #020d0d;
+    border-color: #a3e635;
+}
+
+.btn-save {
+    width: 100%;
+    background: #a3e635;
+    color: #020d0d;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 20px;
+    border-radius: 20px;
+    transition: all 0.4s;
+}
+
+.btn-save:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 15px 30px rgba(163, 230, 53, 0.3);
+}
+
+.toast-style {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #a3e635;
+    color: #020d0d;
+    padding: 16px 32px;
+    border-radius: 20px;
+    font-weight: 900;
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 100;
+    opacity: 0;
+}
+
+.toast-style.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}

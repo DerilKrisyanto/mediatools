@@ -1,0 +1,843 @@
+/* ============================================================
+   INVOICE TOOL — invoice.css
+   3 Template System: Klasik · Modern · Elegan
+   ============================================================ */
+
+/* ── Editor Shell ─────────────────────────────────────── */
+.invoice-shell {
+    background: #040f0f;
+    min-height: 100vh;
+    padding-top: 88px;
+    padding-bottom: 48px;
+}
+
+.invoice-topbar {
+    max-width: 900px;
+    margin: 0 auto 20px;
+    padding: 0 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+@media (min-width: 640px) {
+    .invoice-topbar {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+}
+
+.invoice-topbar-title {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #f0fdf4;
+    letter-spacing: -0.02em;
+}
+
+.invoice-topbar-title span {
+    color: #a3e635;
+}
+
+/* Template Selector */
+.tpl-selector {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.tpl-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.03);
+    color: #9ca3af;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.tpl-btn:hover {
+    border-color: rgba(163,230,53,0.3);
+    color: #d1d5db;
+    background: rgba(255,255,255,0.05);
+}
+
+.tpl-btn.active {
+    background: rgba(163,230,53,0.12);
+    border-color: rgba(163,230,53,0.4);
+    color: #a3e635;
+}
+
+.tpl-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+.tpl-dot-1 { background: #2563eb; }
+.tpl-dot-2 { background: #a3e635; }
+.tpl-dot-3 { background: #d97706; }
+
+.btn-download {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 22px;
+    background: #a3e635;
+    color: #040f0f;
+    border: none;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    white-space: nowrap;
+}
+
+.btn-download:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(163,230,53,0.35);
+}
+
+.btn-download:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Canvas Wrapper */
+.invoice-canvas {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 16px;
+    overflow-x: auto;
+}
+
+/* Page fit warning */
+.page-warning {
+    max-width: 900px;
+    margin: 0 auto 12px;
+    padding: 0 16px;
+    display: none;
+}
+
+.page-warning.show { display: block; }
+
+.page-warning-inner {
+    background: rgba(251,191,36,0.08);
+    border: 1px solid rgba(251,191,36,0.25);
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-size: 12px;
+    color: #fbbf24;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ============================================================
+   INVOICE PAPER BASE
+   ============================================================ */
+#invoice-content {
+    width: 794px;          /* A4 @ 96dpi */
+    min-height: 1123px;    /* A4 height */
+    background: #ffffff;
+    color: #1e293b;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05);
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+}
+
+/* ── Shared editable styles ────────────────────────────── */
+[contenteditable]:focus {
+    outline: 2px solid #3b82f6;
+    border-radius: 3px;
+    background: rgba(219,234,254,0.3);
+}
+
+[contenteditable]:hover:not(:focus) {
+    background: rgba(241,245,249,0.6);
+    border-radius: 3px;
+}
+
+input[type="text"],
+input[type="number"] {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: inherit;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus {
+    background: rgba(219,234,254,0.3);
+    border-radius: 3px;
+    outline: 2px solid #3b82f6;
+    padding: 0 4px;
+}
+
+/* ── Shared Structure ─────────────────────────────── */
+.inv-header-wrap {
+    padding: 28px 36px 24px;
+    transition: background 0.3s;
+}
+
+.inv-body {
+    padding: 0 36px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.inv-header-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.inv-brand-area {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.inv-logo-area {
+    flex-shrink: 0;
+}
+
+.inv-logo-placeholder {
+    width: 80px;
+    height: 64px;
+    border: 2px dashed #d1d5db;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    background: #f8fafc;
+}
+
+.inv-logo-placeholder:hover {
+    border-color: #93c5fd;
+    background: #eff6ff;
+}
+
+.inv-logo-placeholder i { color: #94a3b8; font-size: 1.2rem; }
+.inv-logo-placeholder span { color: #94a3b8; font-size: 9px; font-weight: 700; text-transform: uppercase; margin-top: 3px; }
+
+.inv-logo-preview {
+    max-width: 120px;
+    max-height: 72px;
+    object-fit: contain;
+    display: none;
+    border-radius: 4px;
+}
+
+.inv-logo-remove {
+    display: none;
+    position: absolute;
+    top: -6px; right: -6px;
+    width: 18px; height: 18px;
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 9px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.inv-biz-name {
+    font-size: 22px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    min-width: 120px;
+    color: inherit;
+}
+
+.inv-biz-tagline {
+    font-size: 11px;
+    margin-top: 3px;
+    color: #94a3b8;
+    font-style: italic;
+    min-width: 120px;
+}
+
+.inv-title-area { text-align: right; }
+
+.inv-label {
+    font-size: 32px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: #0f172a;
+}
+
+.inv-number-field {
+    font-size: 13px;
+    font-weight: 700;
+    text-align: right;
+    margin-top: 4px;
+    color: #2563eb;
+    min-width: 160px;
+}
+
+/* Billing Row */
+.inv-billing-row {
+    display: grid;
+    grid-template-columns: 1fr 200px;
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.inv-section-label {
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #94a3b8;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 6px;
+    margin-bottom: 8px;
+}
+
+.inv-client-name {
+    font-size: 16px;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.2;
+    min-height: 22px;
+}
+
+.inv-client-address {
+    font-size: 11px;
+    color: #64748b;
+    margin-top: 6px;
+    line-height: 1.6;
+    min-height: 40px;
+    white-space: pre-line;
+}
+
+/* Meta fields */
+.inv-meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 11px;
+}
+
+.inv-meta-row:last-child { border-bottom: none; }
+
+.inv-meta-label {
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #94a3b8;
+}
+
+.inv-meta-val {
+    font-weight: 700;
+    color: #334155;
+    text-align: right;
+}
+
+.inv-meta-input {
+    text-align: right;
+    font-weight: 700;
+    color: #334155;
+    width: 110px;
+    font-size: 11px;
+}
+
+/* Table */
+.inv-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 4px;
+}
+
+.inv-table thead tr {
+    border-bottom: 2px solid #1e293b;
+}
+
+.inv-table thead th {
+    padding: 8px 8px;
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #64748b;
+    text-align: left;
+}
+
+.inv-table thead th.right { text-align: right; }
+.inv-table thead th.center { text-align: center; }
+
+.inv-table tbody tr {
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.inv-table tbody tr:last-child { border-bottom: none; }
+
+.inv-table tbody td {
+    padding: 8px 8px;
+    vertical-align: top;
+    font-size: 11px;
+}
+
+.inv-item-desc {
+    font-weight: 700;
+    color: #0f172a;
+    font-size: 12px;
+    line-height: 1.3;
+    min-height: 18px;
+}
+
+.inv-item-subdesc {
+    font-size: 10px;
+    color: #94a3b8;
+    margin-top: 2px;
+    font-style: italic;
+    min-height: 14px;
+}
+
+.inv-item-qty,
+.inv-item-price {
+    text-align: right;
+    font-weight: 700;
+    color: #334155;
+    background: transparent;
+    width: 100%;
+    font-size: 11px;
+    font-family: inherit;
+}
+
+.inv-item-qty { text-align: center; }
+
+.inv-item-total {
+    font-weight: 900;
+    color: #0f172a;
+    text-align: right;
+    font-size: 12px;
+}
+
+.inv-del-btn {
+    background: none;
+    border: none;
+    color: #fca5a5;
+    cursor: pointer;
+    padding: 2px 4px;
+    opacity: 0;
+    transition: opacity 0.2s, color 0.2s;
+    font-size: 10px;
+}
+
+.inv-table tbody tr:hover .inv-del-btn { opacity: 1; }
+.inv-del-btn:hover { color: #ef4444; }
+
+.inv-add-row-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    font-weight: 800;
+    color: #3b82f6;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 4px;
+    font-family: inherit;
+    transition: color 0.2s;
+}
+
+.inv-add-row-btn:hover { color: #2563eb; }
+
+/* Summary Row */
+.inv-summary-row {
+    display: grid;
+    grid-template-columns: 1fr 220px;
+    gap: 24px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #e2e8f0;
+}
+
+/* Notes & Payment */
+.inv-note-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    margin-bottom: 4px;
+}
+
+.inv-note-dot { color: #3b82f6; margin-top: 2px; font-size: 10px; flex-shrink: 0; }
+
+.inv-note-text {
+    font-size: 10px;
+    color: #64748b;
+    font-weight: 600;
+    flex: 1;
+    min-height: 14px;
+    line-height: 1.5;
+}
+
+.inv-payment-item {
+    border-left: 2px solid #3b82f6;
+    padding-left: 8px;
+    margin-bottom: 8px;
+    position: relative;
+}
+
+.inv-payment-bank { font-size: 10px; font-weight: 800; color: #0f172a; min-height: 14px; }
+.inv-payment-acc  { font-size: 10px; font-weight: 700; color: #3b82f6; min-height: 14px; }
+.inv-payment-own  { font-size: 9px; color: #94a3b8; text-transform: uppercase; min-height: 12px; }
+
+.inv-payment-del {
+    position: absolute;
+    right: -4px; top: 0;
+    background: none;
+    border: none;
+    color: #fca5a5;
+    cursor: pointer;
+    font-size: 9px;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.inv-payment-item:hover .inv-payment-del { opacity: 1; }
+
+.inv-add-small-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 9px;
+    font-weight: 700;
+    color: #3b82f6;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px 0;
+    text-transform: uppercase;
+    font-family: inherit;
+    transition: color 0.2s;
+}
+
+.inv-add-small-btn:hover { color: #2563eb; }
+
+/* Payment Box */
+.inv-payment-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-top: 10px;
+}
+
+/* Totals */
+.inv-total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    font-size: 12px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.inv-total-row:last-child { border-bottom: none; }
+.inv-total-label { color: #64748b; font-weight: 600; }
+.inv-total-val   { font-weight: 800; color: #334155; }
+
+.inv-tax-disc-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    font-size: 11px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.inv-tax-disc-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #64748b;
+    font-weight: 600;
+    font-size: 10px;
+    text-transform: uppercase;
+}
+
+.inv-num-input {
+    width: 36px;
+    text-align: center;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 10px;
+    padding: 2px 3px;
+    font-family: inherit;
+    font-weight: 700;
+    color: #374151;
+    outline: none;
+}
+
+.inv-num-input:focus { border-color: #93c5fd; }
+
+.inv-grand-total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0 4px;
+    margin-top: 4px;
+    border-top: 2px solid #0f172a;
+}
+
+.inv-grand-label {
+    font-size: 13px;
+    font-weight: 900;
+    color: #0f172a;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+}
+
+.inv-grand-val {
+    font-size: 22px;
+    font-weight: 900;
+    color: #2563eb;
+    letter-spacing: -0.03em;
+    line-height: 1;
+}
+
+/* Footer */
+.inv-footer {
+    margin-top: auto;
+    padding: 14px 36px 20px;
+    text-align: center;
+}
+
+.inv-footer-thanks {
+    font-size: 11px;
+    font-weight: 700;
+    color: #475569;
+    font-style: italic;
+    margin-bottom: 4px;
+}
+
+.inv-footer-contact {
+    font-size: 9px;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    min-height: 12px;
+}
+
+/* ============================================================
+   TEMPLATE 1: KLASIK (default — no overrides needed for most)
+   ============================================================ */
+[data-template="1"] .inv-header-wrap {
+    background: #ffffff;
+    border-bottom: 3px solid #0f172a;
+}
+
+[data-template="1"] .inv-label { color: #0f172a; }
+
+[data-template="1"] .inv-grand-val { color: #2563eb; }
+
+[data-template="1"] .inv-payment-item { border-left-color: #2563eb; }
+[data-template="1"] .inv-payment-acc  { color: #2563eb; }
+
+[data-template="1"] .inv-note-dot,
+[data-template="1"] .inv-add-small-btn,
+[data-template="1"] .inv-add-row-btn  { color: #2563eb; }
+
+[data-template="1"] .inv-footer {
+    border-top: 1px solid #e2e8f0;
+}
+
+/* ============================================================
+   TEMPLATE 2: MODERN
+   ============================================================ */
+[data-template="2"] .inv-header-wrap {
+    background: #071a1a;
+    border-bottom: none;
+    padding-bottom: 28px;
+}
+
+[data-template="2"] .inv-biz-name      { color: #ffffff; }
+[data-template="2"] .inv-biz-tagline   { color: #6b7280; }
+[data-template="2"] .inv-label         { color: #ffffff; }
+[data-template="2"] .inv-number-field  { color: #a3e635; }
+
+[data-template="2"] .inv-logo-placeholder {
+    border-color: rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.04);
+}
+
+[data-template="2"] .inv-logo-placeholder i,
+[data-template="2"] .inv-logo-placeholder span { color: rgba(255,255,255,0.3); }
+
+/* Table header: dark */
+[data-template="2"] .inv-table thead tr {
+    border-bottom: none;
+}
+
+[data-template="2"] .inv-table thead th {
+    background: #071a1a;
+    color: #6b7280;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+[data-template="2"] .inv-table thead th:first-child { border-radius: 6px 0 0 6px; }
+[data-template="2"] .inv-table thead th:last-child  { border-radius: 0 6px 6px 0; }
+
+/* Accent colors */
+[data-template="2"] .inv-section-label { border-bottom-color: rgba(163,230,53,0.2); }
+[data-template="2"] .inv-grand-val     { color: #a3e635; }
+[data-template="2"] .inv-grand-total-row { border-top-color: #a3e635; }
+
+[data-template="2"] .inv-payment-item  { border-left-color: #a3e635; }
+[data-template="2"] .inv-payment-acc   { color: #059669; }
+
+[data-template="2"] .inv-note-dot,
+[data-template="2"] .inv-add-small-btn,
+[data-template="2"] .inv-add-row-btn   { color: #059669; }
+
+[data-template="2"] .inv-payment-box {
+    background: rgba(163,230,53,0.04);
+    border-color: rgba(163,230,53,0.15);
+}
+
+/* Green accent bar at bottom */
+[data-template="2"] .inv-footer {
+    background: #071a1a;
+    margin-top: auto;
+}
+
+[data-template="2"] .inv-footer-thanks  { color: #6b7280; }
+[data-template="2"] .inv-footer-contact { color: #4b5563; }
+
+/* ============================================================
+   TEMPLATE 3: ELEGAN
+   ============================================================ */
+[data-template="3"] {
+    border-left: 5px solid #d97706;
+}
+
+/* Gold accent header with watermark */
+[data-template="3"] .inv-header-wrap {
+    background: #fffbeb;
+    border-bottom: 1px solid #fde68a;
+    position: relative;
+    overflow: hidden;
+}
+
+[data-template="3"] .inv-header-wrap::before {
+    content: 'INVOICE';
+    position: absolute;
+    right: -10px; top: -14px;
+    font-size: 80px;
+    font-weight: 900;
+    color: rgba(217,119,6,0.06);
+    text-transform: uppercase;
+    letter-spacing: -0.04em;
+    pointer-events: none;
+    user-select: none;
+    line-height: 1;
+}
+
+[data-template="3"] .inv-biz-name     { color: #1c1917; }
+[data-template="3"] .inv-label        { color: #1c1917; }
+[data-template="3"] .inv-number-field { color: #d97706; }
+
+/* Table header: warm amber underline */
+[data-template="3"] .inv-table thead tr {
+    border-bottom: 2px solid #d97706;
+}
+
+[data-template="3"] .inv-table thead th { color: #78350f; }
+
+/* Accent colors */
+[data-template="3"] .inv-section-label { color: #92400e; border-bottom-color: #fde68a; }
+[data-template="3"] .inv-grand-val     { color: #d97706; }
+[data-template="3"] .inv-grand-total-row { border-top-color: #d97706; }
+
+[data-template="3"] .inv-payment-item  { border-left-color: #d97706; }
+[data-template="3"] .inv-payment-acc   { color: #b45309; }
+
+[data-template="3"] .inv-note-dot      { color: #d97706; }
+[data-template="3"] .inv-add-small-btn,
+[data-template="3"] .inv-add-row-btn   { color: #b45309; }
+
+[data-template="3"] .inv-payment-box {
+    background: #fffbeb;
+    border-color: #fde68a;
+}
+
+/* Footer warm */
+[data-template="3"] .inv-footer {
+    background: #fffbeb;
+    border-top: 1px solid #fde68a;
+    margin-top: auto;
+}
+
+[data-template="3"] .inv-footer-thanks  { color: #92400e; }
+[data-template="3"] .inv-footer-contact { color: #b45309; }
+
+/* ============================================================
+   PRINT / PDF STYLES
+   ============================================================ */
+@media print {
+    .no-print { display: none !important; }
+
+    body, html {
+        background: white !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .invoice-shell {
+        background: white !important;
+        padding: 0 !important;
+    }
+
+    #invoice-content {
+        width: 100% !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+    }
+
+    [contenteditable]:hover,
+    [contenteditable]:focus {
+        background: transparent !important;
+        outline: none !important;
+    }
+}
+
+/* Hide spinners on number inputs */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+input[type="number"] { -moz-appearance: textfield; }

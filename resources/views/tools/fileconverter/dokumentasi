@@ -1,0 +1,7 @@
+composer require phpoffice/phpword
+composer require phpoffice/phpspreadsheet  
+composer require dompdf/dompdf
+composer require setasign/fpdf
+composer require setasign/fpdi
+composer require smalot/pdfparser
+composer require phpoffice/phppresentation

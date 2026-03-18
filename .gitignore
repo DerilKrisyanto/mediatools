@@ -1,0 +1,50 @@
+# Laravel
+/node_modules
+/public/hot
+/public/storage
+/storage/*.key
+/storage/app/file_converter/*
+/storage/app/pdf_utilities/*
+/storage/app/image_converter/*
+/storage/app/public/uploads/*
+/storage/debugbar
+/vendor
+.env
+.env.backup
+.env.production
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+auth.json
+npm-debug.log
+yarn-error.log
+
+# Keep folder structure tapi kosongkan isi
+!storage/app/file_converter/.gitkeep
+!storage/app/pdf_utilities/.gitkeep
+!storage/app/image_converter/.gitkeep
+!storage/app/public/uploads/.gitkeep
+!storage/logs/.gitkeep
+!storage/framework/cache/.gitkeep
+!storage/framework/sessions/.gitkeep
+!storage/framework/views/.gitkeep
+!bootstrap/cache/.gitkeep
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+desktop.ini
+
+# IDE
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+.fleet/
+
+# Build
+/public/build
