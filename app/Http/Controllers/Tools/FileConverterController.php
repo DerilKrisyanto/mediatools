@@ -487,13 +487,13 @@ class FileConverterController extends Controller
         $filter = $filterMap[$targetExt] ?? $targetExt;
 
         // Set HOME agar LibreOffice tidak error saat jalan sebagai www-data
-        $env = 'HOME=/var/www';
-
         $cmd = sprintf(
-            '%s %s --headless --norestore --nofirststartwizard --nolockcheck ' .
+            'HOME=/var/www ' .
+            'XDG_CACHE_HOME=/var/www/.cache ' .
+            'XDG_CONFIG_HOME=/var/www/.config ' .
+            '%s --headless --norestore --nofirststartwizard --nolockcheck ' .
             '-env:UserInstallation=file://%s ' .
             '--convert-to %s --outdir %s %s 2>&1',
-            $env,
             escapeshellcmd($this->sofficeBin),
             escapeshellarg($profileDir),
             escapeshellarg($filter),
