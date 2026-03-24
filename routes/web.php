@@ -19,13 +19,10 @@ use App\Http\Controllers\Tools\FileConverterController;
 Route::get('/', [HomeController::class,'index'])->name('home');
 Route::get('/invoice', [InvoiceController::class,'index'])->name('tools.invoice');
 
-// BG Remover (Public)
-Route::controller(BgRemoverController::class)->group(function () {
-    Route::get('/bg', 'index')->name('tools.bgremover');
-    Route::post('/bg/process', 'process');
-    Route::get('/bg/download/{session}/{file}', 'download');
-    Route::post('/bg/cleanup', 'cleanup');
-});
+Route::get('/tools/bgremover', [BgRemoverController::class, 'index'])
+    ->name('tools.bgremover');
+Route::post('/tools/bgremover/process', [BgRemoverController::class, 'process'])
+    ->name('tools.bgremover.process');
 
 // Linktree Group
 Route::prefix('linktree')->group(function () {
@@ -65,8 +62,8 @@ Route::prefix('qr')->group(function () {
 });
 
 // PDF Utilities
-Route::get('/pdfutilities', [PDFUtilitiesController::class, 'index'])
-    ->name('tools.pdfutilities');
+Route::get('/pdfutilities', [PDFUtilitiesController::class, 'index'])->name('tools.pdfutilities');
+Route::post('/pdfutilities/compress', [PDFUtilitiesController::class, 'compress'])->name('tools.pdfutilities.compress');
 
 // Image Converter
 Route::get('/imageconverter', [ImageConverterController::class, 'index'])

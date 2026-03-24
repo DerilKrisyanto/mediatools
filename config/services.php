@@ -43,4 +43,11 @@ return [
         'is_3ds' => true,
     ],
 
+    'rembg' => [
+        'url'       => env('REMBG_URL', 'http://127.0.0.1:8000'),
+        'bin'       => env('REMBG_BIN', '/usr/local/bin/rembg'),
+        'bridge'    => env('REMBG_BRIDGE', ''),
+        'test_mode' => env('REMBG_TEST_MODE', false),
+    ],
+
 ];

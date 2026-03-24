@@ -92,7 +92,7 @@
             @guest
                 <a href="{{ route('login') }}" class="nav-link text-gray-400 hover:text-white px-4 py-2">Masuk</a>
                 <a href="{{ route('register') }}" class="btn-primary px-5 py-2.5 text-sm rounded-xl font-bold">
-                    <span>Daftar Gratis</span>
+                    <span>Daftar</span>
                     <i class="fa-solid fa-arrow-right text-xs"></i>
                 </a>
             @endguest
@@ -195,7 +195,7 @@
             @guest
                 <div class="grid grid-cols-2 gap-3">
                     <a href="{{ route('login') }}" class="btn-outline text-center py-3 rounded-xl text-sm font-bold">Masuk</a>
-                    <a href="{{ route('register') }}" class="btn-primary text-center py-3 rounded-xl text-sm font-bold">Daftar Gratis</a>
+                    <a href="{{ route('register') }}" class="btn-primary text-center py-3 rounded-xl text-sm font-bold">Daftar</a>
                 </div>
             @endguest
             @auth

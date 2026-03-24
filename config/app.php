@@ -123,4 +123,7 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    // BG REMOVER
+    'python_path' => env('PYTHON_PATH', 'python3'),
+
 ];
