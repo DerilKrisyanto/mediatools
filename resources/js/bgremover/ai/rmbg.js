@@ -10,7 +10,7 @@
  *   88-100% set in index.js once the blob is received
  */
 
-const PROCESS_URL = '/tools/bgremover/process';
+const PROCESS_URL = '/bg/process';
 const TIMEOUT_MS  = 180_000;  // 3 min hard limit
 
 /**
