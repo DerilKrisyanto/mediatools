@@ -19,10 +19,11 @@ use App\Http\Controllers\Tools\FileConverterController;
 Route::get('/', [HomeController::class,'index'])->name('home');
 Route::get('/invoice', [InvoiceController::class,'index'])->name('tools.invoice');
 
-Route::get('/tools/bgremover', [BgRemoverController::class, 'index'])
-    ->name('tools.bgremover');
-Route::post('/tools/bgremover/process', [BgRemoverController::class, 'process'])
-    ->name('tools.bgremover.process');
+// Bg Remover
+Route::prefix('bg')->group(function () {
+    Route::get('/', [BgRemoverController::class, 'index'])->name('tools.bgremover');
+    Route::post('/process', [BgRemoverController::class, 'process'])->name('tools.bgremover.process');
+});
 
 // Linktree Group
 Route::prefix('linktree')->group(function () {
