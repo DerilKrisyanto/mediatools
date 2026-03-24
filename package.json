@@ -20,8 +20,6 @@
         "vite": "^7.0.7"
     },
     "dependencies": {
-        "@tensorflow-models/body-pix": "^2.2.1",
-        "@tensorflow/tfjs": "^4.22.0",
         "pdf-lib": "^1.17.1"
     }
 }
