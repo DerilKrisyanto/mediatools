@@ -11,10 +11,10 @@ class BgRemoverController extends Controller
 {
     /** Supported quality → Python model mapping */
     private const MODEL_MAP = [
-        'fast'     => ['model' => 'isnet-general-use', 'matting' => 'false'],
-        'medium'   => ['model' => 'isnet-general-use', 'matting' => 'true'],
-        'high'     => ['model' => 'birefnet-general',  'matting' => 'true'],
-        'portrait' => ['model' => 'birefnet-portrait', 'matting' => 'true'],
+        'fast'     => ['model' => 'u2net',             'matting' => 'false'],
+        'medium'   => ['model' => 'u2net',             'matting' => 'true'],
+        'high'     => ['model' => 'isnet-general-use', 'matting' => 'true'],
+        'portrait' => ['model' => 'birefnet-general',  'matting' => 'true'],
     ];
 
     public function index()
