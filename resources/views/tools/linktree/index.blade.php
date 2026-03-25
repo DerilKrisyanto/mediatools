@@ -4,22 +4,6 @@
 @section('meta_description', 'Buat halaman bio link profesional untuk Instagram, TikTok, dan semua sosmed. Satu halaman untuk semua tautan penting Anda. Gratis, tanpa coding.')
 @section('meta_keywords', 'buat link in bio gratis, linktree gratis indonesia, bio link page, link in bio instagram, satu halaman semua link')
 
-@push('json_ld')
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "name": "LinkTree Builder — MediaTools",
-  "url": "https://mediatools.cloud/linktree",
-  "applicationCategory": "SocialNetworkingApplication",
-  "operatingSystem": "Any",
-  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "IDR" },
-  "description": "Buat halaman bio link untuk Instagram, TikTok, YouTube. Gratis, tanpa coding.",
-  "inLanguage": "id"
-}
-</script>
-@endpush
-
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/linktree.css') }}">
 @endpush

@@ -1,4 +1,13 @@
 User-agent: *
 Allow: /
 
+Disallow: /storage/
+Disallow: /.env
+Disallow: /vendor/
+Disallow: /node_modules/
+
+Allow: /css/
+Allow: /js/
+Allow: /images/
+
 Sitemap: https://mediatools.cloud/sitemap.xml

@@ -101,34 +101,43 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// ── SITEMAP.XML ──────────────────────────────────────────────────────
 Route::get('/sitemap.xml', function () {
-    $urls = [
-        ['loc' => '/',                  'priority' => '1.0',  'changefreq' => 'weekly'],
-        ['loc' => '/invoice',           'priority' => '0.9',  'changefreq' => 'monthly'],
-        ['loc' => '/pdfutilities',      'priority' => '0.9',  'changefreq' => 'monthly'],
-        ['loc' => '/file-converter',    'priority' => '0.9',  'changefreq' => 'monthly'],
-        ['loc' => '/imageconverter',    'priority' => '0.9',  'changefreq' => 'monthly'],
-        ['loc' => '/bg',                'priority' => '0.9',  'changefreq' => 'monthly'],
-        ['loc' => '/media-downloader',  'priority' => '0.9',  'changefreq' => 'monthly'],
-        ['loc' => '/linktree',          'priority' => '0.8',  'changefreq' => 'monthly'],
-        ['loc' => '/qr',                'priority' => '0.8',  'changefreq' => 'monthly'],
-        ['loc' => '/password-generator','priority' => '0.8',  'changefreq' => 'monthly'],
-        ['loc' => '/signature',         'priority' => '0.8',  'changefreq' => 'monthly'],
+    $tools = [
+        ['loc' => '/',                   'priority' => '1.0', 'changefreq' => 'weekly'],
+        ['loc' => '/invoice',            'priority' => '0.9', 'changefreq' => 'monthly'],
+        ['loc' => '/pdfutilities',       'priority' => '0.9', 'changefreq' => 'monthly'],
+        ['loc' => '/file-converter',     'priority' => '0.9', 'changefreq' => 'monthly'],
+        ['loc' => '/imageconverter',     'priority' => '0.9', 'changefreq' => 'monthly'],
+        ['loc' => '/bg',                 'priority' => '0.9', 'changefreq' => 'monthly'],
+        ['loc' => '/media-downloader',   'priority' => '0.9', 'changefreq' => 'monthly'],
+        ['loc' => '/linktree',           'priority' => '0.8', 'changefreq' => 'monthly'],
+        ['loc' => '/qr',                 'priority' => '0.8', 'changefreq' => 'monthly'],
+        ['loc' => '/password-generator', 'priority' => '0.8', 'changefreq' => 'monthly'],
+        ['loc' => '/signature',          'priority' => '0.8', 'changefreq' => 'monthly'],
     ];
-
-    $xml = '<?xml version="1.0" encoding="UTF-8"?>';
-    $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
-    foreach ($urls as $u) {
-        $xml .= '<url>';
-        $xml .= '<loc>https://mediatools.cloud' . $u['loc'] . '</loc>';
-        $xml .= '<lastmod>' . date('Y-m-d') . '</lastmod>';
-        $xml .= '<changefreq>' . $u['changefreq'] . '</changefreq>';
-        $xml .= '<priority>' . $u['priority'] . '</priority>';
-        $xml .= '</url>';
+ 
+    $xml  = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+    $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"' . "\n";
+    $xml .= '        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' . "\n";
+    $xml .= '        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9' . "\n";
+    $xml .= '        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">' . "\n";
+ 
+    foreach ($tools as $u) {
+        $xml .= "  <url>\n";
+        $xml .= "    <loc>https://mediatools.cloud{$u['loc']}</loc>\n";
+        $xml .= "    <lastmod>" . date('Y-m-d') . "</lastmod>\n";
+        $xml .= "    <changefreq>{$u['changefreq']}</changefreq>\n";
+        $xml .= "    <priority>{$u['priority']}</priority>\n";
+        $xml .= "  </url>\n";
     }
+ 
     $xml .= '</urlset>';
-
-    return response($xml, 200)->header('Content-Type', 'application/xml');
-});
+ 
+    return response($xml, 200, [
+        'Content-Type'  => 'application/xml; charset=utf-8',
+        'Cache-Control' => 'public, max-age=86400',
+    ]);
+})->name('sitemap');
 
 require __DIR__.'/auth.php';

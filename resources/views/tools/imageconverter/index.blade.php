@@ -4,22 +4,6 @@
 @section('meta_description', 'Resize, kompres, dan konversi gambar JPG, PNG, WebP langsung di browser. Tanpa upload ke server, privasi 100% terjaga, gratis unlimited.')
 @section('meta_keywords', 'resize gambar online gratis, kompres foto, convert jpg ke png, jpg to webp, image converter indonesia')
 
-@push('json_ld')
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "name": "Image Converter — MediaTools",
-  "url": "https://mediatools.cloud/imageconverter",
-  "applicationCategory": "GraphicsApplication",
-  "operatingSystem": "Any",
-  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "IDR" },
-  "description": "Resize, kompres, dan konversi format gambar JPG PNG WebP di browser. Gratis unlimited.",
-  "inLanguage": "id"
-}
-</script>
-@endpush
-
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/imageconverter.css') }}">
 

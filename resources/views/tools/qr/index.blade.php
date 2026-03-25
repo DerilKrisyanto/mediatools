@@ -4,22 +4,6 @@
 @section('meta_description', 'Buat QR Code custom gratis untuk menu restoran, pembayaran, kontak, WiFi, dan URL. Download PNG/SVG resolusi tinggi, tanpa watermark, tanpa daftar.')
 @section('meta_keywords', 'buat qr code gratis, qr code generator indonesia, qr code menu restoran, qr code bisnis custom, generate qr code')
 
-@push('json_ld')
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "name": "QR Code Generator — MediaTools",
-  "url": "https://mediatools.cloud/qr",
-  "applicationCategory": "BusinessApplication",
-  "operatingSystem": "Any",
-  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "IDR" },
-  "description": "Buat QR Code custom gratis untuk menu, pembayaran, URL, WiFi. Download resolusi tinggi.",
-  "inLanguage": "id"
-}
-</script>
-@endpush
-
 @section('content')
 
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">

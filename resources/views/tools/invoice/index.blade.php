@@ -4,23 +4,6 @@
 @section('meta_description', 'Buat invoice atau tagihan profesional dalam 2 menit. Template siap pakai, download PDF gratis tanpa daftar. Cocok untuk freelancer dan UMKM Indonesia.')
 @section('meta_keywords', 'invoice generator gratis, buat tagihan online, template invoice pdf, invoice freelancer indonesia')
 
-@push('json_ld')
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "name": "Invoice Generator — MediaTools",
-  "url": "https://mediatools.cloud/invoice",
-  "applicationCategory": "BusinessApplication",
-  "operatingSystem": "Any",
-  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "IDR" },
-  "description": "Buat invoice profesional dan download sebagai PDF gratis. Tanpa daftar akun.",
-  "inLanguage": "id"
-}
-</script>
-@endpush
-
-
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/invoice.css') }}">
 @endpush

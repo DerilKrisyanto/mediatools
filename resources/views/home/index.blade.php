@@ -1,10 +1,8 @@
 @extends('layouts.app')
+
 @section('title', 'MediaTools — Tools Digital Gratis: Invoice, PDF, Background Remover & QR Code')
 @section('meta_description', 'Platform tools produktivitas digital 100% gratis — Hapus background foto, konversi PDF, buat invoice, QR Code, dan 10+ tools lainnya. Tanpa daftar, langsung pakai di browser.')
 @section('meta_keywords', 'tools online gratis indonesia, invoice generator gratis, hapus background foto, konversi pdf word, qr code generator, media tools')
-@section('og_image', asset('images/og-home.jpg'))
-
-@section('title', 'MediaTools | Solusi Produktivitas Digital')
 
 @section('content')
 
@@ -35,18 +33,11 @@
                         Optimalkan Kerja Anda Dengan
                         <span class="gradient-text"> Media Tools.</span>
                     </h1>
-                    <h1>Optimalkan Kerja Anda Dengan <span class="gradient-text"> Media Tools.</span></h1>
-                    <h1>Tools Digital Gratis untuk <span class="gradient-text">Produktivitas Anda.</span></h1>
                 </div>
 
                 <div class="reveal reveal-delay-2">
                     <p class="text-gray-400 text-lg md:text-xl leading-relaxed max-w-md">
                         Satu platform untuk semua kebutuhan produktivitas digital harian Anda — dari invoice profesional hingga QR Code bisnis, semuanya tersedia instan.
-                    </p>
-
-                    <p class="text-gray-500 text-sm leading-relaxed max-w-md mt-2">
-                        Invoice Generator · PDF Converter · Background Remover · QR Code Generator ·
-                        File Converter · Password Generator — semua gratis, langsung di browser.
                     </p>
                 </div>
 
