@@ -1,7 +1,24 @@
 @extends('layouts.app')
 
-@section('title', 'File Converter - Konversi PDF, Word, Excel, JPG Online Gratis | MediaTools')
-@section('meta_description', 'Konversi dokumen dua arah: PDF↔Word, PDF↔Excel, PDF↔JPG, Word↔PDF, Excel↔PDF. Multi-file hingga 5 file sekaligus. Gratis, privasi terjaga.')
+@section('title', 'File Converter Online Gratis — PDF Word Excel PowerPoint | MediaTools')
+@section('meta_description', 'Konversi PDF ke Word, Word ke PDF, Excel ke PDF, JPG ke PDF dan sebaliknya. Upload 5 file sekaligus, gratis tanpa batas, privasi terjaga.')
+@section('meta_keywords', 'konversi pdf ke word gratis, pdf to word online, word to pdf, excel to pdf, file converter indonesia')
+
+@push('json_ld')
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "File Converter — MediaTools",
+  "url": "https://mediatools.cloud/file-converter",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "IDR" },
+  "description": "Konversi dokumen PDF, Word, Excel, PowerPoint, dan gambar dua arah. Gratis, multi-file.",
+  "inLanguage": "id"
+}
+</script>
+@endpush
 
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/fileconverter.css') }}">

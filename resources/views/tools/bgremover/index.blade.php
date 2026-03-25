@@ -1,7 +1,24 @@
 @extends('layouts.app')
 
-@section('title', 'Background Remover — Hapus Background Foto | MediaTools')
-@section('meta_description', 'Hapus background foto otomatis dengan AI BiRefNet. Edit manual dengan brush. Proses server-side, privasi terjaga.')
+@section('title', 'Hapus Background Foto Online Gratis — AI Otomatis | MediaTools')
+@section('meta_description', 'Hapus background foto secara otomatis dengan AI. Unggul pada rambut & detail halus. Edit manual dengan brush, download PNG transparan gratis tanpa daftar.')
+@section('meta_keywords', 'hapus background foto gratis, remove background online, background remover indonesia, hapus latar foto ai, remove bg gratis')
+
+@push('json_ld')
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Background Remover — MediaTools",
+  "url": "https://mediatools.cloud/bg",
+  "applicationCategory": "GraphicsApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "IDR" },
+  "description": "Hapus background foto otomatis dengan AI BiRefNet. Edit dengan brush, download PNG transparan gratis.",
+  "inLanguage": "id"
+}
+</script>
+@endpush
 
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/bgremover.css') }}">

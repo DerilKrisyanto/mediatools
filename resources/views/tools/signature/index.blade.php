@@ -1,6 +1,24 @@
 @extends('layouts.app')
-@section('title', 'Email Signature Generator - Tanda Tangan Email Profesional | MediaTools')
-@section('meta_description', 'Buat tanda tangan email profesional dengan foto, logo, dan link media sosial. Copy-paste langsung ke Gmail, Outlook, dan aplikasi email lainnya.')
+
+@section('title', 'Email Signature Generator Gratis — Tanda Tangan Email Profesional | MediaTools')
+@section('meta_description', 'Buat tanda tangan email profesional dalam hitungan menit. Template siap pakai, copy-paste ke Gmail, Outlook, atau email client lainnya. Gratis unlimited.')
+@section('meta_keywords', 'email signature gratis, buat tanda tangan email, gmail signature template, email signature profesional indonesia, signature studio')
+
+@push('json_ld')
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Email Signature Generator — MediaTools",
+  "url": "https://mediatools.cloud/signature",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "IDR" },
+  "description": "Buat email signature profesional dengan template gratis. Kompatibel Gmail, Outlook, dan semua email client.",
+  "inLanguage": "id"
+}
+</script>
+@endpush
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/signature.css') }}">

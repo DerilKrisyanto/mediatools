@@ -1,6 +1,24 @@
 @extends('layouts.app')
-@section('title', 'PDF Utilities — Merge, Split & Compress | MediaTools')
-@section('meta_description', 'Gabung, pisah, dan kompres PDF. Merge & Split 100% di browser tanpa upload. Compress via Ghostscript server-side untuk hasil terbaik.')
+
+@section('title', 'PDF Utilities — Merge, Split & Compress PDF Online Gratis | MediaTools')
+@section('meta_description', 'Gabung, pisah, dan kompres file PDF langsung di browser — tanpa upload, tanpa daftar, 100% gratis. Privasi terjaga karena semua proses di perangkat Anda.')
+@section('meta_keywords', 'merge pdf gratis, split pdf online, kompres pdf, gabung pdf, pdf tools indonesia')
+@push('json_ld')
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "PDF Utilities — MediaTools",
+  "url": "https://mediatools.cloud/pdfutilities",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "IDR" },
+  "description": "Merge, split, dan compress PDF online gratis langsung di browser.",
+  "inLanguage": "id"
+}
+</script>
+@endpush
+
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/pdfutilities.css') }}">
 

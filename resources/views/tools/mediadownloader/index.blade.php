@@ -1,7 +1,24 @@
 @extends('layouts.app')
 
-@section('title', 'Media Downloader - Download YouTube, TikTok & Instagram | MediaTools')
-@section('meta_description', 'Download video YouTube (MP4/MP3), TikTok tanpa watermark, dan foto/video Instagram secara gratis. Cukup paste URL, langsung download.')
+@section('title', 'Download Video YouTube TikTok Instagram Gratis — MediaTools')
+@section('meta_description', 'Download video dan audio dari YouTube, TikTok, dan Instagram. Cukup paste URL, pilih format, langsung download. Gratis tanpa daftar, tanpa watermark.')
+@section('meta_keywords', 'download video youtube gratis, download tiktok tanpa watermark, download video instagram, youtube downloader indonesia')
+
+@push('json_ld')
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Media Downloader — MediaTools",
+  "url": "https://mediatools.cloud/media-downloader",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "IDR" },
+  "description": "Download video YouTube, TikTok, Instagram gratis. Paste URL, langsung download.",
+  "inLanguage": "id"
+}
+</script>
+@endpush
 
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/mediadownloader.css') }}">

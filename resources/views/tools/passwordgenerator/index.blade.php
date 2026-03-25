@@ -1,6 +1,25 @@
 @extends('layouts.app')
-@section('title', 'Password Generator - Buat Password Kuat & Aman Gratis | MediaTools')
-@section('meta_description', 'Password Generator gratis — buat password kuat dengan strength meter, bulk generate, dan keyboard shortcut. 100% browser, zero server.')
+
+@section('title', 'Password Generator Online Gratis — Buat Password Kuat & Aman | MediaTools')
+@section('meta_description', 'Buat password kuat dan unik secara instan. Semua proses di browser Anda — tidak ada data yang dikirim ke server. Gratis, aman, unlimited.')
+@section('meta_keywords', 'password generator gratis, buat password kuat, random password generator, password aman online, generator kata sandi')
+
+@push('json_ld')
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Password Generator — MediaTools",
+  "url": "https://mediatools.cloud/password-generator",
+  "applicationCategory": "SecurityApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "IDR" },
+  "description": "Buat password kuat dan aman secara instan di browser. Tidak ada data dikirim ke server.",
+  "inLanguage": "id"
+}
+</script>
+@endpush
+
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/passwordgenerator.css') }}">
 

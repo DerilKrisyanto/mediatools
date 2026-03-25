@@ -3,36 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'MediaTools | All-in-One Media Suite')</title>
-    <meta name="description" content="Satu platform untuk semua kebutuhan media digital Anda. Invoice, QR Code, Link Tree, Signature, dan banyak lagi.">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="description" content="@yield('meta_description', 'MediaTools — platform tools produktivitas digital gratis untuk UMKM, freelancer, dan developer Indonesia.')">
+
+    <!-- ── SEO Core ── -->
+    <title>@yield('title', 'MediaTools — Tools Digital Gratis untuk UMKM & Freelancer Indonesia')</title>
+    <meta name="description"
+          content="@yield('meta_description', 'Platform tools produktivitas digital gratis — Invoice Generator, PDF Converter, Background Remover, QR Code, dan 10+ tools lainnya. Tanpa daftar, langsung pakai.')">
+    <meta name="keywords"
+          content="@yield('meta_keywords', 'tools online gratis, konversi pdf, hapus background foto, invoice generator, qr code generator, indonesia')">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="MediaTools">
     <link rel="canonical" href="{{ url()->current() }}">
 
-    <!-- Open Graph untuk social sharing -->
-    <meta property="og:title" content="@yield('title', 'MediaTools')">
-    <meta property="og:description" content="@yield('meta_description', 'Tools produktivitas digital gratis')">
-    <meta property="og:url" content="{{ url()->current() }}">
-    <meta property="og:type" content="website">
+    <!-- ── Open Graph ── -->
+    <meta property="og:type"        content="website">
+    <meta property="og:site_name"   content="MediaTools">
+    <meta property="og:title"       content="@yield('og_title', @yield('title', 'MediaTools'))">
+    <meta property="og:description" content="@yield('og_description', @yield('meta_description', 'Tools digital gratis untuk semua kebutuhan produktivitas Anda.'))">
+    <meta property="og:url"         content="{{ url()->current() }}">
+    <meta property="og:image"       content="@yield('og_image', asset('images/og-default.jpg'))">
+    <meta property="og:image:width"  content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale"      content="id_ID">
 
-    <!-- Google Search Console -->
-    <meta name="google-site-verification" content="W4l-4NDtoXzK2oMrmBmFZ1Yj9Os9jK1bEqbUUmBJi5o" />
+    <!-- ── Twitter Card ── -->
+    <meta name="twitter:card"        content="summary_large_image">
+    <meta name="twitter:title"       content="@yield('og_title', @yield('title', 'MediaTools'))">
+    <meta name="twitter:description" content="@yield('og_description', @yield('meta_description', 'Tools digital gratis.'))">
+    <meta name="twitter:image"       content="@yield('og_image', asset('images/og-default.jpg'))">
 
-    <!-- Fonts -->
+    <!-- ── JSON-LD: WebSite + SearchAction ── -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "MediaTools",
+      "url": "https://mediatools.cloud",
+      "description": "Platform tools produktivitas digital gratis untuk UMKM, freelancer, dan kreator Indonesia.",
+      "inLanguage": "id",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://mediatools.cloud/?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+
+    <!-- ── JSON-LD: Organization ── -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "MediaTools",
+      "url": "https://mediatools.cloud",
+      "logo": "{{ asset('images/icons-mediatools.png') }}",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "email": "halo@mediatools.id",
+        "contactType": "customer support",
+        "availableLanguage": "Indonesian"
+      },
+      "sameAs": []
+    }
+    </script>
+
+    <!-- ── Per-page JSON-LD (tools inject via @push) ── -->
+    @stack('json_ld')
+
+    <!-- ── Verification ── -->
+    <meta name="google-site-verification" content="W4l-4NDtoXzK2oMrmBmFZ1Yj9Os9jK1bEqbUUmBJi5o">
+
+    <!-- ── Fonts ── -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Icons -->
+    <!-- ── Icons ── -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
 
-    <!-- Tailwind -->
+    <!-- ── Tailwind ── -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Favicon -->
+    <!-- ── Favicon ── -->
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/icons-mediatools.png') }}">
 
-    <!-- Custom CSS -->
+    <!-- ── CSS ── -->
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 
     @stack('styles')
