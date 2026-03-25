@@ -1,9 +1,7 @@
 @extends('layouts.app')
-
 @section('title', 'Invoice Generator Online Gratis — Buat Tagihan PDF Profesional | MediaTools')
 @section('meta_description', 'Buat invoice atau tagihan profesional dalam 2 menit. Template siap pakai, download PDF gratis tanpa daftar. Cocok untuk freelancer dan UMKM Indonesia.')
 @section('meta_keywords', 'invoice generator gratis, buat tagihan online, template invoice pdf, invoice freelancer indonesia')
-
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/invoice.css') }}">
 @endpush
