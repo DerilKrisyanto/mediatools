@@ -1,9 +1,7 @@
 @extends('layouts.app')
-
 @section('title', 'PDF Utilities — Merge, Split & Compress PDF Online Gratis | MediaTools')
 @section('meta_description', 'Gabung, pisah, dan kompres file PDF langsung di browser — tanpa upload, tanpa daftar, 100% gratis. Privasi terjaga karena semua proses di perangkat Anda.')
 @section('meta_keywords', 'merge pdf gratis, split pdf online, kompres pdf, gabung pdf, pdf tools indonesia')
-
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/pdfutilities.css') }}">
 
