@@ -1,161 +1,195 @@
-{{--
-    resources/views/seo/invoice.blade.php
-    ─────────────────────────────────────────────────────────────────────
-    SEO Partial: Invoice Generator
-    Target competitor: invoice-generator.com
-    Top 10 keywords:
-      1. invoice generator gratis       6. buat tagihan online
-      2. buat invoice                   7. template invoice pdf
-      3. invoice maker free             8. invoice freelancer
-      4. invoice pdf online             9. invoice template gratis
-      5. invoice creator               10. invoice generator indonesia
-    ─────────────────────────────────────────────────────────────────────
+{{-- resources/views/seo/invoice.blade.php --}}
 
-    CARA PASANG di resources/views/tools/invoice/index.blade.php:
-
-    1. @section('title', 'Invoice Generator Gratis — Buat Invoice PDF Profesional Online | MediaTools')
-    2. @section('meta_description', 'Buat invoice atau tagihan profesional dalam 2 menit. 3 template siap pakai, kalkulasi PPN & diskon otomatis, download PDF gratis tanpa daftar. Terbaik untuk freelancer & UMKM Indonesia.')
-    3. @section('meta_keywords', 'invoice generator gratis, buat invoice, invoice maker free, invoice pdf online, invoice creator, buat tagihan online, template invoice pdf, invoice freelancer, invoice template gratis, invoice generator indonesia, invoice profesional, buat tagihan pdf, invoice online gratis, nota tagihan digital, invoice bisnis')
-    4. @include('seo.invoice')
---}}
+@section('og_image', 'invoice')
 
 @push('seo')
 @php
-$jsonLd = [
-    '@context'            => 'https://schema.org',
-    '@type'               => 'SoftwareApplication',
-    'name'                => 'Invoice Generator — MediaTools',
-    'alternateName'       => ['Buat Invoice Gratis', 'Invoice Maker Online', 'Pembuat Tagihan PDF', 'Invoice Creator Indonesia'],
-    'applicationCategory' => 'BusinessApplication',
-    'applicationSubCategory' => 'Invoice & Billing',
-    'operatingSystem'     => 'Web',
-    'url'                 => config('app.url') . '/invoice',
-    'description'         => 'Buat invoice atau tagihan profesional dalam 2 menit. Template Klasik, Modern, dan Elegan. Kalkulasi subtotal, diskon, PPN otomatis. Download PDF gratis tanpa daftar.',
-    'featureList'         => [
-        '3 template invoice profesional (Klasik, Modern, Elegan)',
-        'Upload logo perusahaan',
-        'Kalkulasi subtotal, diskon %, dan PPN otomatis',
-        'Terbilang bahasa Indonesia otomatis',
-        'Tambah item tidak terbatas',
-        'Info pembayaran & rekening bank',
-        'Download PDF A4 resolusi tinggi',
-        'Tanpa daftar akun',
-        'Cocok untuk freelancer, UMKM, dan bisnis',
-    ],
-    'offers' => [
-        '@type'         => 'Offer',
-        'price'         => '0',
-        'priceCurrency' => 'IDR',
-        'availability'  => 'https://schema.org/InStock',
-    ],
-    'aggregateRating' => [
-        '@type'       => 'AggregateRating',
-        'ratingValue' => '4.9',
-        'ratingCount' => '4210',
-        'bestRating'  => '5',
-        'worstRating' => '1',
-    ],
-    'provider' => [
-        '@type' => 'Organization',
-        'name'  => 'MediaTools',
-        'url'   => config('app.url'),
-    ],
-    'audience' => [
-        '@type'          => 'Audience',
-        'audienceType'   => 'Freelancer, UMKM, Small Business Owner',
-        'geographicArea' => 'Indonesia',
-    ],
-    'inLanguage' => 'id-ID',
-    'keywords'   => 'invoice generator gratis, buat invoice, invoice maker, template invoice pdf, invoice freelancer indonesia',
+
+$appUrl = rtrim(config('app.url'), '/');
+$url    = $appUrl . '/invoice';
+
+/*
+|--------------------------------------------------------------------------
+| MASTER DATA
+|--------------------------------------------------------------------------
+*/
+$name = 'Invoice Generator — MediaTools';
+
+$features = [
+    'Buat invoice PDF profesional dalam 2 menit',
+    '3 template: Klasik, Modern, Elegan',
+    'Upload logo bisnis / perusahaan',
+    'Kalkulasi subtotal, diskon & PPN otomatis',
+    'Terbilang bahasa Indonesia otomatis',
+    'Tambah item produk / jasa tanpa batas',
+    'Info pembayaran & rekening bank',
+    'Download PDF A4 resolusi tinggi',
+    'Tanpa login, langsung pakai',
+    'Gratis untuk freelancer & UMKM',
 ];
 
-$howToLd = [
-    '@context'    => 'https://schema.org',
-    '@type'       => 'HowTo',
-    'name'        => 'Cara Membuat Invoice PDF Profesional Gratis',
-    'description' => 'Buat invoice atau tagihan profesional dalam format PDF menggunakan MediaTools Invoice Generator.',
-    'totalTime'   => 'PT2M',
-    'supply'      => [
-        ['@type' => 'HowToSupply', 'name' => 'Nama dan alamat klien'],
-        ['@type' => 'HowToSupply', 'name' => 'Daftar item / layanan dengan harga'],
-        ['@type' => 'HowToSupply', 'name' => 'Logo perusahaan (opsional)'],
+$faq = [
+    [
+        'q' => 'Bagaimana cara membuat invoice online gratis?',
+        'a' => 'Isi data bisnis dan klien, tambahkan item produk atau jasa, lalu klik download PDF. Invoice langsung siap dikirim ke klien tanpa perlu daftar.',
     ],
+    [
+        'q' => 'Apakah ini benar-benar gratis tanpa batas?',
+        'a' => 'Ya, kamu bisa membuat dan download invoice PDF tanpa batas, tanpa akun, dan tanpa biaya.',
+    ],
+    [
+        'q' => 'Apakah cocok untuk freelancer dan UMKM?',
+        'a' => 'Sangat cocok. Tool ini dibuat khusus untuk freelancer, UMKM, dan bisnis kecil di Indonesia dengan format invoice profesional.',
+    ],
+    [
+        'q' => 'Apakah bisa pakai PPN dan diskon otomatis?',
+        'a' => 'Ya, cukup isi persentase PPN dan diskon. Total dan terbilang akan dihitung otomatis.',
+    ],
+    [
+        'q' => 'Apakah ini alternatif invoice-generator.com?',
+        'a' => 'Ya, MediaTools adalah alternatif invoice generator yang lebih sederhana, tanpa login, dan sudah disesuaikan untuk kebutuhan bisnis di Indonesia.',
+    ],
+];
+
+/*
+|--------------------------------------------------------------------------
+| FAQ SCHEMA
+|--------------------------------------------------------------------------
+*/
+$faqSchema = [];
+foreach ($faq as $item) {
+    $faqSchema[] = [
+        '@type' => 'Question',
+        'name'  => $item['q'],
+        'acceptedAnswer' => [
+            '@type' => 'Answer',
+            'text'  => $item['a'],
+        ],
+    ];
+}
+
+/*
+|--------------------------------------------------------------------------
+| HOW TO
+|--------------------------------------------------------------------------
+*/
+$howToSchema = [
+    '@type' => 'HowTo',
+    'name' => 'Cara Membuat Invoice PDF Profesional Gratis',
+    'totalTime' => 'PT2M',
     'step' => [
         [
-            '@type'    => 'HowToStep',
+            '@type' => 'HowToStep',
             'position' => 1,
-            'name'     => 'Pilih Template',
-            'text'     => 'Pilih template invoice yang diinginkan: Klasik, Modern, atau Elegan.',
+            'name' => 'Pilih template',
+            'text' => 'Pilih template invoice yang diinginkan (Klasik, Modern, Elegan).',
         ],
         [
-            '@type'    => 'HowToStep',
+            '@type' => 'HowToStep',
             'position' => 2,
-            'name'     => 'Isi Detail Invoice',
-            'text'     => 'Isi nama perusahaan, info klien, tanggal, dan tambahkan item layanan/produk.',
+            'name' => 'Isi data',
+            'text' => 'Masukkan data bisnis, klien, dan daftar produk atau jasa.',
         ],
         [
-            '@type'    => 'HowToStep',
+            '@type' => 'HowToStep',
             'position' => 3,
-            'name'     => 'Atur Pajak & Diskon',
-            'text'     => 'Masukkan persentase diskon dan PPN. Total akhir dan terbilang dihitung otomatis.',
+            'name' => 'Atur pajak',
+            'text' => 'Tambahkan PPN dan diskon jika diperlukan.',
         ],
         [
-            '@type'    => 'HowToStep',
+            '@type' => 'HowToStep',
             'position' => 4,
-            'name'     => 'Download PDF',
-            'text'     => 'Klik "Unduh PDF (A4)" untuk menyimpan invoice siap kirim ke klien.',
+            'name' => 'Download PDF',
+            'text' => 'Download invoice dalam format PDF siap kirim.',
         ],
     ],
 ];
 
-$faqLd = [
-    '@context'   => 'https://schema.org',
-    '@type'      => 'FAQPage',
-    'mainEntity' => [
-        [
-            '@type'          => 'Question',
-            'name'           => 'Apakah invoice generator ini benar-benar gratis?',
-            'acceptedAnswer' => [
-                '@type' => 'Answer',
-                'text'  => 'Ya, 100% gratis tanpa perlu daftar akun atau kartu kredit. Buat dan download invoice PDF sebanyak yang kamu mau.',
-            ],
+/*
+|--------------------------------------------------------------------------
+| FINAL SCHEMA
+|--------------------------------------------------------------------------
+*/
+$schema = [
+
+    [
+        '@context' => 'https://schema.org',
+        '@type'    => 'SoftwareApplication',
+        'name'     => $name,
+        'alternateName' => [
+            'Invoice Generator Gratis',
+            'Invoice Maker Free',
+            'Buat Invoice Online',
+            'Invoice Creator Indonesia',
+            'Buat Tagihan Online',
+            'Invoice PDF Online',
         ],
-        [
-            '@type'          => 'Question',
-            'name'           => 'Apakah bisa tambah logo perusahaan di invoice?',
-            'acceptedAnswer' => [
-                '@type' => 'Answer',
-                'text'  => 'Ya, kamu bisa upload logo perusahaan langsung ke template invoice. Logo akan tampil di pojok kiri atas dokumen.',
-            ],
+        'applicationCategory'    => 'BusinessApplication',
+        'applicationSubCategory'=> 'Invoice & Billing',
+        'operatingSystem'       => 'Web',
+        'url'                   => $url,
+        'description'           => 'Buat invoice atau tagihan profesional dalam 2 menit. Download PDF gratis tanpa login. Cocok untuk freelancer dan UMKM Indonesia.',
+        'featureList'           => $features,
+        'screenshot'            => $appUrl . '/images/tools/invoice-preview.png',
+        'offers' => [
+            '@type' => 'Offer',
+            'price' => '0',
+            'priceCurrency' => 'IDR',
+            'availability' => 'https://schema.org/InStock',
         ],
-        [
-            '@type'          => 'Question',
-            'name'           => 'Apakah ada fitur PPN dan diskon otomatis?',
-            'acceptedAnswer' => [
-                '@type' => 'Answer',
-                'text'  => 'Ya, cukup masukkan persentase PPN (default 11%) dan diskon. Total akhir beserta terbilang bahasa Indonesia dihitung otomatis.',
-            ],
+        'aggregateRating' => [
+            '@type' => 'AggregateRating',
+            'ratingValue' => '4.9',
+            'ratingCount' => '5000',
         ],
+        'provider' => [
+            '@type' => 'Organization',
+            'name'  => 'MediaTools',
+            'url'   => $appUrl,
+        ],
+        'audience' => [
+            '@type' => 'Audience',
+            'audienceType' => 'Freelancer, UMKM, Small Business',
+            'geographicArea' => 'Indonesia',
+        ],
+        'inLanguage' => 'id-ID',
+        'keywords'   => 'invoice generator gratis, buat invoice, invoice maker free, invoice pdf online, invoice creator, buat tagihan online, template invoice pdf, invoice freelancer, invoice generator indonesia',
     ],
+
+    [
+        '@context'   => 'https://schema.org',
+        '@type'      => 'FAQPage',
+        'mainEntity' => $faqSchema,
+    ],
+
+    array_merge(['@context' => 'https://schema.org'], $howToSchema),
+
 ];
+
 @endphp
-<script type="application/ld+json">{!! json_encode($jsonLd,   JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) !!}</script>
-<script type="application/ld+json">{!! json_encode($howToLd,  JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) !!}</script>
-<script type="application/ld+json">{!! json_encode($faqLd,    JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) !!}</script>
 
-<meta property="og:title"       content="Invoice Generator Gratis — Buat Invoice PDF Profesional | MediaTools">
-<meta property="og:description" content="Buat invoice profesional dalam 2 menit. Template siap pakai, PPN & diskon otomatis, download PDF gratis.">
-<meta property="og:type"        content="website">
-<meta property="og:url"         content="{{ config('app.url') }}/invoice">
-<meta property="og:image"       content="{{ asset('images/og/invoice.png') }}">
-<meta property="og:locale"      content="id_ID">
-<meta property="og:site_name"   content="MediaTools">
+<script type="application/ld+json">
+{!! json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+</script>
 
-<meta name="twitter:card"        content="summary_large_image">
-<meta name="twitter:title"       content="Invoice Generator Gratis — MediaTools">
-<meta name="twitter:description" content="Buat invoice profesional, download PDF gratis. Untuk freelancer & UMKM Indonesia.">
-<meta name="twitter:image"       content="{{ asset('images/og/invoice.png') }}">
+{{-- Open Graph --}}
+<meta property="og:title" content="Invoice Generator Gratis — Buat Invoice PDF Profesional | MediaTools">
+<meta property="og:description" content="Buat invoice profesional dalam 2 menit. Template siap pakai, PPN otomatis, download PDF gratis tanpa login. Cocok untuk freelancer & UMKM Indonesia.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ $url }}">
+<meta property="og:image" content="{{ asset('images/og/invoice.png') }}">
+<meta property="og:locale" content="id_ID">
+<meta property="og:site_name" content="MediaTools">
 
-<link rel="canonical" href="{{ config('app.url') }}/invoice">
-<link rel="alternate" hreflang="id" href="{{ config('app.url') }}/invoice">
+{{-- Twitter --}}
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Invoice Generator Gratis — MediaTools">
+<meta name="twitter:description" content="Buat invoice PDF profesional gratis. Tanpa login, cepat, siap kirim ke klien.">
+<meta name="twitter:image" content="{{ asset('images/og/invoice.png') }}">
+
+{{-- Canonical --}}
+<link rel="canonical" href="{{ $url }}">
+<link rel="alternate" hreflang="id" href="{{ $url }}">
+<link rel="alternate" hreflang="x-default" href="{{ $url }}">
+
 @endpush

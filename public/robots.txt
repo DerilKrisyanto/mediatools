@@ -1,11 +1,19 @@
 User-agent: *
 Allow: /
 
+// Blokir halaman auth — tidak perlu diindex Google
+Disallow: /login/
+Disallow: /register/
+Disallow: /profile/
+
+// Blokir folder internal Laravel
 Disallow: /storage/
 Disallow: /.env
 Disallow: /vendor/
 Disallow: /node_modules/
+Disallow: /auth/
 
+// Izinkan aset
 Allow: /css/
 Allow: /js/
 Allow: /images/
