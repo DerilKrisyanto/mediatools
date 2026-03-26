@@ -1,8 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Hapus Background Foto Online Gratis — AI Otomatis | MediaTools')
-@section('meta_description', 'Hapus background foto secara otomatis dengan AI. Unggul pada rambut & detail halus. Edit manual dengan brush, download PNG transparan gratis tanpa daftar.')
-@section('meta_keywords', 'hapus background foto gratis, remove background online, background remover indonesia, hapus latar foto ai, remove bg gratis')
+@section('og_image', 'bgremover')
+@section('title', 'Hapus Background Foto Gratis — Remove Background Online Otomatis | MediaTools')
+@section('meta_description', 'Hapus background foto secara otomatis dengan AI BiRefNet — unggul pada rambut & detail halus. Remove background online gratis, tanpa daftar, download PNG transparan langsung.')
+@section('meta_keywords', 'hapus background foto, remove background, background remover, hapus latar belakang foto, remove bg, background removal online, remove bg gratis, background eraser online, foto tanpa background, hapus bg foto otomatis, remove background photo, transparent background, background remover ai, hapus background online, remove background free')
+@include('seo.bgremover')
 
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/bgremover.css') }}">

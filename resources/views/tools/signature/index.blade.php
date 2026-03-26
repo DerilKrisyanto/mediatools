@@ -1,8 +1,10 @@
 @extends('layouts.app')
 
+@section('og_image', 'signature')
 @section('title', 'Email Signature Generator Gratis — Tanda Tangan Email Profesional | MediaTools')
-@section('meta_description', 'Buat tanda tangan email profesional dalam hitungan menit. Template siap pakai, copy-paste ke Gmail, Outlook, atau email client lainnya. Gratis unlimited.')
-@section('meta_keywords', 'email signature gratis, buat tanda tangan email, gmail signature template, email signature profesional indonesia, signature studio')
+@section('meta_description', 'Buat tanda tangan email profesional dalam hitungan menit. 3 template siap pakai (Klasik, Modern, Elegan), copy-paste ke Gmail, Outlook & semua email client. HTML email signature gratis unlimited.')
+@section('meta_keywords', 'email signature gratis, buat tanda tangan email, email signature generator, tanda tangan email profesional, signature email gratis, gmail signature template, professional email signature, html email signature, outlook email signature, email signature maker, buat signature email, template tanda tangan email, email footer profesional, signature gmail, email signature creator')
+@include('seo.signature')
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/signature.css') }}">

@@ -1,8 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'MediaTools — Tools Digital Gratis: Invoice, PDF, Background Remover & QR Code')
-@section('meta_description', 'Platform tools produktivitas digital 100% gratis — Hapus background foto, konversi PDF, buat invoice, QR Code, dan 10+ tools lainnya. Tanpa daftar, langsung pakai di browser.')
-@section('meta_keywords', 'tools online gratis indonesia, invoice generator gratis, hapus background foto, konversi pdf word, qr code generator, media tools')
+@section('og_image', 'home')
+@section('title', 'MediaTools — Tools Digital Gratis: Invoice PDF, Background Remover, QR Code & 10+ Lainnya')
+@section('meta_description', 'Platform tools produktivitas digital 100% gratis untuk UMKM, freelancer, dan creator Indonesia. Hapus background foto, konversi PDF Word, buat invoice, QR Code, link in bio, download video YouTube TikTok, dan 10+ tools gratis lainnya.')
+@section('meta_keywords', 'tools digital gratis indonesia, hapus background foto, remove background, pdf to word, word to pdf, merge pdf, invoice generator gratis, buat invoice, link in bio, linktree gratis, download youtube, download tiktok tanpa watermark, qr code generator, buat qr code, email signature gratis, password generator, resize gambar, kompres pdf, tools produktivitas online, media tools')
+@include('seo.home')
 
 @section('content')
 
@@ -224,7 +226,7 @@
                     'icon'  => 'fa-file-invoice',
                     'title' => 'Invoice Generator',
                     'desc'  => 'Buat tagihan profesional dengan template yang dapat dikustomisasi penuh dalam hitungan detik.',
-                    'badge' => null,
+                    'badge' => 'Baru',
                     'href'  => 'invoice',
                 ],
                 [
@@ -238,7 +240,7 @@
                     'icon'  => 'fa-qrcode',
                     'title' => 'QR Business Kit',
                     'desc'  => 'Buat QR Code untuk menu, pembayaran, atau kontak bisnis dengan desain yang modern dan branded.',
-                    'badge' => 'Baru',
+                    'badge' => null,
                     'href'  => 'qr',
                 ],
                 [
@@ -249,32 +251,32 @@
                     'href'  => 'signature',
                 ],
                 [
-                    'icon'  => 'fa-id-card',
-                    'title' => 'Digital Business Card',
-                    'desc'  => 'Kartu nama digital yang bisa dibagikan lewat link atau QR Code, tanpa perlu cetak fisik.',
+                    'icon'  => 'fa-key',
+                    'title' => 'Password Generator',
+                    'desc'  => 'Buat password kuat & unik secara instan dan gratis.',
                     'badge' => null,
-                    'href'  => '#',
+                    'href'  => 'passwordgenerator',
                 ],
                 [
                     'icon'  => 'fa-image',
                     'title' => 'Image Converter',
                     'desc'  => 'Konversi format gambar, kompres ukuran file, dan resize resolusi langsung di browser Anda.',
                     'badge' => null,
-                    'href'  => '#',
+                    'href'  => 'imageconverter',
                 ],
                 [
                     'icon'  => 'fa-file-pdf',
                     'title' => 'PDF Toolkit',
                     'desc'  => 'Merge, split, compress, atau konversi PDF ke Word/Excel dengan mudah dan aman.',
                     'badge' => 'Pro',
-                    'href'  => '#',
+                    'href'  => 'pdfutilities',
                 ],
                 [
-                    'icon'  => 'fa-chart-bar',
-                    'title' => 'Proposal Builder',
-                    'desc'  => 'Buat proposal bisnis dan presentasi klien yang terstruktur rapi dengan template siap pakai.',
+                    'icon'  => 'fa-refresh',
+                    'title' => 'File Converter',
+                    'desc'  => 'Konversi dokumen dua arah — PDF, Word, Excel, PowerPoint & gambar. Upload hingga 5 file sekaligus secara Gratis.',
                     'badge' => 'Pro',
-                    'href'  => '#',
+                    'href'  => 'file-converter',
                 ],
             ];
             @endphp
@@ -303,13 +305,6 @@
             </div>
             @endforeach
         </div>
-
-        <div class="text-center mt-12 reveal">
-            <a href="#" class="btn-outline px-8 py-3.5 text-sm">
-                <span>Lihat Semua Tools</span>
-                <i class="fa-solid fa-grid-2 text-xs"></i>
-            </a>
-        </div>
     </div>
 </section>
 
@@ -332,7 +327,7 @@
                     Membantu Anda<br>Fokus pada <span class="gradient-text">Karya.</span>
                 </h2>
                 <p class="text-gray-400 mb-10 text-lg leading-relaxed reveal reveal-delay-2">
-                    MediaTools lahir dari kegelisahan akan sulitnya akses alat produktivitas yang simpel, cepat, dan terintegrasi. Kami percaya teknologi harusnya memudahkan, bukan membingungkan.
+                    MediaTools lahir dari kegelisahan akan sulitnya akses alat produktivitas yang aman, simpel, cepat, dan terintegrasi. Kami percaya teknologi harusnya memudahkan, bukan membingungkan.
                 </p>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -360,7 +355,7 @@
 
                     <div class="space-y-0">
                         @foreach([
-                            ['Pilih Alat Media','Temukan alat yang sesuai dari katalog 50+ tools kami yang terus berkembang.'],
+                            ['Pilih Alat Media','Temukan alat yang sesuai dari katalog 10+ tools kami yang terus berkembang.'],
                             ['Input Data Anda','Isi formulir sederhana atau unggah file yang ingin Anda proses.'],
                             ['Preview & Sesuaikan','Lihat hasilnya secara real-time dan sesuaikan sesuai kebutuhan.'],
                             ['Download & Gunakan','Unduh hasil kerja Anda dalam format yang siap pakai langsung.'],

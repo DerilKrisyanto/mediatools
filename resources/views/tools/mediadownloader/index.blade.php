@@ -1,8 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Download Video YouTube TikTok Instagram Gratis — MediaTools')
-@section('meta_description', 'Download video dan audio dari YouTube, TikTok, dan Instagram. Cukup paste URL, pilih format, langsung download. Gratis tanpa daftar, tanpa watermark.')
-@section('meta_keywords', 'download video youtube gratis, download tiktok tanpa watermark, download video instagram, youtube downloader indonesia')
+@section('og_image', 'mediadownloader')
+@section('title', 'Download Video YouTube TikTok Instagram Gratis — Tanpa Watermark | MediaTools')
+@section('meta_description', 'Download video YouTube, TikTok tanpa watermark, dan Instagram gratis. Cukup paste URL, pilih format MP4 atau MP3, langsung download kualitas hingga 1080p. Alternatif terbaik SaveFrom.net.')
+@section('meta_keywords', 'download video youtube, youtube downloader gratis, download tiktok tanpa watermark, download video tiktok, download video instagram, youtube to mp3, savefrom alternative, yt downloader online, download video online gratis, youtube mp3 downloader, download reels instagram, download tiktok video, youtube video downloader, download video shorts, savefrom')
+@include('seo.mediadownloader')
 
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/mediadownloader.css') }}">

@@ -1,7 +1,11 @@
 @extends('layouts.app')
-@section('title', 'Invoice Generator Online Gratis — Buat Tagihan PDF Profesional | MediaTools')
-@section('meta_description', 'Buat invoice atau tagihan profesional dalam 2 menit. Template siap pakai, download PDF gratis tanpa daftar. Cocok untuk freelancer dan UMKM Indonesia.')
-@section('meta_keywords', 'invoice generator gratis, buat tagihan online, template invoice pdf, invoice freelancer indonesia')
+
+@section('og_image', 'invoice')
+@section('title', 'Invoice Generator Gratis — Buat Invoice PDF Profesional Online | MediaTools')
+@section('meta_description', 'Buat invoice atau tagihan profesional dalam 2 menit. 3 template siap pakai, kalkulasi PPN & diskon otomatis, download PDF gratis tanpa daftar. Terbaik untuk freelancer & UMKM Indonesia.')
+@section('meta_keywords', 'invoice generator gratis, buat invoice, invoice maker free, invoice pdf online, invoice creator, buat tagihan online, template invoice pdf, invoice freelancer, invoice template gratis, invoice generator indonesia, invoice profesional, buat tagihan pdf, invoice online gratis, nota tagihan digital, invoice bisnis')
+@include('seo.invoice')
+
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/invoice.css') }}">
 @endpush
@@ -34,15 +38,12 @@
                     <span class="tpl-dot tpl-dot-3"></span>
                     Elegan
                 </button>
+                <button class="btn-download" data-tpl="4" onclick="downloadPDF(4)">
+                    <span class="fa-solid fa-file-pdf"></span>
+                    Unduh PDF
+                </button>
             </div>
         </div>
-
-        {{-- Right: Download Button --}}
-        <button class="btn-download" onclick="downloadPDF(this)">
-            <i class="fa-solid fa-file-pdf"></i>
-            <span>Unduh PDF (A4)</span>
-        </button>
-
     </div>
 
     {{-- ═══ PAGE FIT WARNING ═══ --}}

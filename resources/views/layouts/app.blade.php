@@ -10,12 +10,20 @@
     <meta name="robots" content="index, follow">
     <meta name="author" content="MediaTools">
     <link rel="canonical" href="{{ url()->current() }}">
+    @stack('seo')
 
     <!-- Open Graph untuk social sharing -->
     <meta property="og:title" content="@yield('title', 'MediaTools')">
     <meta property="og:description" content="@yield('meta_description', 'Tools produktivitas digital gratis')">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:type" content="website">
+
+    <!-- OG Image -->
+    <meta property="og:image" content="{{ asset('images/og/' . (View::hasSection('og_image') ? View::getSection('og_image') : 'home') . '.png') }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="{{ asset('images/og/' . (View::hasSection('og_image') ? View::getSection('og_image') : 'home') . '.png') }}">
 
     <!-- Google Search Console -->
     <meta name="google-site-verification" content="W4l-4NDtoXzK2oMrmBmFZ1Yj9Os9jK1bEqbUUmBJi5o" />
