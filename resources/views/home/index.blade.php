@@ -515,7 +515,7 @@
 
                 {{-- Form Side --}}
                 <div class="md:w-3/5 p-10 lg:p-12">
-                    <form class="space-y-6" action="#" method="POST">
+                    <form class="space-y-6" action="#" method="#">
                         @csrf
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                             <div class="form-group">
