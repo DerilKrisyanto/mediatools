@@ -479,7 +479,7 @@
 
                     <div class="space-y-5">
                         @foreach([
-                            ['fa-envelope','Email Support','halo@mediatools.id'],
+                            ['fa-envelope','Email Support','halo@mediatools.cloud'],
                             ['fa-location-dot','Kantor Pusat','Jakarta, Indonesia'],
                             ['fa-comments','Live Chat','Senin – Jumat (09.00–17.00 WIB)'],
                         ] as $info)
