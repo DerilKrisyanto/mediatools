@@ -15,6 +15,21 @@ use Illuminate\Support\Facades\Log;
 
 class LinkTreeController extends Controller
 {
+    /**
+     * ──────────────────────────────────────────────────────────────
+     *  FREE MODE — set true selama Midtrans belum aktif / verifikasi
+     *  Efek:
+     *   • Semua user baru langsung aktif tanpa pembayaran
+     *   • Plan otomatis 'best_value' (6 bulan dari tanggal buat)
+     *   • Modal pilih paket tidak akan muncul di sisi frontend
+     *     (lihat juga perubahan di linktree.js)
+     *
+     *  Cara mematikan FREE MODE (saat Midtrans sudah aktif):
+     *   Cukup ubah nilai di bawah menjadi false.
+     * ──────────────────────────────────────────────────────────────
+     */
+    private const FREE_MODE = true;
+
     public function __construct()
     {
         Config::$serverKey    = config('services.midtrans.server_key');
@@ -43,7 +58,10 @@ class LinkTreeController extends Controller
                 ->first();
         }
 
-        return view('tools.linktree.index', compact('items', 'userLinktree'));
+        // Teruskan flag FREE_MODE ke view agar JS bisa menyesuaikan UI
+        $freeMode = self::FREE_MODE;
+
+        return view('tools.linktree.index', compact('items', 'userLinktree', 'freeMode'));
     }
 
     /* ── SHOW (Public Page) ─────────────────────────────── */
@@ -69,7 +87,6 @@ class LinkTreeController extends Controller
         $links   = $data->links_data   ?: [];
         $socials = $data->socials_data ?: [];
 
-        // Pass selected template to the view
         $pageTemplate = $data->page_template; // 'dark' | 'light' | 'neon'
 
         return view('tools.linktree.view_page', compact(
@@ -92,8 +109,10 @@ class LinkTreeController extends Controller
             ->first();
 
         return response()->json([
-            'has_plan' => (bool) $activeLinktree,
-            'linktree' => $activeLinktree ? $activeLinktree->toArray() : null,
+            'has_plan'  => (bool) $activeLinktree,
+            'linktree'  => $activeLinktree ? $activeLinktree->toArray() : null,
+            // Kirim flag ke JS agar modal paket dilewati saat FREE_MODE aktif
+            'free_mode' => self::FREE_MODE,
         ]);
     }
 
@@ -157,6 +176,40 @@ class LinkTreeController extends Controller
 
             return response()->json(['success' => true, 'payment_needed' => false]);
         }
+
+        // ════════════════════════════════════════════════════════
+        //  FREE MODE — aktifkan langsung tanpa payment
+        //  Hapus blok ini (atau set FREE_MODE = false) saat
+        //  Midtrans sudah production & aktif.
+        // ════════════════════════════════════════════════════════
+        if (self::FREE_MODE) {
+            $unique_id = Str::slug($request->username) . '-' . rand(100, 999);
+
+            // Nonaktifkan linktree lama milik user yang sama (jika ada)
+            Linktree::where('user_id', $userId)
+                ->where('is_active', true)
+                ->update(['is_active' => false]);
+
+            Linktree::create([
+                'user_id'       => $userId,
+                'unique_id'     => $unique_id,
+                'name'          => $request->name,
+                'username'      => '@' . ltrim($request->username, '@'),
+                'bio'           => $request->bio,
+                'avatar'        => $request->avatar_base64,
+                'links_data'    => $links,
+                'socials_data'  => $socials,
+                'page_template' => $template,
+                'is_active'     => true,          // Langsung aktif
+                'plan_type'     => 'best_value',  // Paket gratis sementara
+                'expired_at'    => now()->addMonths(6), // 6 bulan
+            ]);
+
+            return response()->json(['success' => true, 'payment_needed' => false]);
+        }
+        // ════════════════════════════════════════════════════════
+        //  END FREE MODE BLOCK
+        // ════════════════════════════════════════════════════════
 
         // ── CREATE MODE (new linktree, payment required) ──
         if (!isset($planData[$request->plan_type])) {

@@ -33,18 +33,35 @@ document.addEventListener('click', function (e) {
 
 /* ── Entry point when user clicks "Create / Edit" ──────── */
 window.handleCreateStep = async function () {
-    const res    = await fetch(document.getElementById('checkPlanUrl').value, { method:'POST', headers:{ 'X-CSRF-TOKEN': csrf() } });
-    const data   = await res.json();
+    const res  = await fetch(document.getElementById('checkPlanUrl').value, {
+        method: 'POST',
+        headers: { 'X-CSRF-TOKEN': csrf() },
+    });
+    const data = await res.json();
 
     if (data.has_plan) {
         // User already has an active plan — go straight to edit form
         isEditMode = true;
         populateEditForm(data.linktree);
         openModal('createModal');
-    } else {
-        isEditMode = false;
-        openModal('planModal');
+        return;
     }
+
+    // ── FREE MODE: skip modal pilih paket, langsung buka form ──
+    // Server mengirim free_mode:true selama Midtrans belum aktif.
+    // Cukup set plan_type ke 'best_value' di hidden input lalu buka form.
+    if (data.free_mode) {
+        isEditMode = false;
+        selectedPlan = 'best_value';
+        const planInput = document.getElementById('selected_plan_input');
+        if (planInput) planInput.value = 'best_value';
+        openModal('createModal');
+        return;
+    }
+
+    // ── Normal flow: tampilkan modal pilih paket ──────────────
+    isEditMode = false;
+    openModal('planModal');
 };
 
 window.handleEditClick = function (json) {
@@ -162,8 +179,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (!result.success) throw new Error(result.message || 'Gagal menyimpan.');
 
+            // FREE MODE atau edit mode — tidak perlu payment
             if (!result.payment_needed) {
-                ltToast('Perubahan berhasil disimpan! ⚡');
+                ltToast('Linktree berhasil disimpan! ⚡');
                 setTimeout(() => location.reload(), 1500);
                 return;
             }
