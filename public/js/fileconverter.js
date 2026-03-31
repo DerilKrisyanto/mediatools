@@ -7,10 +7,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     /* =========================================================
        TIMEOUT CONFIG
-       - PDF → Office (Word/Excel/PPT): 10 minutes
-         LibreOffice on Windows can be slow for large/complex PDFs
-       - PDF → Image: 5 minutes (Ghostscript is faster)
-       - Everything else: 2 minutes
     ========================================================= */
     const TIMEOUT_MAP = {
         pdf_to_word:   10 * 60 * 1000,
@@ -22,11 +18,79 @@ document.addEventListener('DOMContentLoaded', function () {
         excel_to_pdf:   3 * 60 * 1000,
         ppt_to_pdf:     3 * 60 * 1000,
     };
-    const DEFAULT_TIMEOUT = 2 * 60 * 1000; // 2 min for image conversions
+    const DEFAULT_TIMEOUT = 2 * 60 * 1000;
 
     function getTimeout(type) {
         return TIMEOUT_MAP[type] ?? DEFAULT_TIMEOUT;
     }
+
+    /* =========================================================
+       PROGRESS STAGES — per conversion type
+       Each stage: { label, target_pct, duration_ms }
+       This simulates a realistic multi-step pipeline
+    ========================================================= */
+    const PROGRESS_STAGES = {
+        pdf_to_word: [
+            { label: 'Mengupload file ke server…',        pct: 8,  ms: 1500 },
+            { label: 'Memvalidasi & memperbaiki PDF…',    pct: 18, ms: 3000 },
+            { label: 'Mendeteksi teks & tabel PDF…',      pct: 30, ms: 4000 },
+            { label: 'LibreOffice memproses PDF → ODT…',  pct: 50, ms: 8000 },
+            { label: 'Mengkonversi ODT → DOCX…',          pct: 72, ms: 5000 },
+            { label: 'Memvalidasi format output…',        pct: 82, ms: 2000 },
+        ],
+        pdf_to_excel: [
+            { label: 'Mengupload file ke server…',        pct: 8,  ms: 1500 },
+            { label: 'Memvalidasi & memperbaiki PDF…',    pct: 18, ms: 3000 },
+            { label: 'Mendeteksi struktur tabel…',        pct: 32, ms: 4000 },
+            { label: 'LibreOffice memproses PDF → ODS…',  pct: 55, ms: 9000 },
+            { label: 'Mengkonversi ke XLSX…',             pct: 72, ms: 5000 },
+            { label: 'Memvalidasi format output…',        pct: 82, ms: 2000 },
+        ],
+        pdf_to_ppt: [
+            { label: 'Mengupload file ke server…',        pct: 8,  ms: 1500 },
+            { label: 'Memvalidasi PDF…',                  pct: 18, ms: 2000 },
+            { label: 'Menganalisis slide PDF…',           pct: 32, ms: 4000 },
+            { label: 'LibreOffice memproses slide…',      pct: 58, ms: 10000 },
+            { label: 'Mengkonversi ke PPTX…',             pct: 72, ms: 5000 },
+            { label: 'Memvalidasi format output…',        pct: 82, ms: 2000 },
+        ],
+        word_to_pdf: [
+            { label: 'Mengupload file ke server…',        pct: 10, ms: 1200 },
+            { label: 'Membuka dokumen Word…',             pct: 30, ms: 3000 },
+            { label: 'LibreOffice mengrender ke PDF…',    pct: 65, ms: 5000 },
+            { label: 'Menyimpan hasil PDF…',              pct: 82, ms: 2000 },
+        ],
+        excel_to_pdf: [
+            { label: 'Mengupload file ke server…',        pct: 10, ms: 1200 },
+            { label: 'Membuka spreadsheet…',              pct: 30, ms: 3000 },
+            { label: 'LibreOffice mengrender ke PDF…',    pct: 65, ms: 5000 },
+            { label: 'Menyimpan hasil PDF…',              pct: 82, ms: 2000 },
+        ],
+        ppt_to_pdf: [
+            { label: 'Mengupload file ke server…',        pct: 10, ms: 1200 },
+            { label: 'Membuka presentasi…',               pct: 30, ms: 3000 },
+            { label: 'LibreOffice mengrender slide…',     pct: 65, ms: 6000 },
+            { label: 'Menyimpan hasil PDF…',              pct: 82, ms: 2000 },
+        ],
+        pdf_to_jpg: [
+            { label: 'Mengupload file ke server…',        pct: 10, ms: 1200 },
+            { label: 'Ghostscript memroses PDF…',         pct: 35, ms: 4000 },
+            { label: 'Mengkonversi halaman ke JPG…',      pct: 65, ms: 5000 },
+            { label: 'Menyimpan gambar output…',          pct: 82, ms: 2000 },
+        ],
+        pdf_to_png: [
+            { label: 'Mengupload file ke server…',        pct: 10, ms: 1200 },
+            { label: 'Ghostscript memroses PDF…',         pct: 35, ms: 4000 },
+            { label: 'Mengkonversi halaman ke PNG…',      pct: 65, ms: 5000 },
+            { label: 'Menyimpan gambar output…',          pct: 82, ms: 2000 },
+        ],
+        _default: [
+            { label: 'Mengupload file ke server…',        pct: 12, ms: 1200 },
+            { label: 'Memproses file…',                   pct: 40, ms: 2000 },
+            { label: 'Mengkonversi format…',              pct: 72, ms: 2000 },
+            { label: 'Menyimpan hasil…',                  pct: 82, ms: 1000 },
+        ],
+    };
 
     /* =========================================================
        CONVERSION CONFIG
@@ -51,9 +115,8 @@ document.addEventListener('DOMContentLoaded', function () {
         webp_to_png:  { accept: 'image/webp,.webp',                hint: 'WEBP',      label: 'Konversi WebP → PNG', server: true },
     };
 
-    // User-friendly error tips per type
     const ERROR_TIPS = {
-        pdf_to_word:  'Jika masih gagal setelah 10 menit, pastikan: (1) PDF tidak terproteksi password, (2) LibreOffice terinstall dan ada di PATH, (3) Coba file PDF yang lebih kecil dahulu.',
+        pdf_to_word:  'Jika masih gagal, pastikan: (1) PDF tidak terproteksi password, (2) LibreOffice terinstall, (3) Coba PDF yang lebih kecil.',
         pdf_to_excel: 'PDF dengan tabel kompleks mungkin perlu diekstrak manual. Coba PDF → JPG dulu untuk melihat isi halaman.',
         pdf_to_ppt:   'Pastikan PDF tidak dikunci atau terproteksi. Coba file PDF yang lebih sederhana.',
         word_to_pdf:  'Pastikan file Word tidak terproteksi password. Format yang didukung: .doc dan .docx.',
@@ -71,7 +134,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const MULTIPAGE_TYPES = new Set(['pdf_to_jpg', 'pdf_to_png']);
 
-    // Map type → output extension (used for display name prediction)
     const OUTPUT_EXT_MAP = {
         jpg_to_pdf: 'pdf', png_to_pdf: 'pdf', webp_to_pdf: 'pdf',
         word_to_pdf: 'pdf', excel_to_pdf: 'pdf', ppt_to_pdf: 'pdf',
@@ -87,9 +149,10 @@ document.addEventListener('DOMContentLoaded', function () {
     ========================================================= */
     let selectedType  = null;
     let fileObjects   = [];
-    let progressTimer = null;
+    let stageTimers   = [];    // replaces single progressTimer
     let isConverting  = false;
-    let activeAbort   = null; // current AbortController
+    let activeAbort   = null;
+    let startTime     = null;
 
     /* =========================================================
        DOM
@@ -133,7 +196,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const hide = el => el && el.classList.add('fc-hidden');
 
     function showToast(msg, isError = false, dur = 3500) {
-        toastMsgEl.textContent   = msg;
+        toastMsgEl.textContent    = msg;
         toastEl.style.borderColor = isError ? 'rgba(248,113,113,0.4)' : '';
         toastEl.style.color       = isError ? '#f87171' : '';
         toastEl.classList.add('show');
@@ -153,7 +216,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function formatMs(ms) {
         if (ms < 60000) return Math.round(ms / 1000) + ' detik';
-        return Math.round(ms / 60000) + ' menit';
+        const m = Math.floor(ms / 60000);
+        const s = Math.round((ms % 60000) / 1000);
+        return s > 0 ? `${m} menit ${s} detik` : `${m} menit`;
+    }
+
+    function formatElapsed(ms) {
+        if (ms < 1000) return '<1 detik';
+        if (ms < 60000) return Math.round(ms / 1000) + ' detik';
+        const m = Math.floor(ms / 60000);
+        const s = Math.round((ms % 60000) / 1000);
+        return `${m}:${String(s).padStart(2, '0')}`;
     }
 
     function getIcon(filename) {
@@ -177,29 +250,81 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     /* =========================================================
-       PROGRESS
+       REALISTIC PROGRESS — Stage-based animation
+       Each stage advances the bar to its target_pct over its duration_ms,
+       then the next stage starts. This produces a much more realistic
+       progress feel rather than random jitter.
     ========================================================= */
-    function startProgress() {
-        disableUI();
-        progBar.style.width      = '5%';
-        progBar.style.transition = 'width 0.5s ease';
-        let w = 5;
-        progressTimer = setInterval(() => {
-            const step = w < 35 ? 8 : w < 65 ? 3 : w < 82 ? 1 : 0;
-            w = Math.min(w + step * Math.random(), 82);
-            progBar.style.width = w + '%';
-        }, 700);
+    function getStages(type, fileIndex, totalFiles) {
+        const stages = PROGRESS_STAGES[type] || PROGRESS_STAGES._default;
+        // If processing multiple files, scale each stage to a segment of the total
+        if (totalFiles > 1) {
+            const segStart = (fileIndex / totalFiles) * 82;
+            const segEnd   = ((fileIndex + 1) / totalFiles) * 82;
+            return stages.map(s => ({
+                label: s.label,
+                pct:   segStart + (s.pct / 82) * (segEnd - segStart),
+                ms:    s.ms,
+            }));
+        }
+        return stages;
+    }
+
+    function clearStageTimers() {
+        stageTimers.forEach(t => clearTimeout(t));
+        stageTimers = [];
+    }
+
+    function runStageProgress(type, fileIndex, totalFiles, fileLabel) {
+        clearStageTimers();
+        const stages = getStages(type, fileIndex, totalFiles);
+        let elapsed  = 0;
+
+        stages.forEach((stage, i) => {
+            const delay = elapsed;
+            const t = setTimeout(() => {
+                // Animate bar smoothly to target pct
+                progBar.style.transition = `width ${Math.min(stage.ms * 0.8, 2000)}ms cubic-bezier(0.4, 0, 0.2, 1)`;
+                progBar.style.width      = stage.pct + '%';
+
+                // Update label with both stage info and elapsed time
+                const elapsed_now = Date.now() - startTime;
+                const suffix = elapsed_now > 3000
+                    ? ` · ${formatElapsed(elapsed_now)} berlalu`
+                    : '';
+                procSub.textContent = `${stage.label}${suffix}`;
+
+                if (totalFiles > 1) {
+                    procTitle.textContent = `Mengkonversi file ${fileIndex + 1}/${totalFiles}: ${fileLabel}`;
+                }
+            }, delay);
+            stageTimers.push(t);
+            elapsed += stage.ms;
+        });
+
+        // Tick the elapsed time display every 2s for stages that take long
+        const tickInterval = setInterval(() => {
+            if (!isConverting) { clearInterval(tickInterval); return; }
+            const elapsed_now = Date.now() - startTime;
+            // Update subtitle if it's currently showing a stage label
+            if (procSub.textContent.includes('·')) {
+                procSub.textContent = procSub.textContent.replace(
+                    /· .+ berlalu/,
+                    `· ${formatElapsed(elapsed_now)} berlalu`
+                );
+            }
+        }, 2000);
+        stageTimers.push(tickInterval);
     }
 
     function finishProgress() {
-        enableUI();
-        clearInterval(progressTimer);
-        progBar.style.transition = 'width 0.3s ease';
+        clearStageTimers();
+        progBar.style.transition = 'width 0.4s ease';
         progBar.style.width      = '100%';
     }
 
     function resetProgress() {
-        clearInterval(progressTimer);
+        clearStageTimers();
         progBar.style.transition = 'none';
         progBar.style.width      = '0%';
     }
@@ -239,7 +364,6 @@ document.addEventListener('DOMContentLoaded', function () {
             acceptedHint.textContent = 'Format: ' + cfg.hint;
             btnConvLbl.textContent   = cfg.label;
 
-            // Update timeout hint on the processing info line
             updateTimeoutHint();
             updateSelectedPill();
 
@@ -272,7 +396,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!hintEl || !selectedType) return;
         const t = getTimeout(selectedType);
         const label = selectedType.startsWith('pdf_to_')
-            ? `PDF → Office/Gambar memerlukan waktu hingga ${formatMs(t)} tergantung ukuran file`
+            ? `PDF conversion memerlukan waktu hingga ${formatMs(t)} — proses berjalan di server`
             : `Proses maksimal ${formatMs(t)}`;
         hintEl.innerHTML = `<i class="fa-solid fa-clock"></i> ${label}`;
     }
@@ -299,6 +423,14 @@ document.addEventListener('DOMContentLoaded', function () {
         e.preventDefault();
         dropZone.classList.remove('drag-over');
         addFiles(Array.from(e.dataTransfer.files));
+    });
+    dropZone.addEventListener('click', e => {
+        if (isConverting) return;
+        if (e.target === fileInput) return;
+        fileInput.click();
+    });
+    dropZone.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); }
     });
 
     document.addEventListener('paste', e => {
@@ -355,7 +487,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!fileObjects.length) { hide(btnAddMore); return; }
 
         fileObjects.forEach(obj => {
-            const statusLabels = { pending: 'Menunggu', processing: 'Proses...', done: 'Selesai', error: 'Gagal' };
+            const statusLabels = { pending: 'Menunggu', processing: 'Memproses…', done: 'Selesai ✓', error: 'Gagal ✗' };
             const row          = document.createElement('div');
             row.className      = 'fc-file-row';
             row.dataset.id     = obj.id;
@@ -408,7 +540,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!row) return;
 
         const badge  = row.querySelector('.fc-file-row-status');
-        const labels = { pending: 'Menunggu', processing: 'Proses...', done: 'Selesai', error: 'Gagal' };
+        const labels = { pending: 'Menunggu', processing: 'Memproses…', done: 'Selesai ✓', error: 'Gagal ✗' };
         if (badge) { badge.className = `fc-file-row-status ${status}`; badge.textContent = labels[status] || ''; }
 
         if (status !== 'pending') {
@@ -420,44 +552,42 @@ document.addEventListener('DOMContentLoaded', function () {
         btnConvert.disabled = !selectedType || fileObjects.length === 0;
     }
 
-    function disableUI() {
-        if (dropZone)  dropZone.style.pointerEvents = 'none';
-        if (fileInput) fileInput.disabled  = true;
-        if (btnAddMore) btnAddMore.disabled = true;
-        catBtns.forEach(b => b.disabled = true);
-        typeBtns.forEach(b => b.disabled = true);
-        document.querySelectorAll('.fc-file-row-remove').forEach(b => b.disabled = true);
-    }
-
-    function enableUI() {
-        if (dropZone)  dropZone.style.pointerEvents = '';
-        if (fileInput) fileInput.disabled  = false;
-        if (btnAddMore) btnAddMore.disabled = false;
-        catBtns.forEach(b => b.disabled = false);
-        typeBtns.forEach(b => b.disabled = false);
+    function setProcessingUI(isBusy) {
+        document.body.classList.toggle('fc-processing', isBusy);
+        if (dropZone)   dropZone.style.pointerEvents = isBusy ? 'none' : '';
+        if (fileInput)  fileInput.disabled   = isBusy;
+        if (btnAddMore) btnAddMore.disabled  = isBusy;
+        catBtns.forEach(b => b.disabled = isBusy);
+        typeBtns.forEach(b => b.disabled = isBusy);
+        document.querySelectorAll('.fc-file-row-remove').forEach(b => b.disabled = isBusy);
     }
 
     /* =========================================================
-       CONVERT
+       CONVERT — with realistic stage-based progress
     ========================================================= */
     btnConvert.addEventListener('click', async function () {
         if (!selectedType || !fileObjects.length || isConverting) return;
 
         isConverting = true;
+        startTime    = Date.now();
         setProcessingUI(true);
         hideAllStates();
         resetProgress();
         show(stProc);
         btnConvert.disabled = true;
-        startProgress();
 
         updateTimeoutHint();
 
         const total      = fileObjects.length;
         const allResults = [];
 
-        procTitle.textContent = `Mengkonversi ${total} file...`;
-        procSub.textContent   = 'Memulai proses...';
+        procTitle.textContent = total > 1
+            ? `Mengkonversi ${total} file…`
+            : `Mengkonversi: ${fileObjects[0].file.name}`;
+        procSub.textContent = 'Memulai proses…';
+
+        // Start stage progress for first file
+        runStageProgress(selectedType, 0, total, fileObjects[0]?.file.name || '');
 
         try {
             for (let i = 0; i < fileObjects.length; i++) {
@@ -465,27 +595,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 const timeout = getTimeout(selectedType);
 
                 updateFileStatus(obj.id, 'processing');
-                procSub.textContent = `Proses ${i + 1}/${total} — ${obj.file.name}`;
 
-                // Show countdown for heavy conversions
-                let countdownInterval = null;
-                if (timeout > 60_000) {
-                    const startTime = Date.now();
-                    countdownInterval = setInterval(() => {
-                        const elapsed = Date.now() - startTime;
-                        const remaining = Math.max(0, timeout - elapsed);
-                        const pctDone   = Math.round((elapsed / timeout) * 30);
-                        const bar       = Math.min(82, 5 + pctDone);
-                        progBar.style.width = bar + '%';
-                        procSub.textContent =
-                            `Proses ${i + 1}/${total} — ${obj.file.name} ` +
-                            `(${formatMs(remaining)} maks tersisa)`;
-                    }, 3000);
+                // Switch stage progress to this file
+                if (i > 0) {
+                    runStageProgress(selectedType, i, total, obj.file.name);
                 }
-
-                const pct = Math.round(((i + 0.3) / total) * 82);
-                progBar.style.transition = 'width 0.4s ease';
-                progBar.style.width      = pct + '%';
 
                 try {
                     const formData = new FormData();
@@ -505,7 +619,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
 
                     clearTimeout(timeoutId);
-                    clearInterval(countdownInterval);
                     activeAbort = null;
 
                     let data;
@@ -518,18 +631,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     updateFileStatus(obj.id, 'done');
                     obj.resultFiles = Array.isArray(data.files) ? data.files : [];
-
                     allResults.push({ originalName: obj.file.name, files: obj.resultFiles });
 
-                } catch (err) {
-                    clearInterval(countdownInterval);
+                    // Per-file success: show brief label
+                    if (total > 1) {
+                        procSub.textContent = `File ${i + 1}/${total} selesai ✓ (${formatElapsed(Date.now() - startTime)})`;
+                    }
 
+                } catch (err) {
                     let msg = 'Konversi gagal.';
                     if (err.name === 'AbortError') {
                         const t = formatMs(timeout);
                         msg = `Timeout setelah ${t}. File terlalu besar, kompleks, atau LibreOffice tidak responsif.`;
-                        if (['pdf_to_word','pdf_to_excel','pdf_to_ppt'].includes(selectedType)) {
-                            msg += ' Coba file yang lebih kecil, atau pastikan LibreOffice terinstall dan berjalan dengan benar.';
+                        if (['pdf_to_word', 'pdf_to_excel', 'pdf_to_ppt'].includes(selectedType)) {
+                            msg += ' Coba file yang lebih kecil, atau pastikan LibreOffice terinstall.';
                         }
                     } else if (err.message) {
                         msg = err.message;
@@ -541,13 +656,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
 
+            // All done
+            clearStageTimers();
+            const totalElapsed = Date.now() - startTime;
             finishProgress();
+
+            procSub.textContent = `Selesai dalam ${formatElapsed(totalElapsed)}`;
+            await delay(400); // small pause to let bar reach 100%
 
             const successCount = allResults.filter(r => r.files.length > 0).length;
             if (successCount === 0) {
                 showError(allResults.find(r => r.error)?.error || 'Semua file gagal dikonversi.');
             } else {
-                showResults(allResults, total, successCount);
+                showResults(allResults, total, successCount, totalElapsed);
             }
 
         } catch (fatalErr) {
@@ -558,36 +679,29 @@ document.addEventListener('DOMContentLoaded', function () {
             activeAbort  = null;
             setProcessingUI(false);
             btnConvert.disabled = fileObjects.length === 0;
-            setTimeout(() => { if (!isConverting) resetProgress(); }, 800);
+            setTimeout(() => { if (!isConverting) resetProgress(); }, 1200);
         }
     });
 
-    function setProcessingUI(isBusy) {
-        document.body.classList.toggle('fc-processing', isBusy);
-        if (dropZone)   dropZone.style.pointerEvents = isBusy ? 'none' : '';
-        if (fileInput)  fileInput.disabled   = isBusy;
-        if (btnAddMore) btnAddMore.disabled  = isBusy;
-        catBtns.forEach(b => b.disabled = isBusy);
-        typeBtns.forEach(b => b.disabled = isBusy);
-        document.querySelectorAll('.fc-file-row-remove').forEach(b => b.disabled = isBusy);
-    }
+    function delay(ms) { return new Promise(res => setTimeout(res, ms)); }
 
     /* =========================================================
        SHOW RESULTS
     ========================================================= */
-    function showResults(allResults, total, successCount) {
+    function showResults(allResults, total, successCount, elapsedMs) {
         hideAllStates();
         show(stResult);
         resultFilesEl.innerHTML = '';
 
+        const timeLabel = elapsedMs ? ` dalam ${formatElapsed(elapsedMs)}` : '';
         resultTitle.textContent = successCount === total
-            ? `${total} File Berhasil Dikonversi!`
+            ? `${total} File Berhasil Dikonversi${timeLabel}!`
             : `${successCount} dari ${total} File Berhasil`;
 
         const isMultiPage = MULTIPAGE_TYPES.has(selectedType);
         resultSub.textContent = isMultiPage
             ? 'Setiap halaman PDF tersimpan sebagai file gambar terpisah'
-            : 'Klik Download di setiap file';
+            : 'Klik Download di setiap file untuk mengunduh';
 
         const allOutputFiles = [];
 
@@ -626,7 +740,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <a href="${downloadUrl}"
                        download="${escHtml(serverFilename)}"
                        class="fc-result-file-dl"
-                       onclick="this.innerHTML='<i class=\\'fa-solid fa-check\\'></i> OK'">
+                       onclick="this.innerHTML='<i class=\\'fa-solid fa-check\\'></i> Diunduh'">
                         <i class="fa-solid fa-download" style="font-size:10px"></i>
                         Download
                     </a>`;
@@ -648,6 +762,7 @@ document.addEventListener('DOMContentLoaded', function () {
        SHOW ERROR
     ========================================================= */
     function showError(msg) {
+        clearStageTimers();
         hideAllStates();
         show(stError);
 
@@ -681,7 +796,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const origHtml = this.innerHTML;
         this.disabled  = true;
-        this.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span>Membuat ZIP...</span>';
+        this.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span>Membuat ZIP…</span>';
 
         try {
             const zip = new JSZip();
@@ -706,7 +821,6 @@ document.addEventListener('DOMContentLoaded', function () {
             a.click();
             document.body.removeChild(a);
             setTimeout(() => URL.revokeObjectURL(blobUrl), 30_000);
-
             showToast('ZIP berhasil dibuat dan diunduh!');
         } catch {
             showToast('Gagal membuat ZIP. Download satu per satu.', true);
@@ -721,13 +835,14 @@ document.addEventListener('DOMContentLoaded', function () {
     ========================================================= */
     function doReset() {
         if (isConverting) return;
+        clearStageTimers();
         hideAllStates();
         resetProgress();
         resetFiles();
         if (btnDownloadAll) btnDownloadAll._files = [];
     }
 
-    btnReset && btnReset.addEventListener('click', doReset);
-    btnRetry && btnRetry.addEventListener('click', doReset);
+    btnReset  && btnReset.addEventListener('click',  doReset);
+    btnRetry  && btnRetry.addEventListener('click',  doReset);
 
 });

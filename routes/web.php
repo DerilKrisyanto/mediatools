@@ -76,6 +76,7 @@ Route::prefix('file-converter')->group(function () {
     Route::post('/process',           [FileConverterController::class, 'process']) ->name('tools.fileconverter.process');
     Route::get('/download/{filename}',[FileConverterController::class, 'download'])->name('tools.fileconverter.download');
     Route::post('/cleanup',           [FileConverterController::class, 'cleanup']) ->name('tools.fileconverter.cleanup');
+    Route::get('/debug',              [FileConverterController::class, 'debug'])->name('tools.fileconverter.debug');
 });
 
 // ========== Auth Routes ========== //
@@ -91,6 +92,9 @@ Route::middleware('auth')->group(function () {
 
 // ========== SITEMAP.XML ========== //
 Route::get('/sitemap.xml', function () {
+
+    $appUrl = rtrim(config('app.url', 'https://mediatools.cloud'), '/');
+
     $tools = [
         ['loc' => '/',                    'priority' => '1.0', 'changefreq' => 'weekly',  'lastmod' => '2025-01-01'],
         ['loc' => '/invoice',             'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => '2025-01-01'],
@@ -105,34 +109,44 @@ Route::get('/sitemap.xml', function () {
         ['loc' => '/signature',           'priority' => '0.8', 'changefreq' => 'monthly', 'lastmod' => '2025-01-01'],
     ];
 
-    $xml  = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
-    $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"' . "\n";
-    $xml .= '        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' . "\n";
-    $xml .= '        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"' . "\n";
-    $xml .= '        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9' . "\n";
-    $xml .= '        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">' . "\n";
+    // Build XML string — NO leading whitespace, starts exactly with <?xml
+    $lines = [];
+    $lines[] = '<?xml version="1.0" encoding="UTF-8"?>';
+    $lines[] = '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"';
+    $lines[] = '        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"';
+    $lines[] = '        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"';
+    $lines[] = '        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">';
 
     foreach ($tools as $u) {
-        $xml .= "  <url>\n";
-        $xml .= "    <loc>https://mediatools.cloud{$u['loc']}</loc>\n";
-        $xml .= "    <lastmod>{$u['lastmod']}</lastmod>\n";
-        $xml .= "    <changefreq>{$u['changefreq']}</changefreq>\n";
-        $xml .= "    <priority>{$u['priority']}</priority>\n";
+        $fullUrl = $appUrl . $u['loc'];
+        $lines[] = '  <url>';
+        $lines[] = '    <loc>' . htmlspecialchars($fullUrl, ENT_XML1 | ENT_COMPAT, 'UTF-8') . '</loc>';
+        $lines[] = '    <lastmod>' . $u['lastmod'] . '</lastmod>';
+        $lines[] = '    <changefreq>' . $u['changefreq'] . '</changefreq>';
+        $lines[] = '    <priority>' . $u['priority'] . '</priority>';
+
+        // Add OG image for homepage
         if ($u['loc'] === '/') {
-            $xml .= "    <image:image>\n";
-            $xml .= "      <image:loc>https://mediatools.cloud/images/og/home.png</image:loc>\n";
-            $xml .= "      <image:title>MediaTools — All-in-One Media Suite</image:title>\n";
-            $xml .= "    </image:image>\n";
+            $lines[] = '    <image:image>';
+            $lines[] = '      <image:loc>' . $appUrl . '/images/og/home.png</image:loc>';
+            $lines[] = '      <image:title>MediaTools — All-in-One Media Suite</image:title>';
+            $lines[] = '    </image:image>';
         }
-        $xml .= "  </url>\n";
+
+        $lines[] = '  </url>';
     }
 
-    $xml .= '</urlset>';
+    $lines[] = '</urlset>';
 
-    return response($xml, 200, [
-        'Content-Type'  => 'application/xml; charset=utf-8',
-        'Cache-Control' => 'public, max-age=86400',
+    $xml = implode("\n", $lines);
+
+    // Use response()->make() — avoids any Blade/middleware interference
+    return response()->make($xml, 200, [
+        'Content-Type'  => 'application/xml; charset=UTF-8',
+        'Cache-Control' => 'public, max-age=86400, stale-while-revalidate=3600',
+        'X-Robots-Tag'  => 'noindex',   // sitemap itself shouldn't be indexed
     ]);
+
 })->name('sitemap');
 
 require __DIR__ . '/auth.php';
