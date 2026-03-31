@@ -123,7 +123,7 @@ $howToSchema = [
             '@type'    => 'HowToStep',
             'position' => 4,
             'name'     => 'Download Hasil',
-            'text'     => 'Setelah konversi selesai, klik Download untuk mengunduh file DOCX hasil konversi. File diberi nama otomatis "NamaFile - by MediaTools.docx".',
+            'text'     => 'Setelah konversi selesai, klik Download untuk mengunduh file DOCX hasil konversi. File diberi nama otomatis "NamaFile by MediaTools.docx".',
             'image'    => $appUrl . '/images/tools/fc-step4.png',
         ],
     ],

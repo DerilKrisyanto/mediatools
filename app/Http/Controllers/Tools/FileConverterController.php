@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\View;
  *    → Avoids LibreOffice choking on paths with spaces (e.g. "C:\storage\app\file_converter")
  * 4. Input filename is always a plain UUID (no spaces) → LO handles it cleanly
  * 5. Fallback chain more robust with explicit file-existence checks
- * 6. Output: "OriginalName - by MediaTools.ext"
+ * 6. Output: "OriginalName by MediaTools.ext"
  *
  * .env:
  *   LIBREOFFICE_BINARY=soffice.exe   (Windows)
@@ -219,7 +219,7 @@ class FileConverterController extends Controller
     }
 
     /* =========================================================
-       OUTPUT NAMING  →  "NamaFile - by MediaTools.ext"
+       OUTPUT NAMING  →  "NamaFile by MediaTools.ext"
     ========================================================= */
     private function buildOutputName(string $originalName, string $ext, ?int $pageNum = null): string
     {
@@ -227,7 +227,7 @@ class FileConverterController extends Controller
         $base = preg_replace('/[\\\\\/:\*\?"<>\|]/', '_', $base);
         $base = trim($base) ?: 'file';
 
-        $suffix = ' - by MediaTools';
+        $suffix = ' by MediaTools';
         return $pageNum !== null
             ? "{$base}{$suffix} - Hal {$pageNum}.{$ext}"
             : "{$base}{$suffix}.{$ext}";

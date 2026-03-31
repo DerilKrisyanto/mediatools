@@ -397,7 +397,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function buildDisplayName(originalName, targetExt) {
         if (!targetExt) return originalName;
         const base = originalName.replace(/\.[^.]+$/, '');
-        return `${base} - by MediaTools.${targetExt}`;
+        return `${base} by MediaTools.${targetExt}`;
     }
 
     function updateFileStatus(id, status) {
