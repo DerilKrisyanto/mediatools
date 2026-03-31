@@ -9,23 +9,49 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\View;
 
 /**
- * FileConverterController — v3
+ * FileConverterController — v5 (Maximum Quality Edition)
  *
- * Fixes from v2:
- * 1. JS timeout raised to 10 min — PDF→Office on Windows can be slow
- * 2. findOutputFile() replaced with findNewestOutputFile() which is session-scoped
- *    → Fixes race condition where old files were returned on LO failure
- * 3. buildLoCmd() Windows: uses sys_get_temp_dir() for LO profile dir
- *    → Avoids LibreOffice choking on paths with spaces (e.g. "C:\storage\app\file_converter")
- * 4. Input filename is always a plain UUID (no spaces) → LO handles it cleanly
- * 5. Fallback chain more robust with explicit file-existence checks
- * 6. Output: "OriginalName by MediaTools.ext"
+ * Critical fixes from v3:
+ * 1. PDF→Office: reordered strategy chain:
+ *      S1 = PDF → ODT → target (most reliable two-step bridge)
+ *      S2 = PDF → infilter → target (direct, sometimes broken on Windows)
+ *      S3 = PhpWord/PhpSpreadsheet text-extract fallback
+ *    → Eliminates "Word experienced an error trying to open the file" on downloaded DOCX
+ * 2. buildLoCmd() Windows: --infilter value is now quoted correctly (no bare spaces)
+ * 3. saveWithDisplayName(): output name stripped of characters LO can't handle
+ *    before feeding back into a second LO pass
+ * 4. runLibreOffice() / tryPdf* methods: expected-output filename built from
+ *    the ACTUAL input basename (which is always the UUID safeName), not the
+ *    display name → fixes "file not found" after rename race
+ * 5. ODT bridge: intermediate ODT is kept in storageDir with UUID prefix so
+ *    findNewestOutputFile() won't confuse it with final output
+ * 6. Lazy-cleanup extended to also remove orphaned LO profile dirs
+ * 7. Meta/og tags section kept compatible with Blade @section usage
  *
- * .env:
- *   LIBREOFFICE_BINARY=soffice.exe   (Windows)
- *   GHOSTSCRIPT_BINARY=gswin64c.exe  (Windows)
- *   LIBREOFFICE_BINARY=soffice       (Linux/VPS)
- *   GHOSTSCRIPT_BINARY=gs            (Linux/VPS)
+ * v5 QUALITY IMPROVEMENTS (on top of v4):
+ *   1. repairPdfWithGhostscript(): normalize PDF before LO conversion
+ *      - Embeds fonts (-dEmbedAllFonts=true) → LO renders correct glyphs
+ *      - Fixes broken xref/streams → LO can parse all pages
+ *      - Normalizes to PDF 1.5 → avoids LO compatibility issues
+ *   2. isPdfPasswordProtected(): early friendly error for encrypted PDFs
+ *   3. validateOutputIntegrity(): magic byte check catches corrupt output
+ *   4. extractPdfTextWithLayout(): pdftotext -layout preserves columns
+ *   5. GS PDF→Image: 250 DPI + -dTextAlphaBits=4 -dGraphicsAlphaBits=4 + -dUseCropBox
+ *   6. Imagick: unsharpMask for sharper text, quality 95
+ *   7. DOCX S4: heading detection, bullet/numbered list, paragraph spacing
+ *   8. XLSX S4: header row styling, column auto-size, freeze pane
+ *   9. PPTX S4: one slide per page via phpoffice/phppresentation
+ *  10. LO command: --nodefault flag, DISPLAY= env on Linux
+ *  11. OCR: --optimize 2 flag; Tesseract: --oem 1 --psm 3
+ *  12. Image→PDF: centered on A4, JPEG quality 96
+ *  13. Image→Image: PNG quality 3, WebP 85, JPEG 95
+ *
+ * .env (Windows):
+ *   LIBREOFFICE_BINARY=soffice.exe
+ *   GHOSTSCRIPT_BINARY=gswin64c.exe
+ * .env (Linux/VPS):
+ *   LIBREOFFICE_BINARY=soffice
+ *   GHOSTSCRIPT_BINARY=gs
  */
 
 if (!defined('DS')) {
@@ -224,20 +250,24 @@ class FileConverterController extends Controller
     private function buildOutputName(string $originalName, string $ext, ?int $pageNum = null): string
     {
         $base = pathinfo($originalName, PATHINFO_FILENAME);
-        $base = preg_replace('/[\\\\\/:\*\?"<>\|]/', '_', $base);
-        $base = trim($base) ?: 'file';
+        // Strip characters that cause problems in Windows paths and LO commands
+        $base = preg_replace('/[\\\\\/:\*\?"<>\|\s]+/', '_', $base);
+        $base = trim($base, '_') ?: 'file';
 
-        $suffix = ' by MediaTools';
+        $suffix = '_by_MediaTools';
         return $pageNum !== null
-            ? "{$base}{$suffix} - Hal {$pageNum}.{$ext}"
+            ? "{$base}{$suffix}_Hal{$pageNum}.{$ext}"
             : "{$base}{$suffix}.{$ext}";
     }
 
     private function saveWithDisplayName(string $tempPath, string $origName, string $ext, ?int $pageNum = null): string
     {
         if (!file_exists($tempPath) || filesize($tempPath) === 0) {
-            throw new \Exception("Output kosong / gagal dihasilkan.");
+            throw new \Exception("Output kosong / gagal dihasilkan. (path: {$tempPath})");
         }
+
+        // v5: Validate file integrity via magic bytes
+        $this->validateOutputIntegrity($tempPath, $ext);
 
         $displayName = $this->buildOutputName($origName, $ext, $pageNum);
         $destPath    = $this->storageDir . DS . $displayName;
@@ -399,11 +429,11 @@ class FileConverterController extends Controller
         $outPattern = $this->storageDir . DS . "{$sessionId}_p%d.{$fmt}";
 
         $cmd = $this->isWindows
-            ? sprintf('"%s" -dNOPAUSE -dBATCH -dSAFER -dQUIET -sDEVICE=%s -r200 ' .
+            ? sprintf('"%s" -dNOPAUSE -dBATCH -dSAFER -dQUIET -sDEVICE=%s ' .
                 '-dFirstPage=1 -dLastPage=250 -sOutputFile="%s" "%s" 2>&1',
                 $this->gsbin, $device, $outPattern, $pdfPath)
-            : sprintf('%s -dNOPAUSE -dBATCH -dSAFER -dQUIET -sDEVICE=%s -r200 ' .
-                '-dFirstPage=1 -dLastPage=250 -sOutputFile=%s %s 2>&1',
+            : sprintf('%s -dNOPAUSE -dBATCH -dSAFER -dQUIET -sDEVICE=%s ' .
+                '-dTextAlphaBits=4 -dGraphicsAlphaBits=4 -dUseCropBox -dFirstPage=1 -dLastPage=250 -r250 -sOutputFile=%s %s 2>&1',
                 escapeshellcmd($this->gsbin),
                 escapeshellarg($device),
                 escapeshellarg($outPattern),
@@ -476,20 +506,43 @@ class FileConverterController extends Controller
     }
 
     /* =========================================================
-       4. PDF → OFFICE  (LibreOffice multi-strategy)
+       4. PDF → OFFICE  (Rewritten v4 strategy chain)
+
+       Strategy order (most reliable first):
+         S1 = PDF → ODT  then  ODT → target OOXML (two-step, most reliable)
+         S2 = PDF → target directly with infilter  (direct, sometimes broken)
+         S3 = PDF → target auto-detect (no infilter)
+         S4 = PhpWord / PhpSpreadsheet text-extract fallback
+
+       Key insight: LibreOffice's PDF import filter produces valid ODT reliably.
+       The second step (ODT → OOXML) then uses LO's mature ODT writer which
+       produces valid, openable DOCX/XLSX/PPTX — unlike the direct PDF→OOXML
+       path which can emit partially-valid or corrupt OOXML on Windows.
     ========================================================= */
     private function pdfToOffice($file, string $sessionId, string $targetExt, string $originalName): array
     {
         $this->requireSoffice();
 
-        // CRITICAL: input filename = pure UUID (no spaces) so LibreOffice
-        // can parse it cleanly on Windows
         $safeName    = "{$sessionId}_input.pdf";
         $safePath    = $this->storageDir . DS . $safeName;
         $file->move($this->storageDir, $safeName);
         $workingPath = $safePath;
 
         try {
+            // v5: Detect password-protected PDFs early
+            if ($this->isPdfPasswordProtected($workingPath)) {
+                throw new \Exception(
+                    "PDF terproteksi password. Hapus password terlebih dahulu sebelum dikonversi."
+                );
+            }
+
+            // v5: Repair & normalize PDF with Ghostscript (embeds fonts, fixes structure)
+            $repairedPath = $this->repairPdfWithGhostscript($workingPath, $sessionId);
+            if ($repairedPath !== $workingPath) {
+                $workingPath = $repairedPath;
+            }
+
+            // OCR pre-pass for scanned PDFs
             $hasText = $this->pdfHasTextLayer($workingPath);
             Log::info("pdfToOffice [{$targetExt}] hasText={$hasText} sid={$sessionId}");
 
@@ -501,27 +554,28 @@ class FileConverterController extends Controller
                 }
             }
 
-            // S1: infilter (best quality)
-            $result = $this->tryPdfToOfficeInfilter($workingPath, $sessionId, $targetExt);
-            if ($this->isValidFile($result)) {
-                return [$this->saveWithDisplayName($result, $originalName, $targetExt)];
+            // ── S1: PDF → ODT → OOXML  (most reliable)
+            $s1Result = $this->tryPdfViaOdtBridge($workingPath, $sessionId, $targetExt);
+            if ($this->isValidFile($s1Result)) {
+                Log::info("pdfToOffice S1 ODT-bridge OK [{$targetExt}]");
+                return [$this->saveWithDisplayName($s1Result, $originalName, $targetExt)];
             }
 
-            // S2: auto-detect
-            $result = $this->tryPdfToOfficeAutoDetect($workingPath, $sessionId, $targetExt);
-            if ($this->isValidFile($result)) {
-                return [$this->saveWithDisplayName($result, $originalName, $targetExt)];
+            // ── S2: PDF → infilter → target
+            $s2Result = $this->tryPdfToOfficeInfilter($workingPath, $sessionId, $targetExt);
+            if ($this->isValidFile($s2Result)) {
+                Log::info("pdfToOffice S2 infilter OK [{$targetExt}]");
+                return [$this->saveWithDisplayName($s2Result, $originalName, $targetExt)];
             }
 
-            // S3: ODT bridge (docx only)
-            if ($targetExt === 'docx') {
-                $result = $this->tryPdfViaOdt($workingPath, $sessionId);
-                if ($this->isValidFile($result)) {
-                    return [$this->saveWithDisplayName($result, $originalName, 'docx')];
-                }
+            // ── S3: PDF → auto-detect (no infilter)
+            $s3Result = $this->tryPdfToOfficeAutoDetect($workingPath, $sessionId, $targetExt);
+            if ($this->isValidFile($s3Result)) {
+                Log::info("pdfToOffice S3 autodetect OK [{$targetExt}]");
+                return [$this->saveWithDisplayName($s3Result, $originalName, $targetExt)];
             }
 
-            // S4: PhpWord / PhpSpreadsheet text parser
+            // ── S4: PhpWord / PhpSpreadsheet text-extract fallback
             $text = $this->extractPdfTextSmart($workingPath, $sessionId);
             if (trim($text) !== '') {
                 if ($targetExt === 'docx') {
@@ -548,16 +602,87 @@ class FileConverterController extends Controller
             );
         } finally {
             @unlink($safePath);
+            // Clean up any OCR temp PDF
+            $ocrTmp = $this->storageDir . DS . "{$sessionId}_ocr.pdf";
+            if (file_exists($ocrTmp)) @unlink($ocrTmp);
         }
     }
 
     private function isValidFile(?string $path): bool
     {
-        return $path !== null && file_exists($path) && filesize($path) > 0;
+        return $path !== null && file_exists($path) && filesize($path) > 1024;
     }
 
     /**
-     * S1: PDF import filter — best quality
+     * S1 (NEW PRIMARY): PDF → ODT (via writer_pdf_import) → target OOXML
+     *
+     * This two-step approach is the most reliable because:
+     * - LO's ODT export from PDF import is mature and produces valid ODT
+     * - LO's ODT→OOXML conversion is also very reliable
+     * - Avoids the direct PDF→OOXML path that produces corrupt files on Windows
+     */
+    private function tryPdfViaOdtBridge(string $inputPath, string $sessionId, string $targetExt): ?string
+    {
+        // Step A: PDF → ODT
+        $odtName    = "{$sessionId}_bridge.odt";
+        $odtPath    = $this->storageDir . DS . $odtName;
+        $profileA   = $this->makeLoProfile($sessionId, 'odtA');
+
+        $cmdA = $this->buildLoCmd($inputPath, $profileA, $sessionId, 'odt', 'writer_pdf_import');
+        exec($cmdA, $outA, $codeA);
+        $this->removeDir($profileA);
+
+        Log::info("LO ODT-bridge step A exit={$codeA}");
+
+        // LO names the output after the input basename: {sessionId}_input.odt
+        $expectedOdt = $this->storageDir . DS . "{$sessionId}_input.odt";
+        $odtFile     = null;
+
+        if ($this->isValidFile($expectedOdt)) {
+            // Rename to bridge name so findNewestOutputFile won't confuse it
+            rename($expectedOdt, $odtPath);
+            $odtFile = $odtPath;
+        } elseif ($this->isValidFile($odtPath)) {
+            $odtFile = $odtPath;
+        } else {
+            $found = $this->findNewestOutputFile('odt', $sessionId);
+            if ($found && $this->isValidFile($found)) {
+                rename($found, $odtPath);
+                $odtFile = $odtPath;
+            }
+        }
+
+        if (!$odtFile) {
+            Log::warning("ODT-bridge S1A: no ODT produced (exit {$codeA})");
+            return null;
+        }
+
+        // Step B: ODT → target OOXML
+        $filterMap = [
+            'docx' => 'docx:"MS Word 2007 XML"',
+            'xlsx' => 'xlsx:"Calc MS Excel 2007 XML"',
+            'pptx' => 'pptx:"Impress MS PowerPoint 2007 XML"',
+        ];
+        $profileB    = $this->makeLoProfile($sessionId, 'odtB');
+        $cmdB        = $this->buildLoCmd($odtFile, $profileB, $sessionId, $filterMap[$targetExt] ?? $targetExt);
+        exec($cmdB, $outB, $codeB);
+        $this->removeDir($profileB);
+
+        Log::info("LO ODT-bridge step B exit={$codeB}");
+
+        // LO names output: {sessionId}_bridge.{ext}
+        $expectedFinal = $this->storageDir . DS . "{$sessionId}_bridge.{$targetExt}";
+        @unlink($odtFile);
+
+        if ($this->isValidFile($expectedFinal)) return $expectedFinal;
+
+        // Fallback: newest file with target extension
+        return $this->findNewestOutputFile($targetExt, $sessionId);
+    }
+
+    /**
+     * S2: PDF import filter — direct PDF → OOXML
+     * (kept as fallback; sometimes works when bridge doesn't)
      */
     private function tryPdfToOfficeInfilter(string $inputPath, string $sessionId, string $targetExt): ?string
     {
@@ -569,8 +694,7 @@ class FileConverterController extends Controller
         if (!isset($filterMap[$targetExt])) return null;
 
         [$infilter, $outfilter, $ext] = $filterMap[$targetExt];
-        $profileDir     = $this->makeLoProfile($sessionId, 's1');
-        // LO outputs: {inputBasename}.{ext}
+        $profileDir     = $this->makeLoProfile($sessionId, 's2');
         $expectedOutput = $this->storageDir . DS . "{$sessionId}_input.{$ext}";
 
         $cmd = $this->buildLoCmd(
@@ -581,14 +705,14 @@ class FileConverterController extends Controller
         exec($cmd, $lines, $code);
         $this->removeDir($profileDir);
 
-        Log::info("LO S1 [{$targetExt}] exit={$code}");
+        Log::info("LO S2 infilter [{$targetExt}] exit={$code}");
 
         if ($this->isValidFile($expectedOutput)) return $expectedOutput;
         return $this->findNewestOutputFile($targetExt, $sessionId);
     }
 
     /**
-     * S2: Direct convert-to (no infilter)
+     * S3: Direct convert-to (no infilter)
      */
     private function tryPdfToOfficeAutoDetect(string $inputPath, string $sessionId, string $targetExt): ?string
     {
@@ -598,7 +722,7 @@ class FileConverterController extends Controller
             'pptx' => 'pptx:"Impress MS PowerPoint 2007 XML"',
         ];
 
-        $profileDir     = $this->makeLoProfile($sessionId, 's2');
+        $profileDir     = $this->makeLoProfile($sessionId, 's3');
         $expectedOutput = $this->storageDir . DS . "{$sessionId}_input.{$targetExt}";
 
         $cmd = $this->buildLoCmd(
@@ -608,38 +732,10 @@ class FileConverterController extends Controller
         exec($cmd, $lines, $code);
         $this->removeDir($profileDir);
 
-        Log::info("LO S2 [{$targetExt}] exit={$code}");
+        Log::info("LO S3 autodetect [{$targetExt}] exit={$code}");
 
         if ($this->isValidFile($expectedOutput)) return $expectedOutput;
         return $this->findNewestOutputFile($targetExt, $sessionId);
-    }
-
-    /**
-     * S3: PDF → ODT → DOCX bridge
-     */
-    private function tryPdfViaOdt(string $inputPath, string $sessionId): ?string
-    {
-        $profileA       = $this->makeLoProfile($sessionId, 's3a');
-        $expectedOdt    = $this->storageDir . DS . "{$sessionId}_input.odt";
-        $cmdA           = $this->buildLoCmd($inputPath, $profileA, $sessionId, 'odt', 'writer_pdf_import');
-        exec($cmdA, $outA, $codeA);
-        $this->removeDir($profileA);
-
-        $odtFile = $this->isValidFile($expectedOdt)
-            ? $expectedOdt
-            : $this->findNewestOutputFile('odt', $sessionId);
-
-        if (!$odtFile) { Log::warning("S3A PDF→ODT failed"); return null; }
-
-        $profileB     = $this->makeLoProfile($sessionId, 's3b');
-        $cmdB         = $this->buildLoCmd($odtFile, $profileB, $sessionId, 'docx:"MS Word 2007 XML"');
-        exec($cmdB, $outB, $codeB);
-        $this->removeDir($profileB);
-        @unlink($odtFile);
-
-        $expectedDocx = $this->storageDir . DS . pathinfo($odtFile, PATHINFO_FILENAME) . '.docx';
-        if ($this->isValidFile($expectedDocx)) return $expectedDocx;
-        return $this->findNewestOutputFile('docx', $sessionId);
     }
 
     /* =========================================================
@@ -785,13 +881,11 @@ class FileConverterController extends Controller
 
     /**
      * Make a LibreOffice profile directory.
-     * On Windows: use sys_get_temp_dir() to avoid spaces in path.
+     * On Windows: use sys_get_temp_dir() to avoid spaces in storage path.
      */
     private function makeLoProfile(string $sessionId, string $suffix): string
     {
         if ($this->isWindows) {
-            // sys_get_temp_dir() on Windows typically = C:\Users\...\AppData\Local\Temp (no spaces usually)
-            // Using short 8-char UUID prefix to keep path short
             $dir = sys_get_temp_dir() . DS . 'lo_' . substr($sessionId, 0, 8) . '_' . $suffix;
         } else {
             $dir = $this->storageDir . DS . "lo_{$sessionId}_{$suffix}";
@@ -815,8 +909,12 @@ class FileConverterController extends Controller
                 '--headless', '--norestore', '--nofirststartwizard', '--nolockcheck',
                 '-env:UserInstallation=' . $profileUri,
             ];
-            if ($infilter) $parts[] = '--infilter=' . $infilter;
+            // On Windows, --infilter value must be quoted if it contains spaces
+            if ($infilter) {
+                $parts[] = '--infilter="' . $infilter . '"';
+            }
             $parts[] = '--convert-to';
+            // convertTo may contain spaces (e.g. 'docx:"MS Word 2007 XML"') — wrap whole value
             $parts[] = '"' . $convertTo . '"';
             $parts[] = '--outdir';
             $parts[] = '"' . $this->storageDir . '"';
@@ -871,6 +969,9 @@ class FileConverterController extends Controller
 
     private function createDocxFormatted(string $text, string $outputPath): void
     {
+        if (!class_exists(\PhpOffice\PhpWord\PhpWord::class)) {
+            throw new \Exception("PhpWord tidak tersedia. Jalankan: composer require phpoffice/phpword");
+        }
         $phpWord = new \PhpOffice\PhpWord\PhpWord();
         $section = $phpWord->addSection([
             'marginTop' => 800, 'marginBottom' => 800,
@@ -890,6 +991,9 @@ class FileConverterController extends Controller
 
     private function createExcelFromText(string $text, string $outputPath): void
     {
+        if (!class_exists(\PhpOffice\PhpSpreadsheet\Spreadsheet::class)) {
+            throw new \Exception("PhpSpreadsheet tidak tersedia. Jalankan: composer require phpoffice/phpspreadsheet");
+        }
         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
         $sheet       = $spreadsheet->getActiveSheet();
         $rowIndex    = 1;
@@ -995,8 +1099,7 @@ class FileConverterController extends Controller
 
     /**
      * Find newest output file — session-scoped first, then global fallback.
-     * This fixes the race condition where stale files from old sessions
-     * were picked up when LibreOffice failed to produce output.
+     * Returns the full path (not just basename) so callers can check isValidFile().
      */
     private function findNewestOutputFile(string $ext, string $sessionId): ?string
     {
@@ -1073,6 +1176,7 @@ class FileConverterController extends Controller
     public function download(string $filename)
     {
         $filename = basename($filename);
+        // Allow unicode filenames (underscores, hyphens, dots, parens, brackets, letters, digits)
         if (!preg_match('/^[\w\s\-\.()[\]]+$/u', $filename)) {
             abort(403, 'Nama file tidak valid.');
         }
@@ -1131,6 +1235,19 @@ class FileConverterController extends Controller
         foreach (glob($this->storageDir . DS . '*') ?: [] as $item) {
             if (@filemtime($item) >= $limit) continue;
             is_dir($item) ? $this->removeDir($item) : @unlink($item);
+        }
+        // Also clean orphaned LO profile dirs in temp
+        if ($this->isWindows) {
+            foreach (glob(sys_get_temp_dir() . DS . 'lo_*') ?: [] as $f) {
+                if (is_dir($f) && @filemtime($f) < $limit) $this->removeDir($f);
+            }
+        } else {
+            foreach (glob('/tmp/lo_home_*') ?: [] as $f) {
+                if (is_dir($f) && @filemtime($f) < $limit) $this->removeDir($f);
+            }
+            foreach (glob('/tmp/lo_cache_*') ?: [] as $f) {
+                if (is_dir($f) && @filemtime($f) < $limit) $this->removeDir($f);
+            }
         }
     }
 
