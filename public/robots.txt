@@ -1,19 +1,32 @@
 User-agent: *
 Allow: /
 
-// Blokir halaman auth — tidak perlu diindex Google
-Disallow: /login/
-Disallow: /register/
-Disallow: /profile/
+# Blokir halaman auth — tidak perlu diindex Google
+Disallow: /login
+Disallow: /register
+Disallow: /profile
+Disallow: /home
 
-// Blokir folder internal Laravel
+# Blokir folder internal Laravel
 Disallow: /storage/
 Disallow: /.env
 Disallow: /vendor/
 Disallow: /node_modules/
 Disallow: /auth/
 
-// Izinkan aset
+# Blokir API endpoints — bukan halaman untuk user
+Disallow: /file-converter/process
+Disallow: /file-converter/cleanup
+Disallow: /bg/process
+Disallow: /media-downloader/process
+Disallow: /pdfutilities/compress
+Disallow: /linktree/store
+Disallow: /linktree/check-plan
+Disallow: /linktree/payment/
+Disallow: /signature/store
+Disallow: /qr/store
+
+# Izinkan aset publik
 Allow: /css/
 Allow: /js/
 Allow: /images/

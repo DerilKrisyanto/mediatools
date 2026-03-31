@@ -1,5 +1,5 @@
 {{-- ============================================================
-     MEDIATOOLS — NAVBAR (Fixed & Mobile-First)
+     MEDIATOOLS — NAVBAR (Fixed, Scrollable Mega Menu, Mobile-First)
      resources/views/components/navbar.blade.php
      ============================================================ --}}
 
@@ -62,13 +62,13 @@ $colorMap = [
 @endphp
 
 {{-- ══ NAVBAR ══ --}}
-<nav class="glass-nav" id="mainNav" role="navigation" aria-label="Navigasi utama">
+<nav class="glass-nav fixed top-0 left-0 right-0 z-50" id="mainNav" role="navigation" aria-label="Navigasi utama">
 <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
 
     {{-- LOGO --}}
-    <a href="{{ route('home') }}" class="flex items-center gap-2 group flex-shrink-0" aria-label="MediaTools">
+    <a href="{{ route('home') }}" class="flex items-center gap-2 group flex-shrink-0" aria-label="MediaTools Beranda">
         <div class="w-8 h-8 sm:w-9 sm:h-9 transition-transform duration-300 group-hover:scale-110 flex-shrink-0">
-            <img src="{{ asset('images/icons-mediatools.png') }}" alt="" class="w-full h-full object-contain" loading="eager">
+            <img src="{{ asset('images/icons-mediatools.png') }}" alt="MediaTools Logo" class="w-full h-full object-contain" loading="eager" width="36" height="36">
         </div>
         <span class="text-[15px] sm:text-[17px] font-extrabold tracking-tight text-white leading-none">
             MEDIA<span style="color:var(--accent)">TOOLS.</span>
@@ -77,7 +77,6 @@ $colorMap = [
 
     {{-- ── DESKTOP MENU (lg+) ── --}}
     <div class="hidden lg:flex items-center gap-1 flex-1 justify-center">
-
         <a href="{{ route('home') }}" class="nav-link px-3 py-2 rounded-lg hover:bg-white/5 transition-colors">Beranda</a>
 
         {{-- Mega Dropdown --}}
@@ -93,7 +92,8 @@ $colorMap = [
                 <i id="toolsArrow" class="fa-solid fa-chevron-down text-[10px] transition-transform duration-300"></i>
             </button>
 
-            <div id="toolsDropdown" class="nav-mega-menu" role="menu">
+            {{-- MEGA MENU — fully scrollable --}}
+            <div id="toolsDropdown" class="nav-mega-menu" role="menu" aria-label="Daftar semua tools">
                 <div class="nav-mega-inner">
 
                     <div class="nav-mega-header">
@@ -103,40 +103,43 @@ $colorMap = [
                         </a>
                     </div>
 
-                    <div class="nav-mega-grid">
-                        @foreach($navCategories as $cat)
-                        @php $c = $colorMap[$cat['color']]; @endphp
-                        <div class="nav-mega-col">
-                            <div class="nav-cat-head">
-                                <div class="nav-cat-icon" style="background:{{ $c['bg'] }};color:{{ $c['text'] }};">
-                                    <i class="fa-solid {{ $cat['icon'] }}"></i>
+                    {{-- Scrollable grid body --}}
+                    <div class="nav-mega-scroll-body">
+                        <div class="nav-mega-grid">
+                            @foreach($navCategories as $cat)
+                            @php $c = $colorMap[$cat['color']]; @endphp
+                            <div class="nav-mega-col">
+                                <div class="nav-cat-head">
+                                    <div class="nav-cat-icon" style="background:{{ $c['bg'] }};color:{{ $c['text'] }};">
+                                        <i class="fa-solid {{ $cat['icon'] }}"></i>
+                                    </div>
+                                    <div>
+                                        <p class="nav-cat-name">{{ $cat['label'] }}</p>
+                                        <p class="nav-cat-desc">{{ $cat['desc'] }}</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <p class="nav-cat-name">{{ $cat['label'] }}</p>
-                                    <p class="nav-cat-desc">{{ $cat['desc'] }}</p>
+                                <div class="nav-cat-tools">
+                                    @foreach($cat['tools'] as $tool)
+                                    <a href="{{ route($tool['route']) }}"
+                                       class="nav-tool-item"
+                                       role="menuitem"
+                                       onclick="MT.closeDropdown()">
+                                        <div class="nav-tool-icon" style="background:{{ $c['bg'] }};color:{{ $c['text'] }};">
+                                            <i class="fa-solid {{ $tool['icon'] }}"></i>
+                                        </div>
+                                        <div class="nav-tool-text">
+                                            <span class="nav-tool-name">{{ $tool['name'] }}</span>
+                                            <span class="nav-tool-desc">{{ $tool['desc'] }}</span>
+                                        </div>
+                                        @if($tool['badge'])
+                                        <span class="nav-tool-badge" style="background:{{ $c['badge'] }};color:{{ $c['text'] }};">{{ $tool['badge'] }}</span>
+                                        @endif
+                                    </a>
+                                    @endforeach
                                 </div>
                             </div>
-                            <div class="nav-cat-tools">
-                                @foreach($cat['tools'] as $tool)
-                                <a href="{{ route($tool['route']) }}"
-                                   class="nav-tool-item"
-                                   role="menuitem"
-                                   onclick="MT.closeDropdown()">
-                                    <div class="nav-tool-icon" style="background:{{ $c['bg'] }};color:{{ $c['text'] }};">
-                                        <i class="fa-solid {{ $tool['icon'] }}"></i>
-                                    </div>
-                                    <div class="nav-tool-text">
-                                        <span class="nav-tool-name">{{ $tool['name'] }}</span>
-                                        <span class="nav-tool-desc">{{ $tool['desc'] }}</span>
-                                    </div>
-                                    @if($tool['badge'])
-                                    <span class="nav-tool-badge" style="background:{{ $c['badge'] }};color:{{ $c['text'] }};">{{ $tool['badge'] }}</span>
-                                    @endif
-                                </a>
-                                @endforeach
-                            </div>
+                            @endforeach
                         </div>
-                        @endforeach
                     </div>
 
                     <div class="nav-mega-footer">
@@ -162,7 +165,7 @@ $colorMap = [
 
     {{-- ── DESKTOP RIGHT: SEARCH + AUTH ── --}}
     <div class="hidden lg:flex items-center gap-2 flex-shrink-0">
-        <button type="button" onclick="MT.openSearch()" class="nav-search-pill" aria-label="Cari tools">
+        <button type="button" onclick="MT.openSearch()" class="nav-search-pill" aria-label="Cari tools (Ctrl+K)">
             <i class="fa-solid fa-magnifying-glass text-xs"></i>
             <span>Cari tools...</span>
             <kbd>⌘K</kbd>
@@ -205,7 +208,7 @@ $colorMap = [
                 id="mobileMenuBtn"
                 onclick="MT.toggleMobileMenu()"
                 class="mobile-nav-icon-btn"
-                aria-label="Buka menu"
+                aria-label="Buka menu navigasi"
                 aria-expanded="false"
                 aria-controls="mobileMenu">
             <i class="fa-solid fa-bars text-sm" id="menuIcon"></i>
@@ -215,10 +218,20 @@ $colorMap = [
 </div>
 </nav>
 
+{{-- Spacer agar konten tidak tertutup navbar --}}
+<div class="h-16" aria-hidden="true"></div>
 
-{{-- ══ MOBILE MENU PANEL ══ --}}
-<div id="mobileMenu" class="mobile-menu-panel" aria-hidden="true" role="dialog" aria-label="Menu navigasi">
-    <div class="mobile-menu-inner">
+
+{{-- ══ MOBILE MENU PANEL — Full-height, scrollable ══ --}}
+<div id="mobileMenu"
+     class="mobile-menu-panel"
+     aria-hidden="true"
+     role="dialog"
+     aria-modal="true"
+     aria-label="Menu navigasi">
+
+    {{-- Scrollable inner --}}
+    <div class="mobile-menu-inner" id="mobileMenuInner">
 
         {{-- Search shortcut --}}
         <div class="mobile-search-bar"
@@ -260,7 +273,7 @@ $colorMap = [
             <span class="mobile-section-count">10 tools</span>
         </div>
 
-        {{-- Category accordions --}}
+        {{-- Category accordions — each is independently scrollable via CSS --}}
         @foreach($navCategories as $catIdx => $cat)
         @php $c = $colorMap[$cat['color']]; @endphp
         <div class="mobile-cat-accordion {{ $catIdx === 0 ? 'is-open' : '' }}" id="mob-acc-{{ $cat['key'] }}">
@@ -335,6 +348,9 @@ $colorMap = [
             @endauth
         </div>
 
+        {{-- Bottom padding for safe area --}}
+        <div class="h-6" aria-hidden="true"></div>
+
     </div>
 </div>
 
@@ -349,8 +365,9 @@ $colorMap = [
             <i class="fa-solid fa-magnifying-glass search-input-icon"></i>
             <input type="text" id="search-input" class="search-input"
                    placeholder="Cari tools... (PDF, QR, password...)"
-                   autocomplete="off" spellcheck="false" inputmode="search">
-            <button type="button" onclick="MT.closeSearch()" class="search-close-btn" aria-label="Tutup">
+                   autocomplete="off" spellcheck="false" inputmode="search"
+                   aria-label="Cari tools">
+            <button type="button" onclick="MT.closeSearch()" class="search-close-btn" aria-label="Tutup pencarian">
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
@@ -387,7 +404,7 @@ $colorMap = [
             </div>
 
             <div id="search-results" class="hidden">
-                <div class="search-cat-label">
+                <div class="search-cat-label" style="color:var(--accent);">
                     <i class="fa-solid fa-magnifying-glass"></i> Hasil Pencarian
                 </div>
                 <div id="search-results-grid" class="search-cat-grid"></div>
@@ -484,9 +501,9 @@ $colorMap = [
 
         /* close previously open */
         if (state.openCat && state.openCat !== key) {
-            var pb = $('mob-body-' + state.openCat);
-            var pc = $('mob-chev-' + state.openCat);
-            var pa = $('mob-acc-'  + state.openCat);
+            var pb  = $('mob-body-' + state.openCat);
+            var pc  = $('mob-chev-' + state.openCat);
+            var pa  = $('mob-acc-'  + state.openCat);
             var pbt = pa ? pa.querySelector('.mobile-cat-btn') : null;
             if (pb)  pb.classList.remove('open');
             if (pc)  pc.style.transform = '';
@@ -507,6 +524,13 @@ $colorMap = [
             if (acc)  acc.classList.add('is-open');
             if (btn)  btn.setAttribute('aria-expanded', 'true');
             state.openCat = key;
+
+            /* Scroll accordion into view with small offset */
+            setTimeout(function () {
+                if (acc) {
+                    acc.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            }, 320);
         }
     }
 
@@ -590,8 +614,8 @@ $colorMap = [
             return;
         }
         if (e.key === 'Escape') {
-            if (state.searchOpen)  { closeSearch();  return; }
-            if (state.dropOpen)    { closeDropdown(); return; }
+            if (state.searchOpen)  { closeSearch();   return; }
+            if (state.dropOpen)    { closeDropdown();  return; }
             if (state.mobileOpen)  { closeMobileMenu(); return; }
         }
         if (!state.searchOpen) return;
@@ -631,7 +655,7 @@ $colorMap = [
         closeSearch:      closeSearch,
     };
 
-    /* Legacy compat for app.js */
+    /* Legacy compat */
     window.toggleMobileMenu = toggleMobileMenu;
     window.toggleToolsMenu  = toggleDropdown;
     window.closeDropdown    = closeDropdown;
