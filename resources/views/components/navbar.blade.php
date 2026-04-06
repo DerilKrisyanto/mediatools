@@ -7,12 +7,13 @@
     <div class="nav-inner">
 
         {{-- ── LOGO ── --}}
-        <a href="{{ route('home') }}" class="nav-logo" aria-label="MediaTools — Beranda">
-            <img src="{{ asset('images/icons-mediatools.png') }}"
-                 alt=""
-                 class="nav-logo-img"
-                 width="28" height="28">
-            <span class="nav-logo-text">MEDIA<em>TOOLS.</em></span>
+        <a href="{{ route('home') }}" class="flex items-center gap-2 group flex-shrink-0" aria-label="MediaTools Beranda">
+            <div class="w-8 h-8 sm:w-9 sm:h-9 transition-transform duration-300 group-hover:scale-110 flex-shrink-0">
+                <img src="{{ asset('images/icons-mediatools.png') }}" alt="MediaTools Logo" class="w-full h-full object-contain" loading="eager" width="36" height="36">
+            </div>
+            <span class="text-[15px] sm:text-[17px] font-extrabold tracking-tight text-white leading-none">
+                MEDIA<span style="color:var(--accent)">TOOLS.</span>
+            </span>
         </a>
 
         {{-- ── DESKTOP LINKS ── --}}
