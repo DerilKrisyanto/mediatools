@@ -1,651 +1,508 @@
 @extends('layouts.app')
 
-@section('og_image', 'home')
-@section('title', 'MediaTools — Tools Digital Gratis: Invoice PDF, Background Remover, QR Code & 10+ Lainnya')
-@section('meta_description', 'Platform tools produktivitas digital 100% gratis untuk UMKM, freelancer, dan creator Indonesia. Hapus background foto, konversi PDF Word, buat invoice, QR Code, link in bio, download video YouTube TikTok, dan 10+ tools gratis lainnya.')
-@section('meta_keywords', 'tools digital gratis indonesia, hapus background foto, remove background, pdf to word, word to pdf, merge pdf, invoice generator gratis, buat invoice, link in bio, linktree gratis, download youtube, download tiktok tanpa watermark, qr code generator, buat qr code, email signature gratis, password generator, resize gambar, kompres pdf, tools produktivitas online, media tools')
-@include('seo.home')
+
+@section('title', 'MediaTools — Tools Digital Gratis: Invoice, PDF, QR Code & Background Remover')
+@section('meta_description', 'Platform tools produktivitas digital 100% gratis. Hapus background foto, konversi PDF, buat invoice, QR Code, password generator, dan 10+ tools lainnya. Tanpa daftar, langsung pakai.')
+@section('meta_keywords', 'tools online gratis indonesia, invoice generator gratis, hapus background foto, konversi pdf word, qr code generator, media tools, password generator, link tree')
 
 @section('content')
 
-{{-- ================================================
-    HERO SECTION
-    ================================================ --}}
-<section class="relative min-h-screen flex items-center pt-28 pb-20 px-6 overflow-hidden">
+{{-- ================================================================
+     HERO — compact & purposeful
+================================================================ --}}
+<section class="hero-section">
+    <div class="hero-noise"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-glow"></div>
 
-    {{-- Background decorations --}}
-    <div class="hero-grid-bg"></div>
-    <div class="blob" style="width:600px;height:600px;top:-100px;left:-200px;opacity:0.6;"></div>
-    <div class="blob" style="width:400px;height:400px;bottom:0;right:-100px;opacity:0.4;"></div>
+    <div class="hero-content">
+        <div class="hero-badge reveal">
+            <span class="hero-badge-dot"></span>
+            10+ Tools Gratis · Tanpa Daftar
+        </div>
 
-    <div class="max-w-7xl mx-auto w-full">
-        <div class="flex flex-col lg:flex-row items-center justify-between gap-16">
+        <h1 class="hero-title reveal reveal-d1">
+            Semua Tools Produktivitas<br>
+            <span class="gradient-text">dalam Satu Tempat.</span>
+        </h1>
 
-            {{-- Left: Text --}}
-            <div class="lg:w-1/2 space-y-8 relative z-10">
-                <div class="reveal">
-                    <div class="hero-badge">
-                        <span class="dot"></span>
-                        All-in-One Media Suite
-                    </div>
-                </div>
+        <p class="hero-subtitle reveal reveal-d2">
+            Dari invoice profesional hingga QR Code bisnis — semua tersedia
+            instan di browser Anda, tanpa instalasi, tanpa biaya.
+        </p>
 
-                <div class="reveal reveal-delay-1">
-                    <h1 class="text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.08] tracking-tight">
-                        Optimalkan Kerja Anda Dengan
-                        <span class="gradient-text"> Media Tools.</span>
-                    </h1>
-                </div>
+        <div class="hero-actions reveal reveal-d3">
+            <a href="#tools" class="btn-hero-primary">
+                <i class="fa-solid fa-grid-2" style="font-size:13px;"></i>
+                Jelajahi Semua Tools
+            </a>
+            <button onclick="openSearch()" class="btn-hero-secondary">
+                <i class="fa-solid fa-magnifying-glass" style="font-size:12px;"></i>
+                Cari Tools
+                <kbd style="padding:2px 8px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:6px;font-size:11px;font-family:inherit;color:var(--text-2);">⌘K</kbd>
+            </button>
+        </div>
 
-                <div class="reveal reveal-delay-2">
-                    <p class="text-gray-400 text-lg md:text-xl leading-relaxed max-w-md">
-                        Satu platform untuk semua kebutuhan produktivitas digital harian Anda — dari invoice profesional hingga QR Code bisnis, semuanya tersedia instan.
-                    </p>
-                </div>
-
-                <div class="reveal reveal-delay-3 flex flex-wrap gap-4">
-                    <a href="#tools" class="btn-primary px-8 py-4 text-base">
-                        <span>Jelajahi Alat</span>
-                        <i class="fa-solid fa-arrow-right text-sm"></i>
-                    </a>
-                    <a href="#about" class="btn-outline px-8 py-4 text-base">
-                        <i class="fa-solid fa-play text-xs"></i>
-                        <span>Pelajari Fitur</span>
-                    </a>
-                </div>
-
-                <div class="reveal reveal-delay-4 flex items-center gap-5 pt-2">
-                    <div class="flex -space-x-3">
-                        @foreach([1,2,3,4] as $i)
-                        <img src="https://i.pravatar.cc/80?u={{ $i + 10 }}"
-                             class="w-10 h-10 rounded-full border-2 border-[#040f0f] object-cover"
-                             alt="pengguna">
-                        @endforeach
-                    </div>
-                    <div>
-                        <div class="flex gap-0.5 mb-1">
-                            @for($i = 0; $i < 5; $i++)
-                                <i class="fa-solid fa-star star text-xs"></i>
-                            @endfor
-                        </div>
-                        <p class="text-sm text-gray-500">
-                            Dipercaya <span class="text-white font-bold">10,000+</span> pengguna aktif
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            {{-- Right: Visual --}}
-            <div class="lg:w-1/2 relative flex justify-center items-center mt-8 lg:mt-0">
-                {{-- Floating cards --}}
-                <div class="hero-float-card" style="top:60px; left:-20px;">
-                    <div class="flex items-center gap-3">
-                        <div class="w-9 h-9 rounded-xl bg-[#a3e635]/20 flex items-center justify-center">
-                            <i class="fa-solid fa-file-invoice text-[#a3e635] text-sm"></i>
-                        </div>
-                        <div>
-                            <p class="text-xs font-bold text-white">Invoice Dibuat</p>
-                            <p class="text-[11px] text-gray-400">2 menit yang lalu</p>
-                        </div>
-                        <span class="text-[#a3e635] text-xs font-bold ml-2">✓</span>
-                    </div>
-                </div>
-
-                <div class="hero-float-card delay" style="bottom:80px; right:-10px;">
-                    <div class="flex items-center gap-3">
-                        <div class="w-9 h-9 rounded-xl bg-[#a3e635]/20 flex items-center justify-center">
-                            <i class="fa-solid fa-chart-line text-[#a3e635] text-sm"></i>
-                        </div>
-                        <div>
-                            <p class="text-xs font-bold text-white">Produktivitas</p>
-                            <div class="flex items-center gap-1 mt-0.5">
-                                <div class="h-1 w-20 bg-white/10 rounded-full overflow-hidden">
-                                    <div class="h-full bg-[#a3e635] rounded-full" style="width:82%"></div>
-                                </div>
-                                <span class="text-[#a3e635] text-[10px] font-bold">82%</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Main phone mockup --}}
-                <div class="relative w-72 z-0">
-                    <div class="hero-phone p-5">
-                        {{-- Phone notch --}}
-                        <div class="w-20 h-1.5 bg-white/10 rounded-full mx-auto mb-6"></div>
-
-                        {{-- App header --}}
-                        <div class="flex items-center justify-between mb-5">
-                            <div>
-                                <p class="text-[11px] text-gray-500 uppercase tracking-wider">Dashboard</p>
-                                <p class="font-bold text-sm">MediaTools</p>
-                            </div>
-                            <div class="w-8 h-8 rounded-full bg-[#a3e635]/20 flex items-center justify-center">
-                                <i class="fa-solid fa-bell text-[#a3e635] text-xs"></i>
-                            </div>
-                        </div>
-
-                        {{-- Stats row --}}
-                        <div class="grid grid-cols-2 gap-3 mb-4">
-                            <div class="bg-[#a3e635]/10 rounded-2xl p-3">
-                                <p class="text-[10px] text-gray-400 mb-1">Tools Digunakan</p>
-                                <p class="text-xl font-extrabold text-[#a3e635]">50+</p>
-                            </div>
-                            <div class="bg-white/5 rounded-2xl p-3">
-                                <p class="text-[10px] text-gray-400 mb-1">File Terproses</p>
-                                <p class="text-xl font-extrabold">1M+</p>
-                            </div>
-                        </div>
-
-                        {{-- Tool list --}}
-                        <div class="space-y-2">
-                            @foreach([
-                                ['fa-file-invoice','Invoice Generator','Buat tagihan'],
-                                ['fa-qrcode','QR Business Kit','Generate QR'],
-                                ['fa-link','Link Tree','Satu halaman'],
-                            ] as $tool)
-                            <div class="flex items-center gap-3 p-2.5 rounded-xl bg-white/[0.03] border border-white/5">
-                                <div class="w-8 h-8 rounded-lg bg-[#a3e635]/20 flex items-center justify-center flex-shrink-0">
-                                    <i class="fa-solid {{ $tool[0] }} text-[#a3e635] text-xs"></i>
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <p class="text-xs font-semibold truncate">{{ $tool[1] }}</p>
-                                    <p class="text-[10px] text-gray-500">{{ $tool[2] }}</p>
-                                </div>
-                                <i class="fa-solid fa-chevron-right text-gray-600 text-[10px]"></i>
-                            </div>
-                            @endforeach
-                        </div>
-
-                        {{-- Bottom action --}}
-                        <div class="mt-4 bg-[#a3e635] rounded-2xl py-3 text-center">
-                            <p class="text-[#040f0f] font-bold text-sm">Mulai Sekarang</p>
-                        </div>
-                    </div>
-
-                    {{-- Glow behind phone --}}
-                    <div class="absolute inset-0 bg-[#a3e635]/5 rounded-[2.5rem] blur-3xl -z-10 scale-110"></div>
-                </div>
-            </div>
-
+        <div class="hero-trust reveal reveal-d4">
+            <span class="hero-trust-item">
+                <i class="fa-solid fa-check"></i>
+                Gratis selamanya
+            </span>
+            <span class="hero-trust-item">
+                <i class="fa-solid fa-check"></i>
+                Tanpa instalasi
+            </span>
+            <span class="hero-trust-item">
+                <i class="fa-solid fa-check"></i>
+                Privasi terjaga
+            </span>
+            <span class="hero-trust-item">
+                <i class="fa-solid fa-check"></i>
+                Dipercaya 10.000+ pengguna
+            </span>
         </div>
     </div>
 </section>
 
-
-{{-- ================================================
-    STATS SECTION
-    ================================================ --}}
-<div class="stats-wrap">
-    <div class="max-w-7xl mx-auto px-6">
-        <div class="grid grid-cols-2 md:grid-cols-4">
-            <div class="stat-item reveal">
-                <div class="stat-number" data-target="50" data-suffix="+">0+</div>
-                <div class="stat-label">Media Tools</div>
-            </div>
-            <div class="stat-item reveal reveal-delay-1">
-                <div class="stat-number" data-target="1" data-suffix="M+" data-prefix="">0</div>
-                <div class="stat-label">File Terproses</div>
-            </div>
-            <div class="stat-item reveal reveal-delay-2">
-                <div class="stat-number" data-target="99.9" data-suffix="%">0%</div>
-                <div class="stat-label">Uptime Server</div>
-            </div>
-            <div class="stat-item reveal reveal-delay-3">
-                <div class="stat-number" data-target="4.9" data-suffix="/5">0/5</div>
-                <div class="stat-label">Rating Kepuasan</div>
-            </div>
+{{-- ================================================================
+     STATS BAR
+================================================================ --}}
+<div class="stats-bar">
+    <div class="stats-bar-inner">
+        <div class="stat-cell reveal">
+            <div class="stat-num" data-target="10" data-suffix="+">0+</div>
+            <div class="stat-label">Tools Aktif</div>
+        </div>
+        <div class="stat-cell reveal reveal-d1">
+            <div class="stat-num" data-target="1" data-suffix="M+">0</div>
+            <div class="stat-label">File Diproses</div>
+        </div>
+        <div class="stat-cell reveal reveal-d2">
+            <div class="stat-num" data-target="99.9" data-suffix="%">0%</div>
+            <div class="stat-label">Uptime Server</div>
+        </div>
+        <div class="stat-cell reveal reveal-d3">
+            <div class="stat-num" data-target="4.9" data-suffix="/5">0/5</div>
+            <div class="stat-label">Rating Kepuasan</div>
         </div>
     </div>
 </div>
 
+{{-- ================================================================
+     TOOLS SECTION — category tabs + grid (iLovePDF style)
+================================================================ --}}
+<div id="tools" style="max-width:1280px;margin:0 auto;padding:64px 24px;">
 
-{{-- ================================================
-    TOOLS GRID
-    ================================================ --}}
-<section id="tools" class="py-28 px-6">
-    <div class="max-w-7xl mx-auto">
-
-        <div class="text-center mb-16 space-y-4">
-            <div class="flex justify-center reveal">
-                <div class="section-label"><i class="fa-solid fa-toolbox"></i> Koleksi Alat</div>
+    <div class="tools-section-header">
+        <div>
+            <div class="section-tag" style="margin-bottom:12px;">
+                <i class="fa-solid fa-grid-2"></i> Koleksi Tools
             </div>
-            <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight reveal reveal-delay-1">
-                Semua yang Anda Butuhkan,<br>
-                <span class="gradient-text">Dalam Satu Tempat</span>
+            <h2 class="tools-section-title reveal">Semua yang Anda Butuhkan</h2>
+            <p class="tools-section-sub reveal reveal-d1">Pilih kategori atau gunakan search untuk menemukan tool yang tepat.</p>
+        </div>
+        <button onclick="openSearch()"
+                style="display:inline-flex;align-items:center;gap:8px;padding:9px 18px;background:var(--bg-elevated);border:1px solid var(--border-strong);border-radius:var(--r-md);font-size:13px;font-weight:600;color:var(--text-2);cursor:pointer;transition:all 0.2s;flex-shrink:0;"
+                onmouseover="this.style.borderColor='rgba(255,255,255,0.2)';this.style.color='var(--text-1)'"
+                onmouseout="this.style.borderColor='var(--border-strong)';this.style.color='var(--text-2)'">
+            <i class="fa-solid fa-magnifying-glass" style="font-size:11px;"></i>
+            Cari tools...
+        </button>
+    </div>
+
+    {{-- Category tabs --}}
+    <div class="cat-tabs reveal reveal-d1" id="catTabs" role="tablist">
+        <button class="cat-tab active" data-cat="all" onclick="filterTools('all')" role="tab" aria-selected="true">
+            <i class="fa-solid fa-border-all"></i>
+            Semua
+        </button>
+        <button class="cat-tab" data-cat="doc" onclick="filterTools('doc')" role="tab">
+            <i class="fa-solid fa-file-lines"></i>
+            Dokumen & Bisnis
+        </button>
+        <button class="cat-tab" data-cat="image" onclick="filterTools('image')" role="tab">
+            <i class="fa-solid fa-image"></i>
+            Gambar & Media
+        </button>
+        <button class="cat-tab" data-cat="social" onclick="filterTools('social')" role="tab">
+            <i class="fa-solid fa-share-nodes"></i>
+            Sosial & Link
+        </button>
+        <button class="cat-tab" data-cat="security" onclick="filterTools('security')" role="tab">
+            <i class="fa-solid fa-shield-halved"></i>
+            Keamanan & Branding
+        </button>
+    </div>
+
+    {{-- Tools Grid --}}
+    @php
+    $tools = [
+        // [cat, icon, icon-bg-color, icon-text-color, name, desc, badge, route, available]
+        ['doc',  'fa-file-invoice-dollar', 'rgba(245,158,11,0.12)',  '#fbbf24', 'Invoice Generator',  'Buat tagihan profesional dengan template yang bisa dikustomisasi penuh.',            null,  'invoice',           true],
+        ['social','fa-link',              'rgba(139,92,246,0.12)',  '#a78bfa', 'LinkTree Builder',   'Satukan semua link penting di satu halaman landing yang elegan.',                  'HOT',  'linktree',          true],
+        ['doc',  'fa-qrcode',             'rgba(59,130,246,0.12)',  '#60a5fa', 'QR Code Generator',  'QR Code custom untuk menu, pembayaran, kontak, atau URL bisnis Anda.',             'BARU', 'qr',                true],
+        ['security','fa-signature',       'rgba(163,230,53,0.10)', 'var(--accent)','Email Signature','Tanda tangan email profesional untuk Gmail, Outlook & semua email client.',       null,   'signature',         true],
+        ['image','fa-scissors',           'rgba(244,63,94,0.12)',   '#fb7185', 'Background Remover', 'Hapus background foto otomatis dengan AI BiRefNet — presisi pada rambut.',        null,   'bgremover',         true],
+        ['image','fa-image',              'rgba(59,130,246,0.12)',  '#60a5fa', 'Image Converter',    'Resize, compress & convert JPG/PNG/WebP langsung di browser, tanpa upload.',      null,   'imageconverter',    true],
+        ['doc',  'fa-repeat',             'rgba(245,158,11,0.12)',  '#fbbf24', 'File Converter',     'Konversi PDF ke Word, Excel, PPT & sebaliknya. Upload 5 file sekaligus.',          null,   'fileconverter',     true],
+        ['doc',  'fa-file-pdf',           'rgba(239,68,68,0.12)',   '#f87171', 'PDF Utilities',      'Merge, split & compress PDF di browser — tanpa upload ke server.',                'PRO',  'pdfutilities',      true],
+        ['social','fa-cloud-arrow-down',  'rgba(139,92,246,0.12)',  '#a78bfa', 'Media Downloader',   'Download video & audio dari YouTube, TikTok, Instagram dalam hitungan detik.',     null,   'mediadownloader',   true],
+        ['security','fa-key',             'rgba(163,230,53,0.10)', 'var(--accent)','Password Generator','Buat password kuat & unik secara instan — semua proses di browser Anda.',      null,   'passwordgenerator', true],
+        ['doc',  'fa-id-card',            'rgba(100,116,139,0.12)', '#94a3b8', 'Business Card',      'Kartu nama digital yang bisa dibagikan via link atau QR Code.',                   'SOON', '#',                 false],
+        ['image','fa-chart-bar',          'rgba(100,116,139,0.12)', '#94a3b8', 'Proposal Builder',   'Buat proposal bisnis dan presentasi klien yang rapi dan terstruktur.',             'SOON', '#',                 false],
+    ];
+    @endphp
+
+    <div class="tools-grid" id="toolsGrid">
+        @foreach($tools as $i => [$cat, $icon, $iconBg, $iconColor, $name, $desc, $badge, $href, $available])
+        <a href="{{ $available ? route('tools.'.$href) : '#' }}"
+           class="tool-card {{ !$available ? 'coming-soon' : '' }} reveal"
+           data-cat="{{ $cat }}"
+           style="transition-delay:{{ ($i % 5) * 0.05 }}s;"
+           {{ !$available ? 'aria-disabled="true"' : '' }}>
+
+            @if($badge)
+            <span class="tool-card-badge {{ strtolower($badge) === 'pro' ? 'pro' : (strtolower($badge) === 'hot' ? 'hot' : 'new') }}">
+                {{ $badge }}
+            </span>
+            @endif
+
+            <div class="tool-card-icon" style="background:{{ $iconBg }};color:{{ $iconColor }};">
+                <i class="fa-solid {{ $icon }}"></i>
+            </div>
+
+            <p class="tool-card-name">{{ $name }}</p>
+            <p class="tool-card-desc">{{ $desc }}</p>
+
+            @if($available)
+            <span class="tool-card-cta">
+                Buka Tool
+                <i class="fa-solid fa-arrow-right" style="font-size:10px;"></i>
+            </span>
+            @else
+            <span style="font-size:12px;color:var(--text-4);font-weight:600;">Segera hadir</span>
+            @endif
+
+        </a>
+        @endforeach
+    </div>
+
+</div>
+
+{{-- ================================================================
+     WHY US / FEATURES
+================================================================ --}}
+<section id="about" class="features-section">
+    <div class="features-inner">
+
+        <div class="text-center" style="margin-bottom:0;">
+            <div class="section-tag" style="margin-bottom:12px;">
+                <i class="fa-solid fa-star"></i> Mengapa MediaTools
+            </div>
+            <h2 style="font-size:clamp(1.5rem,3vw,2rem);font-weight:800;letter-spacing:-0.03em;margin-bottom:10px;" class="reveal">
+                Dirancang untuk <span class="gradient-text">Kemudahan Anda.</span>
             </h2>
-            <p class="text-gray-400 max-w-xl mx-auto text-lg reveal reveal-delay-2">
-                Pilih alat yang tepat untuk meningkatkan profesionalitas dan efisiensi kerja Anda secara instan.
+            <p style="color:var(--text-2);max-width:480px;margin:0 auto;font-size:14px;line-height:1.6;" class="reveal reveal-d1">
+                Kami membangun tools yang benar-benar gratis, cepat, dan menghormati privasi data Anda.
             </p>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            @php
-            $tools = [
-                [
-                    'icon'  => 'fa-file-invoice',
-                    'title' => 'Invoice Generator',
-                    'desc'  => 'Buat tagihan profesional dengan template yang dapat dikustomisasi penuh dalam hitungan detik.',
-                    'badge' => 'Baru',
-                    'href'  => 'invoice',
-                ],
-                [
-                    'icon'  => 'fa-link',
-                    'title' => 'Link Tree One-Page',
-                    'desc'  => 'Satukan semua link media sosial dan portofolio Anda dalam satu halaman arahan yang elegan.',
-                    'badge' => 'Populer',
-                    'href'  => 'linktree',
-                ],
-                [
-                    'icon'  => 'fa-qrcode',
-                    'title' => 'QR Business Kit',
-                    'desc'  => 'Buat QR Code untuk menu, pembayaran, atau kontak bisnis dengan desain yang modern dan branded.',
-                    'badge' => null,
-                    'href'  => 'qr',
-                ],
-                [
-                    'icon'  => 'fa-signature',
-                    'title' => 'Email Signature',
-                    'desc'  => 'Desain tanda tangan email yang impresif untuk membangun kesan profesional di setiap komunikasi.',
-                    'badge' => null,
-                    'href'  => 'signature',
-                ],
-                [
-                    'icon'  => 'fa-key',
-                    'title' => 'Password Generator',
-                    'desc'  => 'Buat password kuat & unik secara instan dan gratis.',
-                    'badge' => null,
-                    'href'  => 'passwordgenerator',
-                ],
-                [
-                    'icon'  => 'fa-image',
-                    'title' => 'Image Converter',
-                    'desc'  => 'Konversi format gambar, kompres ukuran file, dan resize resolusi langsung di browser Anda.',
-                    'badge' => null,
-                    'href'  => 'imageconverter',
-                ],
-                [
-                    'icon'  => 'fa-file-pdf',
-                    'title' => 'PDF Toolkit',
-                    'desc'  => 'Merge, split, compress, atau konversi PDF ke Word/Excel dengan mudah dan aman.',
-                    'badge' => 'Pro',
-                    'href'  => 'pdfutilities',
-                ],
-                [
-                    'icon'  => 'fa-refresh',
-                    'title' => 'File Converter',
-                    'desc'  => 'Konversi dokumen dua arah — PDF, Word, Excel, PowerPoint & gambar. Upload hingga 5 file sekaligus secara Gratis.',
-                    'badge' => 'Pro',
-                    'href'  => 'file-converter',
-                ],
-            ];
-            @endphp
-
-            @foreach($tools as $i => $tool)
-            <div class="tool-card p-7 group reveal" style="transition-delay: {{ ($i % 4) * 0.08 }}s">
-                <div class="flex items-start justify-between mb-6">
-                    <div class="tool-icon-wrap">
-                        <i class="fa-solid {{ $tool['icon'] }}"></i>
-                    </div>
-                    @if($tool['badge'])
-                    <span class="text-[10px] font-bold px-2.5 py-1 rounded-full
-                        {{ $tool['badge'] === 'Pro' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' :
-                           ($tool['badge'] === 'Baru' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' :
-                           'bg-[#a3e635]/10 text-[#a3e635] border border-[#a3e635]/20') }}">
-                        {{ $tool['badge'] }}
-                    </span>
-                    @endif
-                </div>
-                <h3 class="text-lg font-bold mb-2 leading-snug">{{ $tool['title'] }}</h3>
-                <p class="text-gray-400 text-sm leading-relaxed mb-6 flex-1">{{ $tool['desc'] }}</p>
-                <a href="{{ $tool['href'] }}" class="tool-arrow">
-                    <span>Coba Alat</span>
-                    <i class="fa-solid fa-arrow-right-long text-xs"></i>
-                </a>
+        <div class="features-grid">
+            @foreach([
+                ['fa-bolt',          'Cepat & Instan',       'Proses selesai dalam hitungan detik. Tidak ada loading yang membuang waktu Anda.'],
+                ['fa-mobile-screen', 'Responsif di Semua Perangkat','Gunakan di desktop, tablet, maupun smartphone dengan pengalaman yang sama baiknya.'],
+                ['fa-shield-halved', 'Privasi Terjaga',      'File gambar & dokumen diproses dan langsung dihapus. Kami tidak menyimpan data Anda.'],
+                ['fa-infinity',      '100% Gratis',          'Semua berbasis browser. Tidak perlu mengunduh, menginstal. Fitur utama seluruh tools bisa digunakan secara gratis.'],
+                ['fa-headset',       'Dukungan Responsif',   'Ada pertanyaan? Tim kami siap membantu via email & chat pada hari kerja.'],
+            ] as $i => [$icon, $title, $desc])
+            <div class="feature-card reveal" style="transition-delay:{{ $i * 0.07 }}s;">
+                <div class="feature-icon"><i class="fa-solid {{ $icon }}"></i></div>
+                <p class="feature-title">{{ $title }}</p>
+                <p class="feature-desc">{{ $desc }}</p>
             </div>
             @endforeach
         </div>
+
     </div>
 </section>
 
+{{-- ================================================================
+     HOW IT WORKS
+================================================================ --}}
+<section class="steps-section">
+    <div class="section-tag" style="margin-bottom:12px;">
+        <i class="fa-solid fa-list-ol"></i> Cara Pakai
+    </div>
+    <h2 style="font-size:clamp(1.5rem,3vw,2rem);font-weight:800;letter-spacing:-0.03em;margin-bottom:8px;" class="reveal">
+        Mulai dalam 4 Langkah
+    </h2>
+    <p style="color:var(--text-2);font-size:14px;" class="reveal reveal-d1">Semudah itu — tidak perlu panduan panjang.</p>
 
-{{-- ================================================
-    ABOUT / WHY US
-    ================================================ --}}
-<section id="about" class="py-28 px-6 relative overflow-hidden">
-    <div class="blob" style="width:500px;height:500px;top:0;right:-150px;opacity:0.4;"></div>
+    <div class="steps-grid">
+        @foreach([
+            ['Pilih Tool yang Tepat',    'Temukan tool dari 10+ pilihan kami yang terus bertambah. Gunakan filter kategori atau search.'],
+            ['Input atau Upload File',   'Isi formulir sederhana, atau drag & drop file yang ingin Anda proses.'],
+            ['Preview & Sesuaikan',      'Lihat hasilnya secara real-time dan sesuaikan sesuai kebutuhan Anda.'],
+            ['Download & Gunakan',       'Unduh hasil dalam format yang langsung siap pakai. Gratis, tanpa watermark.'],
+        ] as $i => [$title, $desc])
+        <div class="step-item reveal" style="transition-delay:{{ $i * 0.1 }}s;">
+            <div class="step-number">{{ $i + 1 }}</div>
+            <p class="step-title">{{ $title }}</p>
+            <p class="step-desc">{{ $desc }}</p>
+        </div>
+        @endforeach
+    </div>
+</section>
 
-    <div class="max-w-7xl mx-auto">
-        <div class="flex flex-col lg:flex-row items-center gap-20">
+{{-- ================================================================
+     TESTIMONIALS
+================================================================ --}}
+<section class="testimonials-section">
+    <div class="testimonials-inner">
 
-            {{-- Left: Features grid --}}
-            <div class="lg:w-1/2">
-                <div class="flex justify-start mb-6 reveal">
-                    <div class="section-label"><i class="fa-solid fa-star"></i> Mengapa Kami</div>
+        <div class="text-center" style="margin-bottom:0;">
+            <div class="section-tag" style="margin-bottom:12px;">
+                <i class="fa-solid fa-comments"></i> Ulasan Pengguna
+            </div>
+            <h2 style="font-size:clamp(1.5rem,3vw,2rem);font-weight:800;letter-spacing:-0.03em;" class="reveal">
+                Dipercaya Ribuan Pengguna
+            </h2>
+            <p style="color:var(--text-2);margin-top:8px;font-size:14px;" class="reveal reveal-d1">
+                Inilah yang mereka katakan tentang MediaTools.
+            </p>
+        </div>
+
+        <div class="testimonials-grid">
+            @php
+            $reviews = [
+                ['Aditya P.', 'Freelance Designer',    'https://i.pravatar.cc/80?u=11', 5, 'Invoice Generator-nya luar biasa! Dalam 5 menit bisa kirim tagihan profesional ke klien. Template-nya bersih dan bisa dikustomisasi penuh sesuai brand saya.'],
+                ['Sinta R.',  'Content Creator',       'https://i.pravatar.cc/80?u=22', 5, 'LinkTree-nya jauh lebih keren dari aplikasi serupa. Bisa setting tampilan sesuai estetika feed Instagram saya dan semua link ada di satu halaman.'],
+                ['Budi S.',   'Pemilik UMKM',          'https://i.pravatar.cc/80?u=33', 5, 'QR Code untuk menu restoran saya terlihat sangat profesional. Pelanggan sering memuji betapa modernnya usaha saya. Bikinnya cuma hitungan menit!'],
+                ['Rina M.',   'HR Manager',            'https://i.pravatar.cc/80?u=44', 5, 'Background Remover-nya mengagumkan — bisa hapus background foto karyawan dengan hasil sangat rapi, terutama untuk bagian rambut yang biasanya sulit.'],
+                ['Deni K.',   'Digital Marketer',      'https://i.pravatar.cc/80?u=55', 5, 'PDF Utilities-nya hemat waktu banget. Merge dokumen proposal dari banyak file jadi satu PDF profesional tanpa perlu install software apapun.'],
+                ['Maya T.',   'Graphic Designer',      'https://i.pravatar.cc/80?u=66', 5, 'Image Converter-nya simpel tapi powerful. Kompres gambar besar jadi ringan tanpa kehilangan kualitas yang berarti — cocok untuk optimize web.'],
+            ];
+            @endphp
+
+            @foreach($reviews as $i => [$name, $role, $avatar, $rating, $text])
+            <div class="testimonial-card reveal" style="transition-delay:{{ $i * 0.08 }}s;">
+                <div class="testimonial-stars">
+                    @for($s=0; $s < $rating; $s++)
+                        <i class="fa-solid fa-star testimonial-star"></i>
+                    @endfor
                 </div>
-                <h2 class="text-4xl md:text-5xl font-extrabold leading-tight mb-4 reveal reveal-delay-1">
-                    Membantu Anda<br>Fokus pada <span class="gradient-text">Karya.</span>
-                </h2>
-                <p class="text-gray-400 mb-10 text-lg leading-relaxed reveal reveal-delay-2">
-                    MediaTools lahir dari kegelisahan akan sulitnya akses alat produktivitas yang aman, simpel, cepat, dan terintegrasi. Kami percaya teknologi harusnya memudahkan, bukan membingungkan.
-                </p>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    @foreach([
-                        ['fa-bolt','Cepat & Instan','Proses file dalam hitungan detik, tanpa loading lama.'],
-                        ['fa-mobile-screen','Responsif Penuh','Gunakan di desktop maupun smartphone dengan mulus.'],
-                        ['fa-cloud-arrow-up','Tanpa Instalasi','Semua berbasis web. Tidak perlu mengunduh apapun.'],
-                        ['fa-shield-halved','Privasi Aman','File otomatis terhapus dalam 24 jam setelah diproses.'],
-                    ] as $i => $feat)
-                    <div class="feature-card reveal" style="transition-delay:{{ $i * 0.1 }}s">
-                        <div class="w-10 h-10 rounded-xl bg-[#a3e635]/10 flex items-center justify-center mb-4">
-                            <i class="fa-solid {{ $feat[0] }} text-[#a3e635]"></i>
-                        </div>
-                        <h4 class="font-bold mb-1.5">{{ $feat[1] }}</h4>
-                        <p class="text-gray-400 text-sm leading-relaxed">{{ $feat[2] }}</p>
+                <p class="testimonial-text">"{{ $text }}"</p>
+                <div class="testimonial-author">
+                    <img src="{{ $avatar }}" alt="{{ $name }}" class="testimonial-avatar">
+                    <div>
+                        <p class="testimonial-name">{{ $name }}</p>
+                        <p class="testimonial-role">{{ $role }}</p>
                     </div>
+                </div>
+            </div>
+            @endforeach
+        </div>
+
+    </div>
+</section>
+
+{{-- ================================================================
+     CONTACT
+================================================================ --}}
+<section id="contact" class="contact-section">
+
+    <div style="margin-bottom:40px;">
+        <div class="section-tag" style="margin-bottom:12px;">
+            <i class="fa-solid fa-envelope"></i> Kontak
+        </div>
+        <h2 style="font-size:clamp(1.5rem,3vw,2rem);font-weight:800;letter-spacing:-0.03em;" class="reveal">
+            Ada Pertanyaan?
+        </h2>
+        <p style="color:var(--text-2);margin-top:8px;font-size:14px;" class="reveal reveal-d1">
+            Tim kami siap membantu Anda kapan saja.
+        </p>
+    </div>
+
+    <div class="contact-card reveal">
+
+        {{-- Info side --}}
+        <div class="contact-info">
+            <div>
+                <h3 style="font-size:18px;font-weight:700;margin-bottom:8px;">Hubungi Kami</h3>
+                <p style="font-size:13px;color:var(--text-2);line-height:1.65;">Punya pertanyaan, masukan, atau ingin berkolaborasi? Kami senang mendengar dari Anda.</p>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:16px;">
+                @foreach([
+                    ['fa-envelope','Email Support','halo@mediatools.id'],
+                    ['fa-location-dot','Lokasi','Jakarta, Indonesia'],
+                    ['fa-clock','Jam Dukungan','Senin–Jumat, 09.00–17.00 WIB'],
+                ] as [$icon, $label, $val])
+                <div class="contact-info-item">
+                    <div class="contact-info-icon"><i class="fa-solid {{ $icon }}"></i></div>
+                    <div>
+                        <p class="contact-info-label">{{ $label }}</p>
+                        <p class="contact-info-val">{{ $val }}</p>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+
+            {{-- Socials --}}
+            <div>
+                <p style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-4);margin-bottom:10px;font-weight:700;">Ikuti Kami</p>
+                <div style="display:flex;gap:8px;">
+                    @foreach([
+                        ['fa-instagram','#'],
+                        ['fa-x-twitter','#'],
+                        ['fa-linkedin-in','#'],
+                        ['fa-tiktok','#'],
+                    ] as [$icon, $href])
+                    <a href="{{ $href }}"
+                       style="width:34px;height:34px;border-radius:8px;background:var(--bg-overlay);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text-3);font-size:13px;text-decoration:none;transition:all 0.2s;"
+                       onmouseover="this.style.color='var(--accent)';this.style.borderColor='var(--accent-border)'"
+                       onmouseout="this.style.color='var(--text-3)';this.style.borderColor='var(--border)'">
+                        <i class="fa-brands {{ $icon }}"></i>
+                    </a>
                     @endforeach
                 </div>
             </div>
-
-            {{-- Right: How it works --}}
-            <div class="lg:w-1/2 space-y-0 reveal reveal-delay-2">
-                <div class="bg-[#0b2323] border border-white/5 rounded-[2rem] p-8 md:p-10">
-                    <h3 class="text-2xl font-bold mb-8">Cara Penggunaan</h3>
-
-                    <div class="space-y-0">
-                        @foreach([
-                            ['Pilih Alat Media','Temukan alat yang sesuai dari katalog 10+ tools kami yang terus berkembang.'],
-                            ['Input Data Anda','Isi formulir sederhana atau unggah file yang ingin Anda proses.'],
-                            ['Preview & Sesuaikan','Lihat hasilnya secara real-time dan sesuaikan sesuai kebutuhan.'],
-                            ['Download & Gunakan','Unduh hasil kerja Anda dalam format yang siap pakai langsung.'],
-                        ] as $i => $step)
-                        <div class="flex gap-5 step-item {{ !$loop->last ? 'mb-0' : '' }}">
-                            <div class="flex flex-col items-center">
-                                <div class="step-number">{{ $i + 1 }}</div>
-                                @if(!$loop->last)
-                                <div class="step-connector"></div>
-                                @endif
-                            </div>
-                            <div class="pb-8 {{ $loop->last ? 'pb-0' : '' }} pt-2">
-                                <h5 class="font-bold mb-1">{{ $step[0] }}</h5>
-                                <p class="text-gray-400 text-sm leading-relaxed">{{ $step[1] }}</p>
-                            </div>
-                        </div>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</section>
-
-
-{{-- ================================================
-    TESTIMONIALS
-    ================================================ --}}
-<section class="py-28 px-6 relative overflow-hidden" style="background: rgba(255,255,255,0.01);">
-    <div class="blob" style="width:400px;height:400px;bottom:-100px;left:-100px;opacity:0.35;"></div>
-
-    <div class="max-w-7xl mx-auto">
-        <div class="text-center mb-16">
-            <div class="flex justify-center mb-4 reveal">
-                <div class="section-label"><i class="fa-solid fa-comments"></i> Ulasan Pengguna</div>
-            </div>
-            <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight reveal reveal-delay-1">
-                Dipercaya oleh <span class="gradient-text">Ribuan Pengguna</span>
-            </h2>
-            <p class="text-gray-400 mt-4 text-lg reveal reveal-delay-2">Inilah yang mereka katakan tentang pengalaman menggunakan MediaTools.</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            @php
-            $testimonials = [
-                [
-                    'name'   => 'Aditya Pratama',
-                    'role'   => 'Freelance Designer',
-                    'avatar' => 'https://i.pravatar.cc/100?u=aditya',
-                    'rating' => 5,
-                    'text'   => 'Invoice Generator-nya luar biasa! Dalam 5 menit saya sudah bisa kirim tagihan profesional ke klien. Tampilannya bersih dan bisa dikustomisasi sesuai brand saya.',
-                ],
-                [
-                    'name'   => 'Sinta Rahayu',
-                    'role'   => 'Content Creator',
-                    'avatar' => 'https://i.pravatar.cc/100?u=sinta',
-                    'rating' => 5,
-                    'text'   => 'Link Tree-nya jauh lebih keren dari aplikasi serupa. Saya bisa setting tampilan sesuai estetika feed Instagram saya. Followers pun jadi lebih mudah menemukan semua konten saya.',
-                ],
-                [
-                    'name'   => 'Budi Santoso',
-                    'role'   => 'Pemilik UMKM',
-                    'avatar' => 'https://i.pravatar.cc/100?u=budi',
-                    'rating' => 5,
-                    'text'   => 'QR Code untuk menu restoran saya terlihat sangat profesional. Pelanggan sering memuji betapa modernnya usaha saya. Padahal bikinnya cuma hitungan menit!',
-                ],
-            ];
-            @endphp
-
-            @foreach($testimonials as $i => $t)
-            <div class="testimonial-card reveal" style="transition-delay:{{ $i * 0.12 }}s">
-                <div class="quote-icon">"</div>
-                <div class="flex gap-1 mb-4">
-                    @for($s = 0; $s < $t['rating']; $s++)
-                        <i class="fa-solid fa-star star"></i>
-                    @endfor
-                </div>
-                <p class="text-gray-300 text-sm leading-relaxed mb-6">{{ $t['text'] }}</p>
-                <div class="flex items-center gap-3">
-                    <img src="{{ $t['avatar'] }}" alt="{{ $t['name'] }}"
-                         class="w-11 h-11 rounded-full object-cover border-2 border-[#a3e635]/20">
+        {{-- Form side --}}
+        <div class="contact-form-side">
+            <form action="#" method="POST" style="display:flex;flex-direction:column;gap:20px;">
+                @csrf
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
                     <div>
-                        <p class="font-bold text-sm">{{ $t['name'] }}</p>
-                        <p class="text-gray-500 text-xs">{{ $t['role'] }}</p>
+                        <label class="form-label" for="contact-name">Nama Lengkap</label>
+                        <input id="contact-name" type="text" name="name" class="form-input" placeholder="Budi Santoso">
                     </div>
-                </div>
-            </div>
-            @endforeach
-        </div>
-    </div>
-</section>
-
-
-{{-- ================================================
-    CONTACT SECTION
-    ================================================ --}}
-<section id="contact" class="py-28 px-6 relative overflow-hidden">
-    <div class="blob" style="width:500px;height:500px;top:-100px;right:-150px;opacity:0.3;"></div>
-
-    <div class="max-w-6xl mx-auto">
-        <div class="text-center mb-14">
-            <div class="flex justify-center mb-4 reveal">
-                <div class="section-label"><i class="fa-solid fa-envelope"></i> Kontak</div>
-            </div>
-            <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight reveal reveal-delay-1">
-                Ada <span class="gradient-text">Pertanyaan?</span>
-            </h2>
-            <p class="text-gray-400 mt-4 text-lg reveal reveal-delay-2">Tim kami siap membantu Anda kapan saja.</p>
-        </div>
-
-        <div class="bg-[#0b2323] rounded-[2.5rem] border border-white/5 overflow-hidden shadow-2xl reveal">
-            <div class="flex flex-col md:flex-row">
-
-                {{-- Info Side --}}
-                <div class="md:w-2/5 p-10 lg:p-12 bg-gradient-to-br from-[#a3e635]/8 to-transparent space-y-10 border-b md:border-b-0 md:border-r border-white/5">
                     <div>
-                        <h3 class="text-2xl font-bold mb-3">Hubungi Kami</h3>
-                        <p class="text-gray-400 text-sm leading-relaxed">Punya pertanyaan, masukan, atau ingin berkolaborasi? Kami sangat senang mendengar dari Anda.</p>
-                    </div>
-
-                    <div class="space-y-5">
-                        @foreach([
-                            ['fa-envelope','Email Support','halo@mediatools.cloud'],
-                            ['fa-location-dot','Kantor Pusat','Jakarta, Indonesia'],
-                            ['fa-comments','Live Chat','Senin – Jumat (09.00–17.00 WIB)'],
-                        ] as $info)
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center flex-shrink-0">
-                                <i class="fa-solid {{ $info[0] }} accent-text"></i>
-                            </div>
-                            <div>
-                                <p class="text-xs text-gray-500 uppercase tracking-wider mb-0.5">{{ $info[1] }}</p>
-                                <p class="font-semibold text-sm">{{ $info[2] }}</p>
-                            </div>
-                        </div>
-                        @endforeach
-                    </div>
-
-                    <div class="pt-4">
-                        <p class="text-xs text-gray-500 uppercase tracking-wider mb-4">Ikuti Kami</p>
-                        <div class="flex gap-3">
-                            @foreach([
-                                ['fa-instagram','#'],
-                                ['fa-twitter','#'],
-                                ['fa-linkedin-in','#'],
-                                ['fa-tiktok','#'],
-                            ] as $soc)
-                            <a href="{{ $soc[1] }}"
-                               class="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center text-gray-400 hover:bg-[#a3e635]/20 hover:text-[#a3e635] transition-all duration-300 hover:scale-110">
-                                <i class="fa-brands {{ $soc[0] }} text-sm"></i>
-                            </a>
-                            @endforeach
-                        </div>
+                        <label class="form-label" for="contact-email">Email</label>
+                        <input id="contact-email" type="email" name="email" class="form-input" placeholder="budi@email.com">
                     </div>
                 </div>
-
-                {{-- Form Side --}}
-                <div class="md:w-3/5 p-10 lg:p-12">
-                    <form class="space-y-6" action="#" method="#">
-                        @csrf
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                            <div class="form-group">
-                                <label for="name">Nama Lengkap</label>
-                                <input id="name" type="text" name="name"
-                                       class="form-input" placeholder="Budi Santoso">
-                            </div>
-                            <div class="form-group">
-                                <label for="email">Alamat Email</label>
-                                <input id="email" type="email" name="email"
-                                       class="form-input" placeholder="budi@email.com">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="subject">Subjek</label>
-                            <select id="subject" name="subject" class="form-input">
-                                <option value="">Pilih topik...</option>
-                                <option>Pertanyaan Umum</option>
-                                <option>Masalah Teknis</option>
-                                <option>Kerjasama Bisnis</option>
-                                <option>Saran & Masukan</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="message">Pesan Anda</label>
-                            <textarea id="message" name="message" rows="4"
-                                      class="form-input resize-none"
-                                      placeholder="Ceritakan apa yang ingin Anda sampaikan..."></textarea>
-                        </div>
-                        <button type="submit" class="btn-primary w-full py-4 text-base">
-                            <i class="fa-solid fa-paper-plane text-sm"></i>
-                            <span>Kirim Pesan Sekarang</span>
-                        </button>
-                    </form>
+                <div>
+                    <label class="form-label" for="contact-subject">Topik</label>
+                    <select id="contact-subject" name="subject" class="form-input">
+                        <option value="">Pilih topik...</option>
+                        <option>Pertanyaan Umum</option>
+                        <option>Masalah Teknis</option>
+                        <option>Kerjasama Bisnis</option>
+                        <option>Saran & Masukan</option>
+                    </select>
                 </div>
-
-            </div>
+                <div>
+                    <label class="form-label" for="contact-message">Pesan</label>
+                    <textarea id="contact-message" name="message" rows="4"
+                              class="form-input" style="resize:none;"
+                              placeholder="Ceritakan apa yang ingin Anda sampaikan..."></textarea>
+                </div>
+                <button type="submit"
+                        style="display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;background:var(--accent);color:#0a0a0b;font-size:14px;font-weight:700;border-radius:var(--r-md);border:none;cursor:pointer;transition:all 0.2s;width:100%;"
+                        onmouseover="this.style.background='var(--accent-hover)'"
+                        onmouseout="this.style.background='var(--accent)'">
+                    <i class="fa-solid fa-paper-plane" style="font-size:12px;"></i>
+                    Kirim Pesan
+                </button>
+            </form>
         </div>
+
     </div>
 </section>
 
+{{-- ================================================================
+     FAQ
+================================================================ --}}
+<section class="faq-section">
 
-{{-- ================================================
-    FAQ SECTION
-    ================================================ --}}
-<section class="py-28 px-6" style="background: rgba(255,255,255,0.01);">
-    <div class="max-w-3xl mx-auto">
-        <div class="text-center mb-14">
-            <div class="flex justify-center mb-4 reveal">
-                <div class="section-label"><i class="fa-solid fa-circle-question"></i> FAQ</div>
-            </div>
-            <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight reveal reveal-delay-1">
-                Pertanyaan <span class="gradient-text">Populer</span>
-            </h2>
-            <p class="text-gray-400 mt-4 text-lg reveal reveal-delay-2">Semua hal yang perlu Anda ketahui tentang MediaTools.</p>
+    <div style="text-align:center;margin-bottom:0;">
+        <div class="section-tag" style="margin-bottom:12px;display:inline-flex;">
+            <i class="fa-solid fa-circle-question"></i> FAQ
         </div>
-
-        <div class="space-y-3 reveal reveal-delay-2">
-            @foreach([
-                [
-                    'q' => 'Apakah semua alat ini benar-benar gratis?',
-                    'a' => 'Ya, fitur dasar seluruh alat kami dapat digunakan secara gratis tanpa perlu kartu kredit. Kami juga menyediakan paket Pro untuk akses fitur premium, template eksklusif, dan penggunaan tanpa batas harian.',
-                ],
-                [
-                    'q' => 'Bagaimana keamanan data yang saya upload?',
-                    'a' => 'Privasi Anda adalah prioritas utama kami. Semua file yang diunggah akan diproses secara lokal atau di server terenkripsi kami, dan akan dihapus otomatis dalam 24 jam. Kami tidak pernah menyimpan atau menjual data Anda.',
-                ],
-                [
-                    'q' => 'Apakah saya perlu membuat akun untuk menggunakan tools?',
-                    'a' => 'Tidak, Anda bisa langsung menggunakan sebagian besar tools tanpa mendaftar. Namun, dengan membuat akun gratis, Anda dapat menyimpan histori pekerjaan, mengakses template tersimpan, dan mendapatkan fitur kolaborasi tim.',
-                ],
-                [
-                    'q' => 'Apakah MediaTools bekerja di smartphone?',
-                    'a' => 'Tentu! Semua tools kami didesain secara mobile-first dan responsif penuh. Anda bisa menggunakannya langsung dari browser smartphone tanpa perlu mengunduh aplikasi apapun.',
-                ],
-                [
-                    'q' => 'Bagaimana cara upgrade ke paket Pro?',
-                    'a' => 'Klik tombol "Upgrade ke Pro" di dashboard Anda. Kami menerima pembayaran via kartu kredit/debit, transfer bank, dan dompet digital populer. Langganan dapat dibatalkan kapan saja.',
-                ],
-            ] as $i => $faq)
-            <div class="faq-item {{ $i === 0 ? 'open' : '' }}">
-                <div class="faq-question">
-                    <span>{{ $faq['q'] }}</span>
-                    <div class="faq-icon"><i class="fa-solid fa-plus"></i></div>
-                </div>
-                <div class="faq-body {{ $i === 0 ? 'open' : '' }}">
-                    <div class="faq-body-inner">{{ $faq['a'] }}</div>
-                </div>
-            </div>
-            @endforeach
-        </div>
+        <h2 style="font-size:clamp(1.5rem,3vw,2rem);font-weight:800;letter-spacing:-0.03em;" class="reveal">
+            Pertanyaan Populer
+        </h2>
+        <p style="color:var(--text-2);margin-top:8px;font-size:14px;" class="reveal reveal-d1">
+            Semua yang perlu Anda ketahui tentang MediaTools.
+        </p>
     </div>
+
+    <div class="faq-list reveal reveal-d2">
+        @foreach([
+            ['Apakah semua tools benar-benar gratis?',
+             'Ya. Semua fitur utama tools kami dapat digunakan gratis tanpa kartu kredit. Beberapa tool premium seperti LinkTree memiliki paket berbayar untuk akses fitur eksklusif, namun dasarnya tetap gratis.'],
+            ['Bagaimana keamanan file yang saya upload?',
+             'Privasi Anda adalah prioritas kami. File yang diproses di server (seperti background remover & PDF utilities) dihapus otomatis setelah proses selesai. Tool berbasis browser (image converter, password generator) bahkan tidak pernah meninggalkan perangkat Anda.'],
+            ['Apakah saya perlu membuat akun?',
+             'Tidak, sebagian besar tools bisa langsung digunakan tanpa daftar. Akun gratis diperlukan untuk tools yang menyimpan data seperti LinkTree dan Email Signature.'],
+            ['Apakah MediaTools bekerja di smartphone?',
+             'Ya! Semua tools didesain mobile-first dan responsif penuh. Pengalaman di smartphone setara dengan di desktop.'],
+            ['Apakah ada batasan penggunaan?',
+             'Umumnya tidak ada batasan harian untuk tool gratis. Beberapa tool memiliki batas ukuran file (misalnya 20MB per gambar) untuk menjaga performa server tetap optimal bagi semua pengguna.'],
+        ] as $i => [$q, $a])
+        <div class="faq-item {{ $i === 0 ? 'open' : '' }}">
+            <div class="faq-question">
+                <span>{{ $q }}</span>
+                <span class="faq-icon"><i class="fa-solid fa-plus" style="font-size:10px;"></i></span>
+            </div>
+            <div class="faq-answer {{ $i === 0 ? 'open' : '' }}">
+                <div class="faq-answer-inner">{{ $a }}</div>
+            </div>
+        </div>
+        @endforeach
+    </div>
+
 </section>
 
-
-{{-- ================================================
-    CTA SECTION
-    ================================================ --}}
-<section class="py-20 px-6 pb-28">
-    <div class="max-w-5xl mx-auto reveal">
-        <div class="cta-card p-12 md:p-20 text-center">
-            {{-- Decorative blobs --}}
-            <div class="blob" style="width:400px;height:400px;top:-50px;left:-100px;opacity:0.25;z-index:1;"></div>
-            <div class="blob" style="width:300px;height:300px;bottom:-50px;right:-80px;opacity:0.2;z-index:1;"></div>
-
-            <div class="relative z-10 space-y-8">
-                <div class="flex justify-center">
-                    <div class="section-label"><i class="fa-solid fa-rocket"></i> Mulai Sekarang</div>
-                </div>
-                <h2 class="text-4xl md:text-6xl font-extrabold leading-tight tracking-tight">
-                    Siap Mengubah<br>
-                    <span class="gradient-text">Cara Anda Bekerja?</span>
-                </h2>
-                <p class="text-gray-400 max-w-lg mx-auto text-lg leading-relaxed">
-                    Bergabunglah dengan lebih dari 10.000 pengguna dan profesional yang telah merasakan manfaat MediaTools. Gratis, tanpa kartu kredit.
-                </p>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="{{ route('register') }}" class="btn-primary px-10 py-4 text-base">
-                        <i class="fa-solid fa-bolt"></i>
-                        <span>Daftar Gratis Sekarang</span>
-                    </a>
-                    <a href="#tools" class="btn-outline px-10 py-4 text-base">
-                        <span>Lihat Semua Tools</span>
-                        <i class="fa-solid fa-arrow-right text-sm"></i>
-                    </a>
-                </div>
-                <p class="text-gray-600 text-sm">Tidak perlu kartu kredit · Batal kapan saja · Akses instan</p>
-            </div>
+{{-- ================================================================
+     CTA
+================================================================ --}}
+<section class="cta-section">
+    <div class="cta-card reveal">
+        <div class="cta-glow"></div>
+        <div class="section-tag" style="display:inline-flex;margin-bottom:20px;position:relative;">
+            <i class="fa-solid fa-rocket"></i> Mulai Sekarang
         </div>
+        <h2 class="cta-title">
+            Siap Mengubah Cara<br>
+            <span class="gradient-text">Anda Bekerja?</span>
+        </h2>
+        <p class="cta-sub">
+            Bergabung dengan 10.000+ pengguna yang telah merasakan manfaat MediaTools. Gratis, tanpa kartu kredit, mulai dalam 30 detik.
+        </p>
+        <div class="cta-actions">
+            <a href="{{ route('register') }}" class="btn-hero-primary" style="font-size:15px;padding:13px 28px;">
+                <i class="fa-solid fa-bolt" style="font-size:12px;"></i>
+                Daftar Gratis
+            </a>
+            <a href="#tools" class="btn-hero-secondary" style="font-size:15px;padding:13px 28px;">
+                Lihat Semua Tools
+                <i class="fa-solid fa-arrow-right" style="font-size:12px;"></i>
+            </a>
+        </div>
+        <p class="cta-note">Tanpa kartu kredit · Tanpa kontrak · Batalkan kapan saja</p>
     </div>
 </section>
 
 @endsection
+
+@push('scripts')
+<script>
+/* ── Category filter ── */
+function filterTools(cat) {
+    /* Update tabs */
+    document.querySelectorAll('.cat-tab').forEach(function(tab) {
+        tab.classList.toggle('active', tab.dataset.cat === cat);
+        tab.setAttribute('aria-selected', tab.dataset.cat === cat ? 'true' : 'false');
+    });
+
+    /* Show/hide cards */
+    document.querySelectorAll('#toolsGrid .tool-card').forEach(function(card) {
+        var match = cat === 'all' || card.dataset.cat === cat;
+        card.style.display = match ? '' : 'none';
+    });
+}
+</script>
+@endpush

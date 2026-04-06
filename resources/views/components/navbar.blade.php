@@ -1,399 +1,261 @@
 {{-- ============================================================
-     MEDIATOOLS — NAVBAR (Fixed, Scrollable Mega Menu, Mobile-First)
+     MEDIATOOLS — NAVBAR
      resources/views/components/navbar.blade.php
      ============================================================ --}}
 
-@php
-$navCategories = [
-    [
-        'key'   => 'create',
-        'label' => 'Buat & Kelola',
-        'icon'  => 'fa-wand-magic-sparkles',
-        'color' => 'lime',
-        'desc'  => 'Buat dokumen, link, dan kode bisnis',
-        'tools' => [
-            ['route'=>'tools.invoice',   'icon'=>'fa-file-invoice-dollar','name'=>'Invoice Generator',  'desc'=>'Tagihan profesional, download PDF',     'badge'=>null,    'tags'=>['invoice','tagihan','billing','faktur','kwitansi']],
-            ['route'=>'tools.signature', 'icon'=>'fa-signature',          'name'=>'Email Signature',    'desc'=>'Tanda tangan email & dokumen',           'badge'=>null,    'tags'=>['signature','tanda tangan','email','branding']],
-            ['route'=>'tools.qr',        'icon'=>'fa-qrcode',             'name'=>'QR Code Generator',  'desc'=>'QR menu, WiFi, kontak, URL',             'badge'=>'Baru',  'tags'=>['qr','qrcode','barcode','scan','menu','wifi']],
-            ['route'=>'tools.linktree',  'icon'=>'fa-link',               'name'=>'Link Tree',          'desc'=>'Satu link untuk semua sosmedmu',         'badge'=>'Populer','tags'=>['link','linktree','bio','sosial','instagram','tiktok']],
-        ],
-    ],
-    [
-        'key'   => 'files',
-        'label' => 'File & Dokumen',
-        'icon'  => 'fa-folder-open',
-        'color' => 'blue',
-        'desc'  => 'Konversi, edit, dan kelola file',
-        'tools' => [
-            ['route'=>'tools.pdfutilities',  'icon'=>'fa-file-pdf','name'=>'PDF Toolkit',     'desc'=>'Merge, split, compress PDF',           'badge'=>null,'tags'=>['pdf','merge','split','compress','gabung','pisah']],
-            ['route'=>'tools.fileconverter', 'icon'=>'fa-rotate',  'name'=>'File Converter',  'desc'=>'PDF Word Excel PPT JPG',               'badge'=>null,'tags'=>['pdf','word','excel','pptx','convert','konversi','jpg']],
-            ['route'=>'tools.imageconverter','icon'=>'fa-images',  'name'=>'Image Converter', 'desc'=>'Resize, kompres & ubah format foto',   'badge'=>null,'tags'=>['gambar','image','foto','resize','compress','webp','png','jpg']],
-        ],
-    ],
-    [
-        'key'   => 'media',
-        'label' => 'Konten & Media',
-        'icon'  => 'fa-photo-film',
-        'color' => 'purple',
-        'desc'  => 'Edit foto dan unduh konten',
-        'tools' => [
-            ['route'=>'tools.bgremover',      'icon'=>'fa-wand-sparkles','name'=>'Background Remover','desc'=>'Hapus background foto dengan AI',  'badge'=>'AI', 'tags'=>['background','hapus','foto','remover','transparent','ai']],
-            ['route'=>'tools.mediadownloader','icon'=>'fa-circle-down',  'name'=>'Media Downloader',  'desc'=>'Download YouTube, TikTok & IG',   'badge'=>null, 'tags'=>['download','youtube','tiktok','instagram','video','mp3','mp4','reels']],
-        ],
-    ],
-    [
-        'key'   => 'security',
-        'label' => 'Keamanan',
-        'icon'  => 'fa-shield-halved',
-        'color' => 'green',
-        'desc'  => 'Lindungi akun dan data Anda',
-        'tools' => [
-            ['route'=>'tools.passwordgenerator','icon'=>'fa-key','name'=>'Password Generator','desc'=>'Buat kata sandi kuat & aman','badge'=>null,'tags'=>['password','kata sandi','keamanan','security','pin']],
-        ],
-    ],
-];
+<nav class="nav-root" id="mainNav" aria-label="Navigasi utama">
+    <div class="nav-inner">
 
-$colorMap = [
-    'lime'   => ['bg'=>'rgba(163,230,53,0.12)',  'text'=>'#a3e635', 'badge'=>'rgba(163,230,53,0.18)'],
-    'blue'   => ['bg'=>'rgba(59,130,246,0.12)',  'text'=>'#60a5fa', 'badge'=>'rgba(59,130,246,0.18)'],
-    'purple' => ['bg'=>'rgba(139,92,246,0.12)',  'text'=>'#a78bfa', 'badge'=>'rgba(139,92,246,0.18)'],
-    'green'  => ['bg'=>'rgba(34,197,94,0.12)',   'text'=>'#4ade80', 'badge'=>'rgba(34,197,94,0.18)'],
-];
-@endphp
+        {{-- ── LOGO ── --}}
+        <a href="{{ route('home') }}" class="nav-logo" aria-label="MediaTools — Beranda">
+            <img src="{{ asset('images/icons-mediatools.png') }}"
+                 alt=""
+                 class="nav-logo-img"
+                 width="28" height="28">
+            <span class="nav-logo-text">MEDIA<em>TOOLS.</em></span>
+        </a>
 
-{{-- ══ NAVBAR ══ --}}
-<nav class="glass-nav fixed top-0 left-0 right-0 z-50" id="mainNav" role="navigation" aria-label="Navigasi utama">
-<div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+        {{-- ── DESKTOP LINKS ── --}}
+        <div class="nav-links" role="menubar">
 
-    {{-- LOGO --}}
-    <a href="{{ route('home') }}" class="flex items-center gap-2 group flex-shrink-0" aria-label="MediaTools Beranda">
-        <div class="w-8 h-8 sm:w-9 sm:h-9 transition-transform duration-300 group-hover:scale-110 flex-shrink-0">
-            <img src="{{ asset('images/icons-mediatools.png') }}" alt="MediaTools Logo" class="w-full h-full object-contain" loading="eager" width="36" height="36">
-        </div>
-        <span class="text-[15px] sm:text-[17px] font-extrabold tracking-tight text-white leading-none">
-            MEDIA<span style="color:var(--accent)">TOOLS.</span>
-        </span>
-    </a>
+            {{-- Tools Dropdown --}}
+            @php
+            $navTools = [
+                ['tools.invoice',           'fa-file-invoice-dollar', 'Invoice Generator',   'Tagihan profesional',      'amber'],
+                ['tools.linktree',          'fa-link',                'LinkTree Builder',    'Satu halaman semua link',  'amber'],
+                ['tools.qr',                'fa-qrcode',              'QR Code Generator',   'QR Code custom & branded', 'amber'],
+                ['tools.signature',         'fa-signature',           'Email Signature',     'Tanda tangan profesional', 'amber'],
+                ['tools.bgremover',         'fa-scissors',            'Background Remover',  'Hapus bg foto otomatis',   'blue'],
+                ['tools.imageconverter',    'fa-image',               'Image Converter',     'Resize, compress & convert','blue'],
+                ['tools.fileconverter',     'fa-repeat',              'File Converter',      'PDF, Word, Excel & lebih', 'blue'],
+                ['tools.pdfutilities',      'fa-file-pdf',            'PDF Utilities',       'Merge, split & compress',  'blue'],
+                ['tools.mediadownloader',   'fa-cloud-arrow-down',    'Media Downloader',    'YouTube, TikTok & IG',     'purple'],
+                ['tools.passwordgenerator', 'fa-key',                 'Password Generator',  'Kata sandi kuat & aman',   'purple'],
+            ];
+            @endphp
 
-    {{-- ── DESKTOP MENU (lg+) ── --}}
-    <div class="hidden lg:flex items-center gap-1 flex-1 justify-center">
-        <a href="{{ route('home') }}" class="nav-link px-3 py-2 rounded-lg hover:bg-white/5 transition-colors">Beranda</a>
+            <div class="relative" id="toolsWrap">
+                <button id="toolsBtn"
+                        class="nav-tools-btn"
+                        onclick="toggleToolsMenu()"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                    <i class="fa-solid fa-grid-2 text-[11px]" style="color:var(--text-3)"></i>
+                    <span>Tools</span>
+                    <i class="fa-solid fa-chevron-down nav-tools-chevron"></i>
+                </button>
 
-        {{-- Mega Dropdown --}}
-        <div id="toolsMenu" class="relative">
-            <button id="toolsBtn"
-                    type="button"
-                    onclick="MT.toggleDropdown()"
-                    class="nav-link flex items-center gap-1.5 px-3 py-2 rounded-lg hover:bg-white/5 transition-colors"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                    aria-controls="toolsDropdown">
-                <span>Semua Tools</span>
-                <i id="toolsArrow" class="fa-solid fa-chevron-down text-[10px] transition-transform duration-300"></i>
-            </button>
+                <div id="toolsDropdown" class="nav-dropdown" role="menu">
 
-            {{-- MEGA MENU — fully scrollable --}}
-            <div id="toolsDropdown" class="nav-mega-menu" role="menu" aria-label="Daftar semua tools">
-                <div class="nav-mega-inner">
-
-                    <div class="nav-mega-header">
-                        <p class="nav-mega-title">Pilih Tools yang Kamu Butuhkan</p>
-                        <a href="{{ route('home') }}#tools" class="nav-mega-see-all" onclick="MT.closeDropdown()">
-                            Lihat semua <i class="fa-solid fa-arrow-right text-[10px]"></i>
-                        </a>
-                    </div>
-
-                    {{-- Scrollable grid body --}}
-                    <div class="nav-mega-scroll-body">
-                        <div class="nav-mega-grid">
-                            @foreach($navCategories as $cat)
-                            @php $c = $colorMap[$cat['color']]; @endphp
-                            <div class="nav-mega-col">
-                                <div class="nav-cat-head">
-                                    <div class="nav-cat-icon" style="background:{{ $c['bg'] }};color:{{ $c['text'] }};">
-                                        <i class="fa-solid {{ $cat['icon'] }}"></i>
-                                    </div>
-                                    <div>
-                                        <p class="nav-cat-name">{{ $cat['label'] }}</p>
-                                        <p class="nav-cat-desc">{{ $cat['desc'] }}</p>
-                                    </div>
-                                </div>
-                                <div class="nav-cat-tools">
-                                    @foreach($cat['tools'] as $tool)
-                                    <a href="{{ route($tool['route']) }}"
-                                       class="nav-tool-item"
-                                       role="menuitem"
-                                       onclick="MT.closeDropdown()">
-                                        <div class="nav-tool-icon" style="background:{{ $c['bg'] }};color:{{ $c['text'] }};">
-                                            <i class="fa-solid {{ $tool['icon'] }}"></i>
-                                        </div>
-                                        <div class="nav-tool-text">
-                                            <span class="nav-tool-name">{{ $tool['name'] }}</span>
-                                            <span class="nav-tool-desc">{{ $tool['desc'] }}</span>
-                                        </div>
-                                        @if($tool['badge'])
-                                        <span class="nav-tool-badge" style="background:{{ $c['badge'] }};color:{{ $c['text'] }};">{{ $tool['badge'] }}</span>
-                                        @endif
-                                    </a>
-                                    @endforeach
-                                </div>
+                    {{-- Grid of tools --}}
+                    <div class="nav-dropdown-grid">
+                        @foreach($navTools as [$route, $icon, $name, $desc, $color])
+                        <a href="{{ route($route) }}"
+                           class="nav-tool-item"
+                           role="menuitem">
+                            <div class="nav-tool-icon {{ $color }}">
+                                <i class="fa-solid {{ $icon }}"></i>
                             </div>
-                            @endforeach
-                        </div>
+                            <div class="nav-tool-info">
+                                <p>{{ $name }}</p>
+                                <span>{{ $desc }}</span>
+                            </div>
+                        </a>
+                        @endforeach
                     </div>
 
-                    <div class="nav-mega-footer">
-                        <button type="button" onclick="MT.openSearch(); MT.closeDropdown();" class="nav-mega-search-btn">
-                            <i class="fa-solid fa-magnifying-glass text-xs"></i>
-                            <span>Cari tools spesifik...</span>
-                            <kbd>⌘K</kbd>
+                    {{-- Footer --}}
+                    <div class="nav-dropdown-footer">
+                        <span style="font-size:12px; color:var(--text-3);">
+                            <i class="fa-solid fa-sparkles" style="color:var(--accent); margin-right:5px;"></i>
+                            10 tools aktif · terus bertambah
+                        </span>
+                        <button onclick="closeToolsMenu(); openSearch();"
+                                style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--accent);background:none;border:none;cursor:pointer;padding:6px 10px;border-radius:8px;transition:background 0.2s;"
+                                onmouseover="this.style.background='rgba(163,230,53,0.1)'"
+                                onmouseout="this.style.background='none'">
+                            <i class="fa-solid fa-magnifying-glass text-[10px]"></i>
+                            Cari tools
                         </button>
-                        <div class="nav-mega-stats">
-                            <span><i class="fa-solid fa-bolt" style="color:var(--accent);font-size:10px;"></i> 10 Tools Aktif</span>
-                            <span><i class="fa-solid fa-shield-halved" style="color:var(--accent);font-size:10px;"></i> 100% Gratis</span>
-                            <span><i class="fa-solid fa-lock" style="color:var(--accent);font-size:10px;"></i> Privasi Terjaga</span>
-                        </div>
                     </div>
 
                 </div>
             </div>
+
+            <a href="{{ route('home') }}#about"   class="nav-link">Fitur</a>
+            <a href="{{ route('home') }}#contact"  class="nav-link">Kontak</a>
+
         </div>
 
-        <a href="{{ route('home') }}#about"   class="nav-link px-3 py-2 rounded-lg hover:bg-white/5 transition-colors">Tentang</a>
-        <a href="{{ route('home') }}#contact" class="nav-link px-3 py-2 rounded-lg hover:bg-white/5 transition-colors">Kontak</a>
-    </div>
-
-    {{-- ── DESKTOP RIGHT: SEARCH + AUTH ── --}}
-    <div class="hidden lg:flex items-center gap-2 flex-shrink-0">
-        <button type="button" onclick="MT.openSearch()" class="nav-search-pill" aria-label="Cari tools (Ctrl+K)">
-            <i class="fa-solid fa-magnifying-glass text-xs"></i>
+        {{-- ── SEARCH ── --}}
+        <button class="nav-search" onclick="openSearch()" aria-label="Cari tools">
+            <i class="fa-solid fa-magnifying-glass" style="font-size:12px; color:var(--text-3);"></i>
             <span>Cari tools...</span>
             <kbd>⌘K</kbd>
         </button>
 
-        @guest
-            <a href="{{ route('login') }}"    class="nav-link px-4 py-2 rounded-xl hover:bg-white/5 transition-colors text-sm">Masuk</a>
-            <a href="{{ route('register') }}" class="btn-primary px-5 py-2.5 text-sm rounded-xl">
-                <span>Daftar Gratis</span>
-                <i class="fa-solid fa-arrow-right text-[11px]"></i>
-            </a>
-        @endguest
+        {{-- ── RIGHT ACTIONS ── --}}
+        <div class="nav-actions">
+            @guest
+                <a href="{{ route('login') }}" class="btn-ghost">Masuk</a>
+                <a href="{{ route('register') }}" class="btn-primary">
+                    Mulai Gratis
+                    <i class="fa-solid fa-arrow-right" style="font-size:10px;"></i>
+                </a>
+            @endguest
 
-        @auth
-            <div class="flex items-center gap-2 pl-3 border-l" style="border-color:var(--border)">
-                <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0"
-                     style="background:var(--accent-dim);color:var(--accent);">
-                    {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+            @auth
+                <div class="nav-user-pill">
+                    <div class="nav-user-avatar">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</div>
+                    <span class="nav-user-name">{{ Str::limit(Auth::user()->name, 16) }}</span>
                 </div>
-                <span class="text-sm font-semibold text-white">{{ Str::limit(Auth::user()->name, 12) }}</span>
+                <form method="POST" action="{{ route('logout') }}" style="margin:0;">
+                    @csrf
+                    <button type="submit" class="btn-ghost" style="color:var(--text-3);"
+                            title="Keluar">
+                        <i class="fa-solid fa-right-from-bracket" style="font-size:12px;"></i>
+                    </button>
+                </form>
+            @endauth
+        </div>
+
+        {{-- ── MOBILE TOGGLE ── --}}
+        <button class="nav-mobile-toggle md:hidden"
+                id="mobileToggle"
+                onclick="toggleMobileMenu()"
+                aria-label="Buka menu"
+                style="display:none; margin-left:8px;">
+            <i class="fa-solid fa-bars text-sm" id="menuIconOpen"></i>
+            <i class="fa-solid fa-xmark text-sm" id="menuIconClose" style="display:none;"></i>
+        </button>
+
+    </div>
+</nav>
+
+{{-- ── MOBILE MENU ── --}}
+<div id="mobileMenu" class="mobile-menu hidden" aria-label="Menu mobile">
+
+    <p class="mobile-section-title">Navigasi</p>
+    <a href="{{ route('home') }}" class="mobile-nav-link">
+        <span class="icon"><i class="fa-solid fa-house" style="font-size:12px;color:var(--text-3)"></i></span>
+        Beranda
+    </a>
+    <button onclick="closeMobileMenu(); openSearch();"
+            class="mobile-nav-link"
+            style="background:none;border:none;cursor:pointer;width:100%;text-align:left;">
+        <span class="icon"><i class="fa-solid fa-magnifying-glass" style="font-size:12px;color:var(--text-3)"></i></span>
+        Cari Tools...
+    </button>
+
+    <p class="mobile-section-title" style="margin-top:8px;">Tools</p>
+    @foreach($navTools as [$route, $icon, $name, $desc, $color])
+    <a href="{{ route($route) }}" class="mobile-nav-link">
+        <span class="icon"><i class="fa-solid {{ $icon }}" style="font-size:12px;color:var(--text-3)"></i></span>
+        {{ $name }}
+    </a>
+    @endforeach
+
+    <p class="mobile-section-title" style="margin-top:8px;">Umum</p>
+    <a href="{{ route('home') }}#about"   class="mobile-nav-link">
+        <span class="icon"><i class="fa-solid fa-star" style="font-size:11px;color:var(--text-3)"></i></span>
+        Fitur
+    </a>
+    <a href="{{ route('home') }}#contact" class="mobile-nav-link">
+        <span class="icon"><i class="fa-solid fa-envelope" style="font-size:11px;color:var(--text-3)"></i></span>
+        Kontak
+    </a>
+
+    <div class="mobile-auth-row">
+        @guest
+            <a href="{{ route('login') }}"    class="btn-outline" style="text-align:center;justify-content:center;">Masuk</a>
+            <a href="{{ route('register') }}" class="btn-primary" style="text-align:center;justify-content:center;">Daftar Gratis</a>
+        @endguest
+        @auth
+            <div style="display:flex;align-items:center;gap:10px;grid-column:1/-1;padding:12px;background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r-lg);">
+                <div class="nav-user-avatar" style="width:38px;height:38px;font-size:14px;">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</div>
+                <div>
+                    <p style="font-size:13px;font-weight:700;">{{ Auth::user()->name }}</p>
+                    <p style="font-size:11px;color:var(--text-3);">{{ Auth::user()->email }}</p>
+                </div>
             </div>
-            <form method="POST" action="{{ route('logout') }}">
+            <form method="POST" action="{{ route('logout') }}" style="grid-column:1/-1;">
                 @csrf
                 <button type="submit"
-                        class="flex items-center gap-1.5 text-sm font-semibold text-gray-500
-                               hover:text-red-400 transition-colors px-3 py-2 rounded-xl hover:bg-red-500/10">
-                    <i class="fa-solid fa-right-from-bracket text-xs"></i>
-                    <span>Keluar</span>
+                        style="width:100%;padding:12px;border-radius:var(--r-md);background:rgba(239,68,68,0.08);color:#f87171;border:1px solid rgba(239,68,68,0.15);font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;">
+                    <i class="fa-solid fa-right-from-bracket" style="margin-right:6px;"></i>
+                    Keluar dari Akun
                 </button>
             </form>
         @endauth
     </div>
-
-    {{-- ── MOBILE: SEARCH + HAMBURGER ── --}}
-    <div class="lg:hidden flex items-center gap-2 flex-shrink-0">
-        <button type="button" onclick="MT.openSearch()" class="mobile-nav-icon-btn" aria-label="Cari tools">
-            <i class="fa-solid fa-magnifying-glass text-sm"></i>
-        </button>
-        <button type="button"
-                id="mobileMenuBtn"
-                onclick="MT.toggleMobileMenu()"
-                class="mobile-nav-icon-btn"
-                aria-label="Buka menu navigasi"
-                aria-expanded="false"
-                aria-controls="mobileMenu">
-            <i class="fa-solid fa-bars text-sm" id="menuIcon"></i>
-        </button>
-    </div>
-
-</div>
-</nav>
-
-{{-- Spacer agar konten tidak tertutup navbar --}}
-<div class="h-16" aria-hidden="true"></div>
-
-
-{{-- ══ MOBILE MENU PANEL — Full-height, scrollable ══ --}}
-<div id="mobileMenu"
-     class="mobile-menu-panel"
-     aria-hidden="true"
-     role="dialog"
-     aria-modal="true"
-     aria-label="Menu navigasi">
-
-    {{-- Scrollable inner --}}
-    <div class="mobile-menu-inner" id="mobileMenuInner">
-
-        {{-- Search shortcut --}}
-        <div class="mobile-search-bar"
-             role="button"
-             tabindex="0"
-             onclick="MT.openSearch(); MT.closeMobileMenu();"
-             onkeydown="if(event.key==='Enter'){MT.openSearch();MT.closeMobileMenu();}">
-            <i class="fa-solid fa-magnifying-glass text-gray-500 text-sm flex-shrink-0"></i>
-            <span class="text-gray-500 text-sm flex-1">Cari tools... (PDF, QR, invoice...)</span>
-            <kbd class="mobile-kbd">⌘K</kbd>
-        </div>
-
-        {{-- Nav links --}}
-        <div class="mobile-nav-section">
-            <a href="{{ route('home') }}" class="mobile-nav-link" onclick="MT.closeMobileMenu()">
-                <div class="mobile-nav-link-icon" style="background:rgba(255,255,255,0.05);">
-                    <i class="fa-solid fa-house text-gray-400 text-xs"></i>
-                </div>
-                <span>Beranda</span>
-            </a>
-            <a href="{{ route('home') }}#about" class="mobile-nav-link" onclick="MT.closeMobileMenu()">
-                <div class="mobile-nav-link-icon" style="background:rgba(255,255,255,0.05);">
-                    <i class="fa-solid fa-circle-info text-gray-400 text-xs"></i>
-                </div>
-                <span>Tentang Kami</span>
-            </a>
-            <a href="{{ route('home') }}#contact" class="mobile-nav-link" onclick="MT.closeMobileMenu()">
-                <div class="mobile-nav-link-icon" style="background:rgba(255,255,255,0.05);">
-                    <i class="fa-solid fa-envelope text-gray-400 text-xs"></i>
-                </div>
-                <span>Kontak</span>
-            </a>
-        </div>
-
-        {{-- Tools header --}}
-        <div class="mobile-section-title">
-            <i class="fa-solid fa-toolbox" style="color:var(--accent);"></i>
-            <span>Semua Tools</span>
-            <span class="mobile-section-count">10 tools</span>
-        </div>
-
-        {{-- Category accordions — each is independently scrollable via CSS --}}
-        @foreach($navCategories as $catIdx => $cat)
-        @php $c = $colorMap[$cat['color']]; @endphp
-        <div class="mobile-cat-accordion {{ $catIdx === 0 ? 'is-open' : '' }}" id="mob-acc-{{ $cat['key'] }}">
-
-            <button type="button"
-                    class="mobile-cat-btn"
-                    onclick="MT.toggleCat('{{ $cat['key'] }}')"
-                    aria-expanded="{{ $catIdx === 0 ? 'true' : 'false' }}"
-                    aria-controls="mob-body-{{ $cat['key'] }}">
-                <div class="flex items-center gap-3">
-                    <div class="mobile-cat-btn-icon" style="background:{{ $c['bg'] }};color:{{ $c['text'] }};">
-                        <i class="fa-solid {{ $cat['icon'] }} text-xs"></i>
-                    </div>
-                    <div>
-                        <p class="mobile-cat-btn-name">{{ $cat['label'] }}</p>
-                        <p class="mobile-cat-btn-count">{{ count($cat['tools']) }} tools</p>
-                    </div>
-                </div>
-                <div class="mobile-cat-chevron" id="mob-chev-{{ $cat['key'] }}"
-                     style="{{ $catIdx === 0 ? 'transform:rotate(180deg)' : '' }}">
-                    <i class="fa-solid fa-chevron-down text-[11px] text-gray-500"></i>
-                </div>
-            </button>
-
-            <div id="mob-body-{{ $cat['key'] }}"
-                 class="mobile-cat-body {{ $catIdx === 0 ? 'open' : '' }}">
-                <div class="mobile-cat-tools-grid">
-                    @foreach($cat['tools'] as $tool)
-                    <a href="{{ route($tool['route']) }}" class="mobile-tool-card" onclick="MT.closeMobileMenu()">
-                        <div class="mobile-tool-card-icon" style="background:{{ $c['bg'] }};color:{{ $c['text'] }};">
-                            <i class="fa-solid {{ $tool['icon'] }}"></i>
-                        </div>
-                        <div class="mobile-tool-card-text">
-                            <span class="mobile-tool-card-name">{{ $tool['name'] }}</span>
-                            <span class="mobile-tool-card-desc">{{ $tool['desc'] }}</span>
-                        </div>
-                        @if($tool['badge'])
-                        <span class="mobile-tool-card-badge" style="background:{{ $c['badge'] }};color:{{ $c['text'] }};">{{ $tool['badge'] }}</span>
-                        @endif
-                    </a>
-                    @endforeach
-                </div>
-            </div>
-
-        </div>
-        @endforeach
-
-        {{-- Auth --}}
-        <div class="mobile-auth-section">
-            @guest
-            <div class="grid grid-cols-2 gap-2.5">
-                <a href="{{ route('login') }}"    class="mobile-auth-btn-outline">Masuk</a>
-                <a href="{{ route('register') }}" class="mobile-auth-btn-primary">
-                    <i class="fa-solid fa-bolt text-xs"></i> Daftar Gratis
-                </a>
-            </div>
-            @endguest
-            @auth
-            <div class="mobile-user-card">
-                <div class="mobile-user-avatar">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</div>
-                <div class="flex-1 min-w-0">
-                    <p class="text-sm font-bold text-white truncate">{{ Auth::user()->name }}</p>
-                    <p class="text-xs text-gray-500 truncate">{{ Auth::user()->email }}</p>
-                </div>
-            </div>
-            <form method="POST" action="{{ route('logout') }}" class="mt-2.5">
-                @csrf
-                <button type="submit" class="mobile-logout-btn">
-                    <i class="fa-solid fa-right-from-bracket text-xs"></i> Keluar dari Akun
-                </button>
-            </form>
-            @endauth
-        </div>
-
-        {{-- Bottom padding for safe area --}}
-        <div class="h-6" aria-hidden="true"></div>
-
-    </div>
 </div>
 
+{{-- ================================================================
+     SEARCH OVERLAY
+================================================================ --}}
+<div id="searchOverlay" class="search-overlay" role="dialog" aria-modal="true" aria-label="Cari Tools">
 
-{{-- ══ SEARCH OVERLAY ══ --}}
-<div id="search-overlay" class="search-overlay" role="dialog" aria-modal="true" aria-label="Cari Tools">
-
-    <div class="search-backdrop" onclick="MT.closeSearch()"></div>
+    <div class="search-backdrop" onclick="closeSearch()"></div>
 
     <div class="search-modal">
-        <div class="search-input-wrap">
+
+        {{-- Input --}}
+        <div class="search-input-row">
             <i class="fa-solid fa-magnifying-glass search-input-icon"></i>
-            <input type="text" id="search-input" class="search-input"
-                   placeholder="Cari tools... (PDF, QR, password...)"
-                   autocomplete="off" spellcheck="false" inputmode="search"
-                   aria-label="Cari tools">
-            <button type="button" onclick="MT.closeSearch()" class="search-close-btn" aria-label="Tutup pencarian">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
+            <input type="text" id="searchInput"
+                   class="search-input"
+                   placeholder="Cari tools... (contoh: PDF, gambar, password)"
+                   autocomplete="off" spellcheck="false">
+            <span class="search-kbd" onclick="closeSearch()">Esc</span>
         </div>
 
-        <div class="search-body">
+        {{-- Body --}}
+        <div class="search-body" id="searchBody">
 
-            <div id="search-browse">
-                @foreach($navCategories as $cat)
-                @php $c = $colorMap[$cat['color']]; @endphp
-                <div class="search-cat-section">
-                    <div class="search-cat-label" style="color:{{ $c['text'] }};">
-                        <i class="fa-solid {{ $cat['icon'] }}"></i> {{ $cat['label'] }}
-                    </div>
-                    <div class="search-cat-grid">
-                        @foreach($cat['tools'] as $tool)
-                        <a href="{{ route($tool['route']) }}"
-                           class="search-tool-item"
-                           data-name="{{ strtolower($tool['name']) }}"
-                           data-tags="{{ implode(' ', $tool['tags']) }}"
-                           onclick="MT.closeSearch()">
-                            <div class="search-tool-icon" style="background:{{ $c['bg'] }};color:{{ $c['text'] }};">
-                                <i class="fa-solid {{ $tool['icon'] }}"></i>
+            {{-- Browse (default) --}}
+            <div id="searchBrowse">
+                @php
+                $searchCats = [
+                    ['amber', 'fa-file-alt', 'Dokumen & Bisnis', [
+                        ['tools.invoice',     'fa-file-invoice-dollar', 'amber', 'Invoice Generator',   'Buat tagihan profesional',            ['invoice','tagihan','billing']],
+                        ['tools.pdfutilities','fa-file-pdf',            'blue',  'PDF Utilities',        'Merge, split & compress PDF',         ['pdf','merge','split','compress']],
+                        ['tools.fileconverter','fa-repeat',             'blue',  'File Converter',       'Konversi PDF, Word, Excel, PPT',       ['pdf','word','excel','convert']],
+                    ]],
+                    ['blue', 'fa-image', 'Gambar & Media', [
+                        ['tools.imageconverter','fa-image',   'blue',  'Image Converter',    'Resize, compress & convert gambar',   ['gambar','image','foto','resize','compress','webp','png','jpg']],
+                        ['tools.bgremover',    'fa-scissors', 'blue',  'Background Remover', 'Hapus background foto AI otomatis',   ['background','hapus','foto','remover','ai']],
+                    ]],
+                    ['purple','fa-share-nodes','Sosial & Link', [
+                        ['tools.mediadownloader','fa-cloud-arrow-down','purple','Media Downloader',   'Download YouTube, TikTok & Instagram', ['download','youtube','tiktok','instagram','video','mp3','mp4']],
+                        ['tools.linktree',      'fa-link',             'purple','LinkTree Builder',   'Satu halaman untuk semua linkmu',      ['link','linktree','sosial','bio']],
+                        ['tools.qr',            'fa-qrcode',           'purple','QR Code Generator',  'QR Code custom & branded',             ['qr','qrcode','barcode','scan']],
+                    ]],
+                    ['green','fa-shield-halved','Keamanan & Branding', [
+                        ['tools.passwordgenerator','fa-key',      'green','Password Generator','Kata sandi kuat & aman instan',        ['password','kata sandi','keamanan','security']],
+                        ['tools.signature',       'fa-signature', 'green','Email Signature',   'Tanda tangan email profesional',       ['signature','email','tanda tangan','branding']],
+                    ]],
+                ];
+                @endphp
+
+                @foreach($searchCats as [$catColor, $catIcon, $catName, $catTools])
+                <div style="margin-bottom:16px;">
+                    <p class="search-cat-label">
+                        <i class="fa-solid {{ $catIcon }}"></i>
+                        {{ $catName }}
+                    </p>
+                    <div>
+                        @foreach($catTools as [$route, $icon, $color, $name, $desc, $tags])
+                        <a href="{{ route($route) }}"
+                           class="search-tool-row"
+                           data-name="{{ strtolower($name) }}"
+                           data-tags="{{ implode(' ', $tags) }}"
+                           onclick="closeSearch()">
+                            <div class="search-tool-ico {{ $color }}">
+                                <i class="fa-solid {{ $icon }}"></i>
                             </div>
-                            <div class="search-tool-info">
-                                <p class="search-tool-name">{{ $tool['name'] }}</p>
-                                <p class="search-tool-desc">{{ $tool['desc'] }}</p>
+                            <div style="flex:1;min-width:0;">
+                                <p class="search-tool-name">{{ $name }}</p>
+                                <p class="search-tool-desc">{{ $desc }}</p>
                             </div>
                             <i class="fa-solid fa-arrow-right search-tool-arrow"></i>
                         </a>
@@ -403,265 +265,49 @@ $colorMap = [
                 @endforeach
             </div>
 
-            <div id="search-results" class="hidden">
-                <div class="search-cat-label" style="color:var(--accent);">
-                    <i class="fa-solid fa-magnifying-glass"></i> Hasil Pencarian
-                </div>
-                <div id="search-results-grid" class="search-cat-grid"></div>
-                <div id="search-empty" class="search-empty hidden">
-                    <i class="fa-regular fa-face-confused text-3xl text-gray-600 mb-3 block"></i>
-                    <p class="text-gray-400 font-semibold">Tools tidak ditemukan</p>
-                    <p class="text-gray-600 text-sm mt-1">Coba kata lain seperti "PDF", "gambar", atau "download"</p>
+            {{-- Results --}}
+            <div id="searchResults" class="hidden">
+                <p class="search-cat-label">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    Hasil Pencarian
+                </p>
+                <div id="searchResultsGrid"></div>
+                <div id="searchEmpty" class="search-empty hidden">
+                    <i class="fa-regular fa-face-meh"></i>
+                    <p>Tidak ada tools yang cocok — coba kata lain.</p>
                 </div>
             </div>
 
         </div>
 
+        {{-- Hints --}}
         <div class="search-footer">
-            <span><kbd>↵</kbd> Buka</span>
-            <span><kbd>↑↓</kbd> Navigasi</span>
-            <span><kbd>Esc</kbd> Tutup</span>
+            <span><kbd style="padding:2px 6px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:4px;font-size:10px;color:var(--text-3);">↵</kbd> Buka</span>
+            <span><kbd style="padding:2px 6px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:4px;font-size:10px;color:var(--text-3);">↑↓</kbd> Navigasi</span>
+            <span><kbd style="padding:2px 6px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:4px;font-size:10px;color:var(--text-3);">Esc</kbd> Tutup</span>
         </div>
+
     </div>
 </div>
 
+{{-- Inline responsive override --}}
+<style>
+@media (max-width: 768px) {
+    #mobileToggle { display: flex !important; }
+}
+</style>
 
-{{-- ══ SCRIPTS ══ --}}
 @push('scripts')
 <script>
-(function () {
-    'use strict';
-
-    var $ = function (id) { return document.getElementById(id); };
-
-    var state = {
-        dropOpen:     false,
-        mobileOpen:   false,
-        openCat:      'create',
-        searchOpen:   false,
-        focusedIdx:   -1,
-        visibleItems: [],
-    };
-
-    /* ── Desktop Dropdown ── */
-    function openDropdown() {
-        state.dropOpen = true;
-        var m = $('toolsDropdown'), b = $('toolsBtn'), a = $('toolsArrow');
-        if (m) m.classList.add('show');
-        if (a) a.style.transform = 'rotate(180deg)';
-        if (b) b.setAttribute('aria-expanded', 'true');
-    }
-    function closeDropdown() {
-        state.dropOpen = false;
-        var m = $('toolsDropdown'), b = $('toolsBtn'), a = $('toolsArrow');
-        if (m) m.classList.remove('show');
-        if (a) a.style.transform = '';
-        if (b) b.setAttribute('aria-expanded', 'false');
-    }
-    function toggleDropdown() { state.dropOpen ? closeDropdown() : openDropdown(); }
-
-    document.addEventListener('click', function (e) {
-        if (!state.dropOpen) return;
-        var tm = $('toolsMenu');
-        if (tm && !tm.contains(e.target)) closeDropdown();
-    });
-
-    /* ── Mobile Menu ── */
-    function openMobileMenu() {
-        state.mobileOpen = true;
-        var p = $('mobileMenu'), b = $('mobileMenuBtn'), i = $('menuIcon');
-        if (p) { p.classList.add('open'); p.setAttribute('aria-hidden', 'false'); }
-        if (b) b.setAttribute('aria-expanded', 'true');
-        if (i) i.className = 'fa-solid fa-xmark text-sm';
-        document.body.style.overflow = 'hidden';
-    }
-    function closeMobileMenu() {
-        state.mobileOpen = false;
-        var p = $('mobileMenu'), b = $('mobileMenuBtn'), i = $('menuIcon');
-        if (p) { p.classList.remove('open'); p.setAttribute('aria-hidden', 'true'); }
-        if (b) b.setAttribute('aria-expanded', 'false');
-        if (i) i.className = 'fa-solid fa-bars text-sm';
-        document.body.style.overflow = '';
-    }
-    function toggleMobileMenu() { state.mobileOpen ? closeMobileMenu() : openMobileMenu(); }
-
-    window.addEventListener('resize', function () {
-        if (window.innerWidth >= 1024 && state.mobileOpen) closeMobileMenu();
-    }, { passive: true });
-
-    /* ── Mobile Category Accordion ── */
-    function toggleCat(key) {
-        var body = $('mob-body-' + key);
-        var chev = $('mob-chev-' + key);
-        var acc  = $('mob-acc-'  + key);
-        var btn  = acc ? acc.querySelector('.mobile-cat-btn') : null;
-        if (!body) return;
-
-        var isOpen = body.classList.contains('open');
-
-        /* close previously open */
-        if (state.openCat && state.openCat !== key) {
-            var pb  = $('mob-body-' + state.openCat);
-            var pc  = $('mob-chev-' + state.openCat);
-            var pa  = $('mob-acc-'  + state.openCat);
-            var pbt = pa ? pa.querySelector('.mobile-cat-btn') : null;
-            if (pb)  pb.classList.remove('open');
-            if (pc)  pc.style.transform = '';
-            if (pa)  pa.classList.remove('is-open');
-            if (pbt) pbt.setAttribute('aria-expanded', 'false');
-            state.openCat = null;
-        }
-
-        if (isOpen) {
-            body.classList.remove('open');
-            if (chev) chev.style.transform = '';
-            if (acc)  acc.classList.remove('is-open');
-            if (btn)  btn.setAttribute('aria-expanded', 'false');
-            state.openCat = null;
-        } else {
-            body.classList.add('open');
-            if (chev) chev.style.transform = 'rotate(180deg)';
-            if (acc)  acc.classList.add('is-open');
-            if (btn)  btn.setAttribute('aria-expanded', 'true');
-            state.openCat = key;
-
-            /* Scroll accordion into view with small offset */
-            setTimeout(function () {
-                if (acc) {
-                    acc.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                }
-            }, 320);
+/* ── Close menu on outside mobile tap ── */
+document.addEventListener('click', function(e) {
+    var mobileMenu = document.getElementById('mobileMenu');
+    var mobileToggle = document.getElementById('mobileToggle');
+    if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+        if (!mobileMenu.contains(e.target) && !mobileToggle.contains(e.target)) {
+            window.closeMobileMenu && window.closeMobileMenu();
         }
     }
-
-    /* ── Scroll Effect ── */
-    var nav = $('mainNav');
-    if (nav) {
-        window.addEventListener('scroll', function () {
-            nav.classList.toggle('scrolled', window.scrollY > 40);
-        }, { passive: true });
-    }
-
-    /* ── Search ── */
-    var overlay     = $('search-overlay');
-    var searchInput = $('search-input');
-    var browseEl    = $('search-browse');
-    var resultsEl   = $('search-results');
-    var resultsGrid = $('search-results-grid');
-    var emptyEl     = $('search-empty');
-    var allItems    = document.querySelectorAll('#search-browse .search-tool-item');
-
-    function openSearch() {
-        state.searchOpen = true;
-        if (overlay) overlay.classList.add('open');
-        document.body.style.overflow = 'hidden';
-        resetSearch();
-        setTimeout(function () { if (searchInput) searchInput.focus(); }, 100);
-    }
-    function closeSearch() {
-        state.searchOpen = false;
-        if (overlay) overlay.classList.remove('open');
-        document.body.style.overflow = state.mobileOpen ? 'hidden' : '';
-        if (searchInput) searchInput.value = '';
-        resetSearch();
-    }
-    function resetSearch() {
-        if (browseEl)    browseEl.classList.remove('hidden');
-        if (resultsEl)   resultsEl.classList.add('hidden');
-        if (emptyEl)     emptyEl.classList.add('hidden');
-        if (resultsGrid) resultsGrid.innerHTML = '';
-        state.focusedIdx   = -1;
-        state.visibleItems = [];
-        document.querySelectorAll('.search-tool-item.focused')
-            .forEach(function (el) { el.classList.remove('focused'); });
-    }
-
-    if (searchInput) {
-        searchInput.addEventListener('input', function () {
-            var q = this.value.trim().toLowerCase();
-            if (!q) { resetSearch(); return; }
-            if (browseEl)    browseEl.classList.add('hidden');
-            if (resultsEl)   resultsEl.classList.remove('hidden');
-            if (resultsGrid) resultsGrid.innerHTML = '';
-            state.visibleItems = [];
-            state.focusedIdx   = -1;
-
-            allItems.forEach(function (item) {
-                var name = (item.dataset.name || '').toLowerCase();
-                var tags = (item.dataset.tags || '').toLowerCase();
-                if (name.indexOf(q) !== -1 || tags.indexOf(q) !== -1) {
-                    var clone = item.cloneNode(true);
-                    clone.classList.remove('focused');
-                    clone.addEventListener('click', closeSearch);
-                    var nameEl = clone.querySelector('.search-tool-name');
-                    if (nameEl) {
-                        var re = new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')', 'gi');
-                        nameEl.innerHTML = nameEl.textContent.replace(re,
-                            '<mark class="search-highlight">$1</mark>');
-                    }
-                    if (resultsGrid) resultsGrid.appendChild(clone);
-                    state.visibleItems.push(clone);
-                }
-            });
-            if (emptyEl) emptyEl.classList.toggle('hidden', state.visibleItems.length > 0);
-        });
-    }
-
-    document.addEventListener('keydown', function (e) {
-        if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-            e.preventDefault();
-            state.searchOpen ? closeSearch() : openSearch();
-            return;
-        }
-        if (e.key === 'Escape') {
-            if (state.searchOpen)  { closeSearch();   return; }
-            if (state.dropOpen)    { closeDropdown();  return; }
-            if (state.mobileOpen)  { closeMobileMenu(); return; }
-        }
-        if (!state.searchOpen) return;
-        var items = state.visibleItems.length
-            ? state.visibleItems
-            : Array.from(document.querySelectorAll('#search-browse .search-tool-item'));
-        if (e.key === 'ArrowDown') {
-            e.preventDefault();
-            state.focusedIdx = Math.min(state.focusedIdx + 1, items.length - 1);
-            updateFocus(items);
-        } else if (e.key === 'ArrowUp') {
-            e.preventDefault();
-            state.focusedIdx = Math.max(state.focusedIdx - 1, 0);
-            updateFocus(items);
-        } else if (e.key === 'Enter' && state.focusedIdx >= 0) {
-            e.preventDefault();
-            if (items[state.focusedIdx]) items[state.focusedIdx].click();
-        }
-    });
-
-    function updateFocus(items) {
-        items.forEach(function (el, i) { el.classList.toggle('focused', i === state.focusedIdx); });
-        if (items[state.focusedIdx]) items[state.focusedIdx].scrollIntoView({ block: 'nearest' });
-        if (searchInput) searchInput.focus();
-    }
-
-    /* ── Expose public API ── */
-    window.MT = {
-        openDropdown:     openDropdown,
-        closeDropdown:    closeDropdown,
-        toggleDropdown:   toggleDropdown,
-        openMobileMenu:   openMobileMenu,
-        closeMobileMenu:  closeMobileMenu,
-        toggleMobileMenu: toggleMobileMenu,
-        toggleCat:        toggleCat,
-        openSearch:       openSearch,
-        closeSearch:      closeSearch,
-    };
-
-    /* Legacy compat */
-    window.toggleMobileMenu = toggleMobileMenu;
-    window.toggleToolsMenu  = toggleDropdown;
-    window.closeDropdown    = closeDropdown;
-    window.openSearch       = openSearch;
-    window.closeSearch      = closeSearch;
-
-})();
+});
 </script>
 @endpush
