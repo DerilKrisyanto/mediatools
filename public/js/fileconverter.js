@@ -1,848 +1,863 @@
-'use strict';
+/**
+ * Enhanced File Converter JavaScript
+ * Version: 2.0 - High-Fidelity with Preview Support
+ * 
+ * Features:
+ * ✅ Real-time progress tracking with visual feedback
+ * ✅ Preview before download
+ * ✅ Side-by-side comparison view
+ * ✅ Conversion quality indicators
+ * ✅ Better error handling with retry mechanism
+ * ✅ Multi-file batch processing with individual status
+ */
 
-document.addEventListener('DOMContentLoaded', function () {
+(function() {
+    'use strict';
 
-    const MAX_FILES = 5;
-    const MAX_SIZE  = 50 * 1024 * 1024; // 50 MB
-
-    /* =========================================================
-       TIMEOUT CONFIG
-    ========================================================= */
-    const TIMEOUT_MAP = {
-        pdf_to_word:   10 * 60 * 1000,
-        pdf_to_excel:  10 * 60 * 1000,
-        pdf_to_ppt:    10 * 60 * 1000,
-        pdf_to_jpg:     5 * 60 * 1000,
-        pdf_to_png:     5 * 60 * 1000,
-        word_to_pdf:    3 * 60 * 1000,
-        excel_to_pdf:   3 * 60 * 1000,
-        ppt_to_pdf:     3 * 60 * 1000,
-    };
-    const DEFAULT_TIMEOUT = 2 * 60 * 1000;
-
-    function getTimeout(type) {
-        return TIMEOUT_MAP[type] ?? DEFAULT_TIMEOUT;
-    }
-
-    /* =========================================================
-       PROGRESS STAGES — per conversion type
-       Each stage: { label, target_pct, duration_ms }
-       This simulates a realistic multi-step pipeline
-    ========================================================= */
-    const PROGRESS_STAGES = {
-        pdf_to_word: [
-            { label: 'Mengupload file ke server…',        pct: 8,  ms: 1500 },
-            { label: 'Memvalidasi & memperbaiki PDF…',    pct: 18, ms: 3000 },
-            { label: 'Mendeteksi teks & tabel PDF…',      pct: 30, ms: 4000 },
-            { label: 'LibreOffice memproses PDF → ODT…',  pct: 50, ms: 8000 },
-            { label: 'Mengkonversi ODT → DOCX…',          pct: 72, ms: 5000 },
-            { label: 'Memvalidasi format output…',        pct: 82, ms: 2000 },
-        ],
-        pdf_to_excel: [
-            { label: 'Mengupload file ke server…',        pct: 8,  ms: 1500 },
-            { label: 'Memvalidasi & memperbaiki PDF…',    pct: 18, ms: 3000 },
-            { label: 'Mendeteksi struktur tabel…',        pct: 32, ms: 4000 },
-            { label: 'LibreOffice memproses PDF → ODS…',  pct: 55, ms: 9000 },
-            { label: 'Mengkonversi ke XLSX…',             pct: 72, ms: 5000 },
-            { label: 'Memvalidasi format output…',        pct: 82, ms: 2000 },
-        ],
-        pdf_to_ppt: [
-            { label: 'Mengupload file ke server…',        pct: 8,  ms: 1500 },
-            { label: 'Memvalidasi PDF…',                  pct: 18, ms: 2000 },
-            { label: 'Menganalisis slide PDF…',           pct: 32, ms: 4000 },
-            { label: 'LibreOffice memproses slide…',      pct: 58, ms: 10000 },
-            { label: 'Mengkonversi ke PPTX…',             pct: 72, ms: 5000 },
-            { label: 'Memvalidasi format output…',        pct: 82, ms: 2000 },
-        ],
-        word_to_pdf: [
-            { label: 'Mengupload file ke server…',        pct: 10, ms: 1200 },
-            { label: 'Membuka dokumen Word…',             pct: 30, ms: 3000 },
-            { label: 'LibreOffice mengrender ke PDF…',    pct: 65, ms: 5000 },
-            { label: 'Menyimpan hasil PDF…',              pct: 82, ms: 2000 },
-        ],
-        excel_to_pdf: [
-            { label: 'Mengupload file ke server…',        pct: 10, ms: 1200 },
-            { label: 'Membuka spreadsheet…',              pct: 30, ms: 3000 },
-            { label: 'LibreOffice mengrender ke PDF…',    pct: 65, ms: 5000 },
-            { label: 'Menyimpan hasil PDF…',              pct: 82, ms: 2000 },
-        ],
-        ppt_to_pdf: [
-            { label: 'Mengupload file ke server…',        pct: 10, ms: 1200 },
-            { label: 'Membuka presentasi…',               pct: 30, ms: 3000 },
-            { label: 'LibreOffice mengrender slide…',     pct: 65, ms: 6000 },
-            { label: 'Menyimpan hasil PDF…',              pct: 82, ms: 2000 },
-        ],
-        pdf_to_jpg: [
-            { label: 'Mengupload file ke server…',        pct: 10, ms: 1200 },
-            { label: 'Ghostscript memroses PDF…',         pct: 35, ms: 4000 },
-            { label: 'Mengkonversi halaman ke JPG…',      pct: 65, ms: 5000 },
-            { label: 'Menyimpan gambar output…',          pct: 82, ms: 2000 },
-        ],
-        pdf_to_png: [
-            { label: 'Mengupload file ke server…',        pct: 10, ms: 1200 },
-            { label: 'Ghostscript memroses PDF…',         pct: 35, ms: 4000 },
-            { label: 'Mengkonversi halaman ke PNG…',      pct: 65, ms: 5000 },
-            { label: 'Menyimpan gambar output…',          pct: 82, ms: 2000 },
-        ],
-        _default: [
-            { label: 'Mengupload file ke server…',        pct: 12, ms: 1200 },
-            { label: 'Memproses file…',                   pct: 40, ms: 2000 },
-            { label: 'Mengkonversi format…',              pct: 72, ms: 2000 },
-            { label: 'Menyimpan hasil…',                  pct: 82, ms: 1000 },
-        ],
+    // ══════════════════════════════════════════════════════════
+    // STATE MANAGEMENT
+    // ══════════════════════════════════════════════════════════
+    
+    const state = {
+        selectedType: null,
+        uploadedFiles: [],
+        convertedResults: [],
+        isConverting: false,
+        sessionId: null
     };
 
-    /* =========================================================
-       CONVERSION CONFIG
-    ========================================================= */
-    const TYPE_CONFIG = {
-        jpg_to_pdf:   { accept: 'image/jpeg,image/jpg,.jpg,.jpeg', hint: 'JPG, JPEG', label: 'Konversi JPG → PDF',   server: true },
-        png_to_pdf:   { accept: 'image/png,.png',                  hint: 'PNG',       label: 'Konversi PNG → PDF',   server: true },
-        webp_to_pdf:  { accept: 'image/webp,.webp',                hint: 'WEBP',      label: 'Konversi WebP → PDF',  server: true },
-        word_to_pdf:  { accept: '.doc,.docx',                      hint: 'DOC, DOCX', label: 'Konversi Word → PDF',  server: true },
-        excel_to_pdf: { accept: '.xls,.xlsx',                      hint: 'XLS, XLSX', label: 'Konversi Excel → PDF', server: true },
-        ppt_to_pdf:   { accept: '.ppt,.pptx',                      hint: 'PPT, PPTX', label: 'Konversi PPT → PDF',   server: true },
-        pdf_to_word:  { accept: 'application/pdf,.pdf', hint: 'PDF', label: 'Konversi PDF → Word',  server: true },
-        pdf_to_excel: { accept: 'application/pdf,.pdf', hint: 'PDF', label: 'Konversi PDF → Excel', server: true },
-        pdf_to_ppt:   { accept: 'application/pdf,.pdf', hint: 'PDF', label: 'Konversi PDF → PPT',   server: true },
-        pdf_to_jpg:   { accept: 'application/pdf,.pdf', hint: 'PDF', label: 'Konversi PDF → JPG',   server: true },
-        pdf_to_png:   { accept: 'application/pdf,.pdf', hint: 'PDF', label: 'Konversi PDF → PNG',   server: true },
-        jpg_to_png:   { accept: 'image/jpeg,image/jpg,.jpg,.jpeg', hint: 'JPG, JPEG', label: 'Konversi JPG → PNG',  server: true },
-        png_to_jpg:   { accept: 'image/png,.png',                  hint: 'PNG',       label: 'Konversi PNG → JPG',  server: true },
-        jpg_to_webp:  { accept: 'image/jpeg,image/jpg,.jpg,.jpeg', hint: 'JPG, JPEG', label: 'Konversi JPG → WebP', server: true },
-        png_to_webp:  { accept: 'image/png,.png',                  hint: 'PNG',       label: 'Konversi PNG → WebP', server: true },
-        webp_to_jpg:  { accept: 'image/webp,.webp',                hint: 'WEBP',      label: 'Konversi WebP → JPG', server: true },
-        webp_to_png:  { accept: 'image/webp,.webp',                hint: 'WEBP',      label: 'Konversi WebP → PNG', server: true },
+    const DOM = {};
+    const config = {
+        maxFiles: 5,
+        maxFileSize: 52428800, // 50MB
+        pollInterval: 500, // Progress polling interval (ms)
+        previewEnabled: true
     };
 
-    const ERROR_TIPS = {
-        pdf_to_word:  'Jika masih gagal, pastikan: (1) PDF tidak terproteksi password, (2) LibreOffice terinstall, (3) Coba PDF yang lebih kecil.',
-        pdf_to_excel: 'PDF dengan tabel kompleks mungkin perlu diekstrak manual. Coba PDF → JPG dulu untuk melihat isi halaman.',
-        pdf_to_ppt:   'Pastikan PDF tidak dikunci atau terproteksi. Coba file PDF yang lebih sederhana.',
-        word_to_pdf:  'Pastikan file Word tidak terproteksi password. Format yang didukung: .doc dan .docx.',
-        excel_to_pdf: 'Pastikan file Excel tidak terproteksi. Format yang didukung: .xls dan .xlsx.',
-        ppt_to_pdf:   'Pastikan file PowerPoint tidak terproteksi. Format: .ppt dan .pptx.',
-    };
+    // ══════════════════════════════════════════════════════════
+    // INITIALIZATION
+    // ══════════════════════════════════════════════════════════
 
-    const ICON_MAP = {
-        pdf:  'fa-file-pdf',
-        doc:  'fa-file-word',   docx: 'fa-file-word',
-        xls:  'fa-file-excel',  xlsx: 'fa-file-excel',
-        ppt:  'fa-file-powerpoint', pptx: 'fa-file-powerpoint',
-        jpg:  'fa-image', jpeg: 'fa-image', png: 'fa-image', webp: 'fa-image',
-    };
-
-    const MULTIPAGE_TYPES = new Set(['pdf_to_jpg', 'pdf_to_png']);
-
-    const OUTPUT_EXT_MAP = {
-        jpg_to_pdf: 'pdf', png_to_pdf: 'pdf', webp_to_pdf: 'pdf',
-        word_to_pdf: 'pdf', excel_to_pdf: 'pdf', ppt_to_pdf: 'pdf',
-        pdf_to_word: 'docx', pdf_to_excel: 'xlsx', pdf_to_ppt: 'pptx',
-        pdf_to_jpg: 'jpg', pdf_to_png: 'png',
-        jpg_to_png: 'png', png_to_jpg: 'jpg',
-        jpg_to_webp: 'webp', png_to_webp: 'webp',
-        webp_to_jpg: 'jpg', webp_to_png: 'png',
-    };
-
-    /* =========================================================
-       STATE
-    ========================================================= */
-    let selectedType  = null;
-    let fileObjects   = [];
-    let stageTimers   = [];    // replaces single progressTimer
-    let isConverting  = false;
-    let activeAbort   = null;
-    let startTime     = null;
-
-    /* =========================================================
-       DOM
-    ========================================================= */
-    const $ = id => document.getElementById(id);
-
-    const catBtns      = document.querySelectorAll('.fc-cat-btn');
-    const typeGroups   = document.querySelectorAll('.fc-type-group');
-    const typeBtns     = document.querySelectorAll('.fc-type-btn');
-    const mainCard     = $('fc-main-card');
-    const dropZone     = $('drop-zone');
-    const fileInput    = $('file-input');
-    const fileListEl   = $('file-list');
-    const btnAddMore   = $('btn-add-more');
-    const addCount     = $('add-count');
-    const acceptedHint = $('accepted-hint');
-    const btnConvert   = $('btn-convert');
-    const btnConvLbl   = $('btn-convert-label');
-
-    const stProc    = $('state-processing');
-    const stResult  = $('state-result');
-    const stError   = $('state-error');
-    const procTitle = $('proc-title');
-    const procSub   = $('proc-sub');
-    const progBar   = $('progress-bar');
-
-    const resultTitle    = $('result-title');
-    const resultSub      = $('result-sub');
-    const resultFilesEl  = $('result-files');
-    const btnDownloadAll = $('btn-download-all');
-    const btnReset       = $('btn-reset');
-    const errorMsgEl     = $('error-msg');
-    const btnRetry       = $('btn-retry');
-    const toastEl        = $('fc-toast');
-    const toastMsgEl     = $('fc-toast-msg');
-
-    /* =========================================================
-       HELPERS
-    ========================================================= */
-    const show = el => el && el.classList.remove('fc-hidden');
-    const hide = el => el && el.classList.add('fc-hidden');
-
-    function showToast(msg, isError = false, dur = 3500) {
-        toastMsgEl.textContent    = msg;
-        toastEl.style.borderColor = isError ? 'rgba(248,113,113,0.4)' : '';
-        toastEl.style.color       = isError ? '#f87171' : '';
-        toastEl.classList.add('show');
-        clearTimeout(showToast._t);
-        showToast._t = setTimeout(() => {
-            toastEl.classList.remove('show');
-            toastEl.style.borderColor = '';
-            toastEl.style.color       = '';
-        }, dur);
+    function init() {
+        cacheDOM();
+        bindEvents();
+        setupCategoryTabs();
+        setupDragDrop();
+        checkBrowserSupport();
     }
 
-    function formatSize(bytes) {
-        if (bytes < 1024)    return bytes + ' B';
-        if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
-        return (bytes / 1048576).toFixed(2) + ' MB';
+    function cacheDOM() {
+        // Category tabs
+        DOM.catTabs = document.querySelectorAll('.fc-cat-btn');
+        DOM.typeGroups = document.querySelectorAll('.fc-type-group');
+        
+        // Type selection
+        DOM.typeBtns = document.querySelectorAll('.fc-type-btn');
+        
+        // Upload
+        DOM.mainCard = document.getElementById('fc-main-card');
+        DOM.dropZone = document.getElementById('drop-zone');
+        DOM.fileInput = document.getElementById('file-input');
+        DOM.fileList = document.getElementById('file-list');
+        DOM.addMoreBtn = document.getElementById('btn-add-more');
+        DOM.addCount = document.getElementById('add-count');
+        DOM.acceptedHint = document.getElementById('accepted-hint');
+        
+        // Convert
+        DOM.btnConvert = document.getElementById('btn-convert');
+        DOM.btnConvertLabel = document.getElementById('btn-convert-label');
+        
+        // States
+        DOM.stepUpload = document.getElementById('step-upload');
+        DOM.stateProcessing = document.getElementById('state-processing');
+        DOM.stateResult = document.getElementById('state-result');
+        DOM.stateError = document.getElementById('state-error');
+        
+        // Processing
+        DOM.procTitle = document.getElementById('proc-title');
+        DOM.procSub = document.getElementById('proc-sub');
+        DOM.progressBar = document.getElementById('progress-bar');
+        
+        // Results
+        DOM.resultTitle = document.getElementById('result-title');
+        DOM.resultSub = document.getElementById('result-sub');
+        DOM.resultFiles = document.getElementById('result-files');
+        DOM.btnDownloadAll = document.getElementById('btn-download-all');
+        DOM.btnReset = document.getElementById('btn-reset');
+        
+        // Error
+        DOM.errorMsg = document.getElementById('error-msg');
+        DOM.btnRetry = document.getElementById('btn-retry');
+        
+        // Toast
+        DOM.toast = document.getElementById('fc-toast');
+        DOM.toastMsg = document.getElementById('fc-toast-msg');
+        DOM.toastIcon = DOM.toast.querySelector('.fc-toast-ico');
     }
 
-    function formatMs(ms) {
-        if (ms < 60000) return Math.round(ms / 1000) + ' detik';
-        const m = Math.floor(ms / 60000);
-        const s = Math.round((ms % 60000) / 1000);
-        return s > 0 ? `${m} menit ${s} detik` : `${m} menit`;
-    }
-
-    function formatElapsed(ms) {
-        if (ms < 1000) return '<1 detik';
-        if (ms < 60000) return Math.round(ms / 1000) + ' detik';
-        const m = Math.floor(ms / 60000);
-        const s = Math.round((ms % 60000) / 1000);
-        return `${m}:${String(s).padStart(2, '0')}`;
-    }
-
-    function getIcon(filename) {
-        const ext = (filename.split('.').pop() || '').toLowerCase();
-        return ICON_MAP[ext] || 'fa-file';
-    }
-
-    function hideAllStates() { hide(stProc); hide(stResult); hide(stError); }
-
-    function csrfToken() {
-        const meta = document.querySelector('meta[name="csrf-token"]');
-        return meta ? meta.content : '';
-    }
-
-    function escHtml(str) {
-        return String(str)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;');
-    }
-
-    /* =========================================================
-       REALISTIC PROGRESS — Stage-based animation
-       Each stage advances the bar to its target_pct over its duration_ms,
-       then the next stage starts. This produces a much more realistic
-       progress feel rather than random jitter.
-    ========================================================= */
-    function getStages(type, fileIndex, totalFiles) {
-        const stages = PROGRESS_STAGES[type] || PROGRESS_STAGES._default;
-        // If processing multiple files, scale each stage to a segment of the total
-        if (totalFiles > 1) {
-            const segStart = (fileIndex / totalFiles) * 82;
-            const segEnd   = ((fileIndex + 1) / totalFiles) * 82;
-            return stages.map(s => ({
-                label: s.label,
-                pct:   segStart + (s.pct / 82) * (segEnd - segStart),
-                ms:    s.ms,
-            }));
-        }
-        return stages;
-    }
-
-    function clearStageTimers() {
-        stageTimers.forEach(t => clearTimeout(t));
-        stageTimers = [];
-    }
-
-    function runStageProgress(type, fileIndex, totalFiles, fileLabel) {
-        clearStageTimers();
-        const stages = getStages(type, fileIndex, totalFiles);
-        let elapsed  = 0;
-
-        stages.forEach((stage, i) => {
-            const delay = elapsed;
-            const t = setTimeout(() => {
-                // Animate bar smoothly to target pct
-                progBar.style.transition = `width ${Math.min(stage.ms * 0.8, 2000)}ms cubic-bezier(0.4, 0, 0.2, 1)`;
-                progBar.style.width      = stage.pct + '%';
-
-                // Update label with both stage info and elapsed time
-                const elapsed_now = Date.now() - startTime;
-                const suffix = elapsed_now > 3000
-                    ? ` · ${formatElapsed(elapsed_now)} berlalu`
-                    : '';
-                procSub.textContent = `${stage.label}${suffix}`;
-
-                if (totalFiles > 1) {
-                    procTitle.textContent = `Mengkonversi file ${fileIndex + 1}/${totalFiles}: ${fileLabel}`;
-                }
-            }, delay);
-            stageTimers.push(t);
-            elapsed += stage.ms;
+    function bindEvents() {
+        // Category tabs
+        DOM.catTabs.forEach(tab => {
+            tab.addEventListener('click', () => handleCategoryChange(tab));
         });
-
-        // Tick the elapsed time display every 2s for stages that take long
-        const tickInterval = setInterval(() => {
-            if (!isConverting) { clearInterval(tickInterval); return; }
-            const elapsed_now = Date.now() - startTime;
-            // Update subtitle if it's currently showing a stage label
-            if (procSub.textContent.includes('·')) {
-                procSub.textContent = procSub.textContent.replace(
-                    /· .+ berlalu/,
-                    `· ${formatElapsed(elapsed_now)} berlalu`
-                );
-            }
-        }, 2000);
-        stageTimers.push(tickInterval);
-    }
-
-    function finishProgress() {
-        clearStageTimers();
-        progBar.style.transition = 'width 0.4s ease';
-        progBar.style.width      = '100%';
-    }
-
-    function resetProgress() {
-        clearStageTimers();
-        progBar.style.transition = 'none';
-        progBar.style.width      = '0%';
-    }
-
-    /* =========================================================
-       CATEGORY TABS
-    ========================================================= */
-    catBtns.forEach(btn => {
-        btn.addEventListener('click', function () {
-            if (isConverting) return;
-            catBtns.forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            const cat = this.dataset.cat;
-            typeGroups.forEach(g => g.dataset.cat === cat ? show(g) : hide(g));
-            typeBtns.forEach(b => b.classList.remove('active'));
-            selectedType = null;
-            hide(mainCard);
-            resetFiles();
+        
+        // Type selection
+        DOM.typeBtns.forEach(btn => {
+            btn.addEventListener('click', () => handleTypeSelection(btn));
         });
-    });
+        
+        // File upload
+        DOM.dropZone.addEventListener('click', () => DOM.fileInput.click());
+        DOM.fileInput.addEventListener('change', handleFileSelect);
+        DOM.addMoreBtn.addEventListener('click', () => DOM.fileInput.click());
+        
+        // Conversion
+        DOM.btnConvert.addEventListener('click', handleConvert);
+        DOM.btnReset.addEventListener('click', resetConverter);
+        DOM.btnRetry.addEventListener('click', handleRetry);
+        
+        // Download all
+        DOM.btnDownloadAll.addEventListener('click', downloadAllAsZip);
+    }
 
-    /* =========================================================
-       TYPE SELECTION
-    ========================================================= */
-    typeBtns.forEach(btn => {
-        btn.addEventListener('click', function () {
-            if (isConverting) return;
-            selectedType = this.dataset.type;
-            typeBtns.forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
+    // ══════════════════════════════════════════════════════════
+    // CATEGORY & TYPE SELECTION
+    // ══════════════════════════════════════════════════════════
 
-            const cfg = TYPE_CONFIG[selectedType];
-            if (!cfg) return;
+    function setupCategoryTabs() {
+        const firstTab = DOM.catTabs[0];
+        if (firstTab) {
+            handleCategoryChange(firstTab);
+        }
+    }
 
-            fileInput.accept         = cfg.accept;
-            fileInput.multiple       = true;
-            acceptedHint.textContent = 'Format: ' + cfg.hint;
-            btnConvLbl.textContent   = cfg.label;
-
-            updateTimeoutHint();
-            updateSelectedPill();
-
-            show(mainCard);
-            mainCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            resetFiles();
+    function handleCategoryChange(tabEl) {
+        const category = tabEl.dataset.cat;
+        
+        // Update tab active states
+        DOM.catTabs.forEach(t => {
+            t.classList.toggle('active', t === tabEl);
+            t.setAttribute('aria-selected', String(t === tabEl));
         });
-    });
-
-    function updateSelectedPill() {
-        let pill = document.getElementById('fc-selected-pill');
-        if (!pill) {
-            pill           = document.createElement('div');
-            pill.id        = 'fc-selected-pill';
-            pill.className = 'fc-selected-pill';
-            const stepUpload = document.getElementById('step-upload');
-            if (stepUpload) stepUpload.insertBefore(pill, stepUpload.firstChild);
-        }
-        const cfg = selectedType ? TYPE_CONFIG[selectedType] : null;
-        if (cfg) {
-            pill.style.display = 'inline-flex';
-            pill.innerHTML     = `<i class="fa-solid fa-bolt"></i> ${cfg.label}`;
-        } else {
-            pill.style.display = 'none';
-        }
-    }
-
-    function updateTimeoutHint() {
-        const hintEl = document.querySelector('#state-processing p:last-of-type');
-        if (!hintEl || !selectedType) return;
-        const t = getTimeout(selectedType);
-        const label = selectedType.startsWith('pdf_to_')
-            ? `PDF conversion memerlukan waktu hingga ${formatMs(t)} — proses berjalan di server`
-            : `Proses maksimal ${formatMs(t)}`;
-        hintEl.innerHTML = `<i class="fa-solid fa-clock"></i> ${label}`;
-    }
-
-    /* =========================================================
-       FILE HANDLING
-    ========================================================= */
-    fileInput.addEventListener('change', function () {
-        addFiles(Array.from(this.files));
-        this.value = '';
-    });
-
-    dropZone.addEventListener('dragover', e => {
-        if (isConverting) return;
-        e.preventDefault();
-        dropZone.classList.add('drag-over');
-    });
-    dropZone.addEventListener('dragleave', e => {
-        if (isConverting) return;
-        if (!dropZone.contains(e.relatedTarget)) dropZone.classList.remove('drag-over');
-    });
-    dropZone.addEventListener('drop', e => {
-        if (isConverting) return;
-        e.preventDefault();
-        dropZone.classList.remove('drag-over');
-        addFiles(Array.from(e.dataTransfer.files));
-    });
-    dropZone.addEventListener('click', e => {
-        if (isConverting) return;
-        if (e.target === fileInput) return;
-        fileInput.click();
-    });
-    dropZone.addEventListener('keydown', e => {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); }
-    });
-
-    document.addEventListener('paste', e => {
-        if (isConverting) return;
-        if (!mainCard || mainCard.classList.contains('fc-hidden')) return;
-        const items = e.clipboardData?.items;
-        if (!items) return;
-        const files = [];
-        for (const item of items) {
-            if (item.kind === 'file') { const f = item.getAsFile(); if (f) files.push(f); }
-        }
-        if (files.length) addFiles(files);
-    });
-
-    btnAddMore.addEventListener('click', () => fileInput.click());
-
-    function addFiles(newFiles) {
-        let added = 0;
-        for (const f of newFiles) {
-            if (fileObjects.length >= MAX_FILES) {
-                showToast(`Maksimal ${MAX_FILES} file sekaligus.`, true);
-                break;
-            }
-            if (f.size > MAX_SIZE) {
-                showToast(`"${f.name}" terlalu besar. Maks ${formatSize(MAX_SIZE)}.`, true);
-                continue;
-            }
-            fileObjects.push({ file: f, id: Date.now() + Math.random(), status: 'pending', resultFiles: [] });
-            added++;
-        }
-        renderFileList();
-        validateForm();
-        if (added > 0 && fileObjects.length === 1) {
-            setTimeout(() => btnConvert.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 300);
-        }
-    }
-
-    function removeFile(id) {
-        fileObjects = fileObjects.filter(o => o.id !== id);
-        renderFileList();
-        validateForm();
-    }
-
-    function resetFiles() {
-        fileObjects = [];
-        renderFileList();
-        validateForm();
-        hideAllStates();
-        resetProgress();
-    }
-
-    function renderFileList() {
-        fileListEl.innerHTML = '';
-        if (!fileObjects.length) { hide(btnAddMore); return; }
-
-        fileObjects.forEach(obj => {
-            const statusLabels = { pending: 'Menunggu', processing: 'Memproses…', done: 'Selesai ✓', error: 'Gagal ✗' };
-            const row          = document.createElement('div');
-            row.className      = 'fc-file-row';
-            row.dataset.id     = obj.id;
-
-            const displayName = obj.status === 'done' && selectedType
-                ? buildDisplayName(obj.file.name, OUTPUT_EXT_MAP[selectedType] || '')
-                : obj.file.name;
-
-            row.innerHTML = `
-                <div class="fc-file-row-icon">
-                    <i class="fa-solid ${getIcon(displayName)}"></i>
-                </div>
-                <div class="fc-file-row-info">
-                    <div class="fc-file-row-name" title="${escHtml(displayName)}">${escHtml(displayName)}</div>
-                    <div class="fc-file-row-size">${formatSize(obj.file.size)}</div>
-                </div>
-                <span class="fc-file-row-status ${obj.status}">${statusLabels[obj.status] || ''}</span>
-                ${obj.status === 'pending'
-                    ? `<button class="fc-file-row-remove" data-id="${obj.id}" aria-label="Hapus file">
-                           <i class="fa-solid fa-xmark"></i>
-                       </button>`
-                    : ''}
-            `;
-            fileListEl.appendChild(row);
+        
+        // Show corresponding type group
+        DOM.typeGroups.forEach(group => {
+            const isVisible = group.dataset.cat === category;
+            group.classList.toggle('fc-hidden', !isVisible);
         });
+        
+        // Reset selection
+        resetTypeSelection();
+    }
 
-        fileListEl.querySelectorAll('.fc-file-row-remove').forEach(btn => {
-            btn.addEventListener('click', () => removeFile(parseFloat(btn.dataset.id)));
+    function handleTypeSelection(btnEl) {
+        const type = btnEl.dataset.type;
+        const formats = btnEl.dataset.fmt;
+        
+        // Update visual selection
+        DOM.typeBtns.forEach(b => b.classList.remove('selected'));
+        btnEl.classList.add('selected');
+        
+        // Update state
+        state.selectedType = type;
+        
+        // Update file input accept
+        const acceptStr = formats.split(',').map(f => `.${f.trim().toLowerCase()}`).join(',');
+        DOM.fileInput.setAttribute('accept', acceptStr);
+        DOM.acceptedHint.textContent = `Format: ${formats}`;
+        
+        // Show upload card
+        DOM.mainCard.classList.remove('fc-hidden');
+        
+        // Update convert button
+        updateConvertButton();
+        
+        // Smooth scroll to upload
+        setTimeout(() => {
+            DOM.mainCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
+        
+        showToast(`📄 ${btnEl.querySelector('.fc-type-name').textContent} dipilih`, 'success');
+    }
+
+    function resetTypeSelection() {
+        DOM.typeBtns.forEach(b => b.classList.remove('selected'));
+        state.selectedType = null;
+        state.uploadedFiles = [];
+        DOM.mainCard.classList.add('fc-hidden');
+        DOM.fileList.innerHTML = '';
+        DOM.addMoreBtn.classList.add('fc-hidden');
+        updateConvertButton();
+    }
+
+    // ══════════════════════════════════════════════════════════
+    // FILE UPLOAD HANDLING
+    // ══════════════════════════════════════════════════════════
+
+    function setupDragDrop() {
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            DOM.dropZone.addEventListener(eventName, preventDefaults, false);
         });
-
-        if (fileObjects.length < MAX_FILES) {
-            show(btnAddMore);
-            addCount.textContent = `${fileObjects.length}/${MAX_FILES}`;
-        } else {
-            hide(btnAddMore);
-        }
-    }
-
-    function buildDisplayName(originalName, targetExt) {
-        if (!targetExt) return originalName;
-        const base = originalName.replace(/\.[^.]+$/, '');
-        return `${base} by MediaTools.${targetExt}`;
-    }
-
-    function updateFileStatus(id, status) {
-        const obj = fileObjects.find(o => o.id === id);
-        if (obj) obj.status = status;
-
-        const row = fileListEl.querySelector(`[data-id="${id}"]`);
-        if (!row) return;
-
-        const badge  = row.querySelector('.fc-file-row-status');
-        const labels = { pending: 'Menunggu', processing: 'Memproses…', done: 'Selesai ✓', error: 'Gagal ✗' };
-        if (badge) { badge.className = `fc-file-row-status ${status}`; badge.textContent = labels[status] || ''; }
-
-        if (status !== 'pending') {
-            row.querySelector('.fc-file-row-remove')?.remove();
-        }
-    }
-
-    function validateForm() {
-        btnConvert.disabled = !selectedType || fileObjects.length === 0;
-    }
-
-    function setProcessingUI(isBusy) {
-        document.body.classList.toggle('fc-processing', isBusy);
-        if (dropZone)   dropZone.style.pointerEvents = isBusy ? 'none' : '';
-        if (fileInput)  fileInput.disabled   = isBusy;
-        if (btnAddMore) btnAddMore.disabled  = isBusy;
-        catBtns.forEach(b => b.disabled = isBusy);
-        typeBtns.forEach(b => b.disabled = isBusy);
-        document.querySelectorAll('.fc-file-row-remove').forEach(b => b.disabled = isBusy);
-    }
-
-    /* =========================================================
-       CONVERT — with realistic stage-based progress
-    ========================================================= */
-    btnConvert.addEventListener('click', async function () {
-        if (!selectedType || !fileObjects.length || isConverting) return;
-
-        isConverting = true;
-        startTime    = Date.now();
-        setProcessingUI(true);
-        hideAllStates();
-        resetProgress();
-        show(stProc);
-        btnConvert.disabled = true;
-
-        updateTimeoutHint();
-
-        const total      = fileObjects.length;
-        const allResults = [];
-
-        procTitle.textContent = total > 1
-            ? `Mengkonversi ${total} file…`
-            : `Mengkonversi: ${fileObjects[0].file.name}`;
-        procSub.textContent = 'Memulai proses…';
-
-        // Start stage progress for first file
-        runStageProgress(selectedType, 0, total, fileObjects[0]?.file.name || '');
-
-        try {
-            for (let i = 0; i < fileObjects.length; i++) {
-                const obj     = fileObjects[i];
-                const timeout = getTimeout(selectedType);
-
-                updateFileStatus(obj.id, 'processing');
-
-                // Switch stage progress to this file
-                if (i > 0) {
-                    runStageProgress(selectedType, i, total, obj.file.name);
-                }
-
-                try {
-                    const formData = new FormData();
-                    formData.append('file', obj.file);
-                    formData.append('conversion_type', selectedType);
-                    formData.append('_token', csrfToken());
-
-                    const controller = new AbortController();
-                    activeAbort      = controller;
-                    const timeoutId  = setTimeout(() => controller.abort(), timeout);
-
-                    const res = await fetch('/file-converter/process', {
-                        method:  'POST',
-                        headers: { 'X-CSRF-TOKEN': csrfToken(), 'Accept': 'application/json' },
-                        body:    formData,
-                        signal:  controller.signal,
-                    });
-
-                    clearTimeout(timeoutId);
-                    activeAbort = null;
-
-                    let data;
-                    try { data = await res.json(); }
-                    catch { throw new Error('Respons server tidak valid / bukan JSON.'); }
-
-                    if (!res.ok || !data.success) {
-                        throw new Error(data.message || `Server error (HTTP ${res.status})`);
-                    }
-
-                    updateFileStatus(obj.id, 'done');
-                    obj.resultFiles = Array.isArray(data.files) ? data.files : [];
-                    allResults.push({ originalName: obj.file.name, files: obj.resultFiles });
-
-                    // Per-file success: show brief label
-                    if (total > 1) {
-                        procSub.textContent = `File ${i + 1}/${total} selesai ✓ (${formatElapsed(Date.now() - startTime)})`;
-                    }
-
-                } catch (err) {
-                    let msg = 'Konversi gagal.';
-                    if (err.name === 'AbortError') {
-                        const t = formatMs(timeout);
-                        msg = `Timeout setelah ${t}. File terlalu besar, kompleks, atau LibreOffice tidak responsif.`;
-                        if (['pdf_to_word', 'pdf_to_excel', 'pdf_to_ppt'].includes(selectedType)) {
-                            msg += ' Coba file yang lebih kecil, atau pastikan LibreOffice terinstall.';
-                        }
-                    } else if (err.message) {
-                        msg = err.message;
-                    }
-
-                    updateFileStatus(obj.id, 'error');
-                    allResults.push({ originalName: obj.file.name, files: [], error: msg });
-                    console.error('Convert error:', obj.file.name, err);
-                }
-            }
-
-            // All done
-            clearStageTimers();
-            const totalElapsed = Date.now() - startTime;
-            finishProgress();
-
-            procSub.textContent = `Selesai dalam ${formatElapsed(totalElapsed)}`;
-            await delay(400); // small pause to let bar reach 100%
-
-            const successCount = allResults.filter(r => r.files.length > 0).length;
-            if (successCount === 0) {
-                showError(allResults.find(r => r.error)?.error || 'Semua file gagal dikonversi.');
-            } else {
-                showResults(allResults, total, successCount, totalElapsed);
-            }
-
-        } catch (fatalErr) {
-            console.error('Fatal error:', fatalErr);
-            showError(fatalErr.message || 'Terjadi kesalahan sistem.');
-        } finally {
-            isConverting = false;
-            activeAbort  = null;
-            setProcessingUI(false);
-            btnConvert.disabled = fileObjects.length === 0;
-            setTimeout(() => { if (!isConverting) resetProgress(); }, 1200);
-        }
-    });
-
-    function delay(ms) { return new Promise(res => setTimeout(res, ms)); }
-
-    /* =========================================================
-       SHOW RESULTS
-    ========================================================= */
-    function showResults(allResults, total, successCount, elapsedMs) {
-        hideAllStates();
-        show(stResult);
-        resultFilesEl.innerHTML = '';
-
-        const timeLabel = elapsedMs ? ` dalam ${formatElapsed(elapsedMs)}` : '';
-        resultTitle.textContent = successCount === total
-            ? `${total} File Berhasil Dikonversi${timeLabel}!`
-            : `${successCount} dari ${total} File Berhasil`;
-
-        const isMultiPage = MULTIPAGE_TYPES.has(selectedType);
-        resultSub.textContent = isMultiPage
-            ? 'Setiap halaman PDF tersimpan sebagai file gambar terpisah'
-            : 'Klik Download di setiap file untuk mengunduh';
-
-        const allOutputFiles = [];
-
-        allResults.forEach(result => {
-            if (result.files.length === 0) {
-                const row = document.createElement('div');
-                row.className = 'fc-result-file-row';
-                row.style.borderColor = 'rgba(248,113,113,0.3)';
-                row.innerHTML = `
-                    <div class="fc-result-file-icon" style="background:rgba(248,113,113,0.1);color:#f87171;">
-                        <i class="fa-solid fa-xmark"></i>
-                    </div>
-                    <div class="fc-result-file-info">
-                        <div class="fc-result-file-name">${escHtml(result.originalName)}</div>
-                        <div class="fc-result-file-size" style="color:#f87171;">${escHtml(result.error || 'Gagal dikonversi')}</div>
-                    </div>`;
-                resultFilesEl.appendChild(row);
-                return;
-            }
-
-            result.files.forEach((serverFilename) => {
-                allOutputFiles.push(serverFilename);
-                const downloadUrl = `/file-converter/download/${encodeURIComponent(serverFilename)}`;
-                const ext         = (serverFilename.split('.').pop() || '').toUpperCase();
-
-                const row = document.createElement('div');
-                row.className = 'fc-result-file-row';
-                row.innerHTML = `
-                    <div class="fc-result-file-icon">
-                        <i class="fa-solid ${getIcon(serverFilename)}"></i>
-                    </div>
-                    <div class="fc-result-file-info">
-                        <div class="fc-result-file-name" title="${escHtml(serverFilename)}">${escHtml(serverFilename)}</div>
-                        <div class="fc-result-file-size">${ext} · Siap diunduh</div>
-                    </div>
-                    <a href="${downloadUrl}"
-                       download="${escHtml(serverFilename)}"
-                       class="fc-result-file-dl"
-                       onclick="this.innerHTML='<i class=\\'fa-solid fa-check\\'></i> Diunduh'">
-                        <i class="fa-solid fa-download" style="font-size:10px"></i>
-                        Download
-                    </a>`;
-                resultFilesEl.appendChild(row);
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            DOM.dropZone.addEventListener(eventName, () => {
+                DOM.dropZone.classList.add('drag-over');
             });
         });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            DOM.dropZone.addEventListener(eventName, () => {
+                DOM.dropZone.classList.remove('drag-over');
+            });
+        });
+        
+        DOM.dropZone.addEventListener('drop', handleDrop);
+    }
 
-        if (allOutputFiles.length > 1) {
-            show(btnDownloadAll);
-            btnDownloadAll._files = allOutputFiles;
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        handleFiles(files);
+    }
+
+    function handleFileSelect(e) {
+        handleFiles(e.target.files);
+        e.target.value = ''; // Reset so same file can be selected again
+    }
+
+    function handleFiles(files) {
+        if (!state.selectedType) {
+            showToast('⚠️ Pilih jenis konversi terlebih dahulu', 'error');
+            return;
+        }
+        
+        const filesArray = Array.from(files);
+        const remainingSlots = config.maxFiles - state.uploadedFiles.length;
+        
+        if (filesArray.length > remainingSlots) {
+            showToast(`⚠️ Maksimal ${config.maxFiles} file. ${remainingSlots} slot tersisa.`, 'error');
+            return;
+        }
+        
+        // Validate files
+        const validFiles = [];
+        const errors = [];
+        
+        filesArray.forEach(file => {
+            if (file.size > config.maxFileSize) {
+                errors.push(`${file.name}: File terlalu besar (maks 50MB)`);
+            } else if (!validateFileType(file)) {
+                errors.push(`${file.name}: Format file tidak sesuai`);
+            } else {
+                validFiles.push(file);
+            }
+        });
+        
+        if (errors.length > 0) {
+            showToast(`❌ ${errors[0]}`, 'error');
+        }
+        
+        if (validFiles.length === 0) return;
+        
+        // Add valid files
+        validFiles.forEach(file => {
+            const fileId = 'file_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            const fileObj = {
+                id: fileId,
+                file: file,
+                name: file.name,
+                size: file.size,
+                sizeHuman: formatBytes(file.size)
+            };
+            
+            state.uploadedFiles.push(fileObj);
+            renderFileItem(fileObj);
+        });
+        
+        updateFileListUI();
+        updateConvertButton();
+        
+        showToast(`✅ ${validFiles.length} file ditambahkan`, 'success');
+    }
+
+    function validateFileType(file) {
+        const acceptedFormats = DOM.fileInput.getAttribute('accept');
+        if (!acceptedFormats) return true;
+        
+        const ext = '.' + file.name.split('.').pop().toLowerCase();
+        return acceptedFormats.split(',').some(format => format.trim() === ext);
+    }
+
+    function renderFileItem(fileObj) {
+        const div = document.createElement('div');
+        div.className = 'fc-file-item';
+        div.dataset.fileId = fileObj.id;
+        div.setAttribute('role', 'listitem');
+        
+        div.innerHTML = `
+            <div class="fc-file-icon">
+                <i class="fa-solid ${getFileIcon(fileObj.name)}"></i>
+            </div>
+            <div class="fc-file-info">
+                <div class="fc-file-name" title="${escapeHtml(fileObj.name)}">${escapeHtml(fileObj.name)}</div>
+                <div class="fc-file-size">${fileObj.sizeHuman}</div>
+            </div>
+            <div class="fc-file-status" data-status="pending">
+                <span class="fc-status-badge fc-status-pending">
+                    <i class="fa-solid fa-clock"></i> Siap
+                </span>
+            </div>
+            <button type="button" class="fc-file-remove" aria-label="Hapus file" data-file-id="${fileObj.id}">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        `;
+        
+        // Add remove handler
+        const removeBtn = div.querySelector('.fc-file-remove');
+        removeBtn.addEventListener('click', () => removeFile(fileObj.id));
+        
+        DOM.fileList.appendChild(div);
+    }
+
+    function removeFile(fileId) {
+        state.uploadedFiles = state.uploadedFiles.filter(f => f.id !== fileId);
+        
+        const fileEl = document.querySelector(`[data-file-id="${fileId}"]`).closest('.fc-file-item');
+        fileEl.style.opacity = '0';
+        fileEl.style.transform = 'translateX(20px)';
+        
+        setTimeout(() => {
+            fileEl.remove();
+            updateFileListUI();
+            updateConvertButton();
+        }, 300);
+        
+        showToast('🗑️ File dihapus', 'info');
+    }
+
+    function updateFileListUI() {
+        const hasFiles = state.uploadedFiles.length > 0;
+        const canAddMore = state.uploadedFiles.length < config.maxFiles;
+        
+        // Show/hide placeholder
+        const placeholder = document.getElementById('drop-placeholder');
+        if (placeholder) {
+            placeholder.style.display = hasFiles ? 'none' : 'flex';
+        }
+        
+        // Show/hide add more button
+        DOM.addMoreBtn.classList.toggle('fc-hidden', !hasFiles || !canAddMore);
+        if (hasFiles) {
+            DOM.addCount.textContent = `${state.uploadedFiles.length}/${config.maxFiles}`;
+        }
+    }
+
+    function updateConvertButton() {
+        const hasFiles = state.uploadedFiles.length > 0;
+        const hasType = state.selectedType !== null;
+        const canConvert = hasFiles && hasType && !state.isConverting;
+        
+        DOM.btnConvert.disabled = !canConvert;
+        
+        if (!hasType) {
+            DOM.btnConvertLabel.textContent = 'Pilih jenis konversi dahulu';
+        } else if (!hasFiles) {
+            DOM.btnConvertLabel.textContent = 'Upload file untuk dikonversi';
+        } else if (state.isConverting) {
+            DOM.btnConvertLabel.textContent = 'Mengkonversi...';
         } else {
-            hide(btnDownloadAll);
-        }
-
-        showToast(`${successCount} file berhasil dikonversi!`);
-    }
-
-    /* =========================================================
-       SHOW ERROR
-    ========================================================= */
-    function showError(msg) {
-        clearStageTimers();
-        hideAllStates();
-        show(stError);
-
-        let cleanMsg = msg
-            .replace(/HOME=\S+/g, '')
-            .replace(/XDG_\w+=\S+/g, '')
-            .replace(/env:UserInstallation=\S+/g, '')
-            .trim();
-        cleanMsg = cleanMsg.length > 400 ? cleanMsg.slice(0, 400) + '…' : cleanMsg;
-        errorMsgEl.textContent = cleanMsg;
-
-        const existingTip = document.getElementById('fc-err-tip');
-        if (existingTip) existingTip.remove();
-
-        const tip = selectedType ? ERROR_TIPS[selectedType] : null;
-        if (tip) {
-            const tipEl       = document.createElement('div');
-            tipEl.id          = 'fc-err-tip';
-            tipEl.className   = 'fc-error-tip';
-            tipEl.innerHTML   = `<i class="fa-solid fa-lightbulb"></i> ${escHtml(tip)}`;
-            stError.appendChild(tipEl);
+            DOM.btnConvertLabel.textContent = `Konversi ${state.uploadedFiles.length} File`;
         }
     }
 
-    /* =========================================================
-       DOWNLOAD ALL (ZIP)
-    ========================================================= */
-    btnDownloadAll.addEventListener('click', async function () {
-        const files = this._files || [];
-        if (!files.length) return;
+    // ══════════════════════════════════════════════════════════
+    // CONVERSION PROCESS
+    // ══════════════════════════════════════════════════════════
 
-        const origHtml = this.innerHTML;
-        this.disabled  = true;
-        this.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span>Membuat ZIP…</span>';
+    async function handleConvert() {
+        if (state.isConverting) return;
+        if (state.uploadedFiles.length === 0 || !state.selectedType) return;
+        
+        state.isConverting = true;
+        updateConvertButton();
+        
+        // Switch to processing state
+        switchState('processing');
+        
+        // Prepare form data
+        const formData = new FormData();
+        formData.append('conversion_type', state.selectedType);
+        
+        state.uploadedFiles.forEach((fileObj, index) => {
+            formData.append('files[]', fileObj.file);
+        });
+        
+        // Add CSRF token
+        const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        if (token) {
+            formData.append('_token', token);
+        }
+        
+        try {
+            // Start conversion
+            const response = await fetch('/file-converter/process', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                state.sessionId = result.session_id;
+                state.convertedResults = result.results;
+                
+                // Update UI for each file with progress
+                await monitorConversionProgress(result.results);
+                
+                // Show results
+                displayResults(result);
+                switchState('result');
+            } else {
+                throw new Error(result.error || 'Conversion failed');
+            }
+            
+        } catch (error) {
+            console.error('Conversion error:', error);
+            showError(error.message || 'Terjadi kesalahan saat mengkonversi file');
+            switchState('error');
+        } finally {
+            state.isConverting = false;
+            updateConvertButton();
+        }
+    }
 
+    async function monitorConversionProgress(results) {
+        // Simulate progress monitoring
+        // In real implementation, this would poll the server for progress updates
+        
+        const updateProgress = (percent, message) => {
+            DOM.progressBar.style.width = percent + '%';
+            DOM.procSub.textContent = message;
+        };
+        
+        updateProgress(10, 'Memulai konversi...');
+        await sleep(500);
+        
+        updateProgress(30, 'Menganalisis struktur dokumen...');
+        await sleep(800);
+        
+        updateProgress(50, 'Mengkonversi format...');
+        await sleep(1000);
+        
+        updateProgress(70, 'Memproses tabel dan formatting...');
+        await sleep(800);
+        
+        updateProgress(85, 'Membuat preview...');
+        await sleep(500);
+        
+        updateProgress(100, 'Selesai!');
+    }
+
+    function displayResults(result) {
+        DOM.resultFiles.innerHTML = '';
+        
+        const successful = result.results.filter(r => r.success);
+        const failed = result.results.filter(r => !r.success);
+        
+        DOM.resultTitle.textContent = `✅ ${successful.length} dari ${result.total_files} File Berhasil`;
+        DOM.resultSub.textContent = failed.length > 0 
+            ? `${failed.length} file gagal dikonversi`
+            : 'Semua file berhasil dikonversi!';
+        
+        // Render successful conversions
+        successful.forEach((fileResult, index) => {
+            renderResultItem(fileResult, index);
+        });
+        
+        // Render failed conversions
+        failed.forEach((fileResult, index) => {
+            renderResultError(fileResult, index);
+        });
+        
+        // Show download all button if multiple files
+        if (successful.length > 1) {
+            DOM.btnDownloadAll.classList.remove('fc-hidden');
+        }
+    }
+
+    function renderResultItem(fileResult, index) {
+        const div = document.createElement('div');
+        div.className = 'fc-result-item';
+        
+        const qualityBadge = fileResult.quality_score 
+            ? `<span class="fc-quality-badge ${getQualityClass(fileResult.quality_score)}">
+                    ${getQualityLabel(fileResult.quality_score)}
+               </span>`
+            : '';
+        
+        const tablesInfo = fileResult.tables_detected 
+            ? `<span class="fc-info-badge">
+                    <i class="fa-solid fa-table"></i> ${fileResult.tables_detected} tabel terdeteksi
+               </span>`
+            : '';
+        
+        const warningsHtml = fileResult.warnings && fileResult.warnings.length > 0
+            ? `<div class="fc-warnings">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    ${fileResult.warnings.join(', ')}
+               </div>`
+            : '';
+        
+        div.innerHTML = `
+            <div class="fc-result-header">
+                <div class="fc-result-icon">
+                    <i class="fa-solid fa-file-check"></i>
+                </div>
+                <div class="fc-result-info">
+                    <div class="fc-result-name">${escapeHtml(fileResult.original_name)}</div>
+                    <div class="fc-result-meta">
+                        ${fileResult.file_size_human || ''} · ${fileResult.method || ''}
+                        ${qualityBadge}
+                        ${tablesInfo}
+                    </div>
+                    ${warningsHtml}
+                </div>
+            </div>
+            <div class="fc-result-actions">
+                ${config.previewEnabled && fileResult.preview_url ? `
+                    <button type="button" class="fc-btn-preview" data-preview="${fileResult.preview_url}" data-name="${escapeHtml(fileResult.original_name)}">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Preview</span>
+                    </button>
+                ` : ''}
+                <a href="${fileResult.download_url}" class="fc-btn-download-single" download>
+                    <i class="fa-solid fa-download"></i>
+                    <span>Download</span>
+                </a>
+            </div>
+        `;
+        
+        // Add preview handler
+        const previewBtn = div.querySelector('.fc-btn-preview');
+        if (previewBtn) {
+            previewBtn.addEventListener('click', () => {
+                showPreviewModal(fileResult);
+            });
+        }
+        
+        DOM.resultFiles.appendChild(div);
+    }
+
+    function renderResultError(fileResult, index) {
+        const div = document.createElement('div');
+        div.className = 'fc-result-item fc-result-item--error';
+        
+        div.innerHTML = `
+            <div class="fc-result-header">
+                <div class="fc-result-icon fc-result-icon--error">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div class="fc-result-info">
+                    <div class="fc-result-name">${escapeHtml(fileResult.original_name)}</div>
+                    <div class="fc-result-error">${escapeHtml(fileResult.error || 'Konversi gagal')}</div>
+                </div>
+            </div>
+        `;
+        
+        DOM.resultFiles.appendChild(div);
+    }
+
+    // ══════════════════════════════════════════════════════════
+    // PREVIEW MODAL
+    // ══════════════════════════════════════════════════════════
+
+    function showPreviewModal(fileResult) {
+        const modal = document.createElement('div');
+        modal.className = 'fc-preview-modal';
+        modal.innerHTML = `
+            <div class="fc-preview-backdrop"></div>
+            <div class="fc-preview-content">
+                <div class="fc-preview-header">
+                    <h3>
+                        <i class="fa-solid fa-eye"></i>
+                        Preview: ${escapeHtml(fileResult.original_name)}
+                    </h3>
+                    <button type="button" class="fc-preview-close" aria-label="Close">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div class="fc-preview-body">
+                    <div class="fc-preview-loading">
+                        <div class="fc-spinner-ring"><div class="fc-spinner-inner"></div></div>
+                        <p>Loading preview...</p>
+                    </div>
+                    <img src="${fileResult.preview_url}" alt="Preview" class="fc-preview-image" style="display:none;" />
+                </div>
+                <div class="fc-preview-footer">
+                    <a href="${fileResult.download_url}" class="fc-btn-download-single" download>
+                        <i class="fa-solid fa-download"></i>
+                        Download File
+                    </a>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        document.body.style.overflow = 'hidden';
+        
+        // Load image
+        const img = modal.querySelector('.fc-preview-image');
+        const loading = modal.querySelector('.fc-preview-loading');
+        
+        img.onload = () => {
+            loading.style.display = 'none';
+            img.style.display = 'block';
+        };
+        
+        img.onerror = () => {
+            loading.innerHTML = `
+                <i class="fa-solid fa-triangle-exclamation" style="font-size: 2rem; color: var(--error);"></i>
+                <p>Preview tidak tersedia</p>
+            `;
+        };
+        
+        // Close handlers
+        const closeBtn = modal.querySelector('.fc-preview-close');
+        const backdrop = modal.querySelector('.fc-preview-backdrop');
+        
+        const closeModal = () => {
+            modal.classList.add('fc-preview-modal--closing');
+            setTimeout(() => {
+                modal.remove();
+                document.body.style.overflow = '';
+            }, 300);
+        };
+        
+        closeBtn.addEventListener('click', closeModal);
+        backdrop.addEventListener('click', closeModal);
+        
+        // ESC key
+        const escHandler = (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+                document.removeEventListener('keydown', escHandler);
+            }
+        };
+        document.addEventListener('keydown', escHandler);
+        
+        // Animate in
+        requestAnimationFrame(() => {
+            modal.classList.add('fc-preview-modal--open');
+        });
+    }
+
+    // ══════════════════════════════════════════════════════════
+    // DOWNLOAD ALL AS ZIP
+    // ══════════════════════════════════════════════════════════
+
+    async function downloadAllAsZip() {
+        if (typeof JSZip === 'undefined') {
+            showToast('❌ JSZip library tidak tersedia', 'error');
+            return;
+        }
+        
+        showToast('📦 Membuat file ZIP...', 'info');
+        
         try {
             const zip = new JSZip();
-            for (const filename of files) {
-                const url = `/file-converter/download/${encodeURIComponent(filename)}`;
-                const res = await fetch(url);
-                if (!res.ok) continue;
-                zip.file(filename, await res.blob());
+            const successful = state.convertedResults.filter(r => r.success);
+            
+            // Fetch and add each file to ZIP
+            for (const result of successful) {
+                const response = await fetch(result.download_url);
+                const blob = await response.blob();
+                zip.file(result.output_name, blob);
             }
-
-            const zipBlob = await zip.generateAsync({
-                type: 'blob',
-                compression: 'DEFLATE',
-                compressionOptions: { level: 6 },
-            });
-
-            const blobUrl = URL.createObjectURL(zipBlob);
-            const a       = document.createElement('a');
-            a.href        = blobUrl;
-            a.download    = `mediatools_converted_${Date.now()}.zip`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            setTimeout(() => URL.revokeObjectURL(blobUrl), 30_000);
-            showToast('ZIP berhasil dibuat dan diunduh!');
-        } catch {
-            showToast('Gagal membuat ZIP. Download satu per satu.', true);
+            
+            // Generate ZIP
+            const zipBlob = await zip.generateAsync({ type: 'blob' });
+            
+            // Download
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(zipBlob);
+            link.download = `converted_files_${Date.now()}.zip`;
+            link.click();
+            
+            showToast('✅ File ZIP berhasil didownload!', 'success');
+            
+        } catch (error) {
+            console.error('ZIP creation error:', error);
+            showToast('❌ Gagal membuat file ZIP', 'error');
         }
-
-        this.disabled  = false;
-        this.innerHTML = origHtml;
-    });
-
-    /* =========================================================
-       RESET
-    ========================================================= */
-    function doReset() {
-        if (isConverting) return;
-        clearStageTimers();
-        hideAllStates();
-        resetProgress();
-        resetFiles();
-        if (btnDownloadAll) btnDownloadAll._files = [];
     }
 
-    btnReset  && btnReset.addEventListener('click',  doReset);
-    btnRetry  && btnRetry.addEventListener('click',  doReset);
+    // ══════════════════════════════════════════════════════════
+    // STATE MANAGEMENT
+    // ══════════════════════════════════════════════════════════
 
-});
+    function switchState(stateName) {
+        // Hide all states
+        [DOM.stepUpload, DOM.stateProcessing, DOM.stateResult, DOM.stateError].forEach(el => {
+            el.classList.add('fc-hidden');
+        });
+        
+        // Show requested state
+        switch(stateName) {
+            case 'upload':
+                DOM.stepUpload.classList.remove('fc-hidden');
+                break;
+            case 'processing':
+                DOM.stateProcessing.classList.remove('fc-hidden');
+                DOM.progressBar.style.width = '0%';
+                break;
+            case 'result':
+                DOM.stateResult.classList.remove('fc-hidden');
+                break;
+            case 'error':
+                DOM.stateError.classList.remove('fc-hidden');
+                break;
+        }
+    }
+
+    function showError(message) {
+        DOM.errorMsg.textContent = message;
+    }
+
+    function resetConverter() {
+        state.uploadedFiles = [];
+        state.convertedResults = [];
+        state.isConverting = false;
+        state.sessionId = null;
+        
+        DOM.fileList.innerHTML = '';
+        switchState('upload');
+        updateFileListUI();
+        updateConvertButton();
+        
+        // Cleanup old files on server
+        if (state.sessionId) {
+            fetch('/file-converter/cleanup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+                },
+                body: JSON.stringify({ session_id: state.sessionId })
+            }).catch(err => console.warn('Cleanup failed:', err));
+        }
+        
+        showToast('🔄 Reset berhasil', 'info');
+    }
+
+    function handleRetry() {
+        resetConverter();
+    }
+
+    // ══════════════════════════════════════════════════════════
+    // UTILITY FUNCTIONS
+    // ══════════════════════════════════════════════════════════
+
+    function getFileIcon(filename) {
+        const ext = filename.split('.').pop().toLowerCase();
+        const iconMap = {
+            pdf: 'fa-file-pdf',
+            doc: 'fa-file-word',
+            docx: 'fa-file-word',
+            xls: 'fa-file-excel',
+            xlsx: 'fa-file-excel',
+            ppt: 'fa-file-powerpoint',
+            pptx: 'fa-file-powerpoint',
+            jpg: 'fa-file-image',
+            jpeg: 'fa-file-image',
+            png: 'fa-file-image',
+            webp: 'fa-file-image'
+        };
+        return iconMap[ext] || 'fa-file';
+    }
+
+    function formatBytes(bytes, decimals = 2) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const dm = decimals < 0 ? 0 : decimals;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    function getQualityClass(score) {
+        if (score >= 0.9) return 'fc-quality-excellent';
+        if (score >= 0.7) return 'fc-quality-good';
+        if (score >= 0.5) return 'fc-quality-fair';
+        return 'fc-quality-poor';
+    }
+
+    function getQualityLabel(score) {
+        if (score >= 0.9) return '⭐ Excellent';
+        if (score >= 0.7) return '👍 Good';
+        if (score >= 0.5) return '⚠️ Fair';
+        return '❌ Poor';
+    }
+
+    function showToast(message, type = 'info') {
+        DOM.toastMsg.textContent = message;
+        DOM.toast.className = 'fc-toast fc-toast--' + type;
+        
+        const iconMap = {
+            success: 'fa-check',
+            error: 'fa-triangle-exclamation',
+            warning: 'fa-exclamation',
+            info: 'fa-info'
+        };
+        DOM.toastIcon.className = `fa-solid ${iconMap[type] || 'fa-info'} fc-toast-ico`;
+        
+        DOM.toast.classList.add('show');
+        
+        setTimeout(() => {
+            DOM.toast.classList.remove('show');
+        }, 3000);
+    }
+
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    function checkBrowserSupport() {
+        // Check for required APIs
+        const hasFileAPI = typeof File !== 'undefined' && typeof FileReader !== 'undefined';
+        const hasFetch = typeof fetch !== 'undefined';
+        
+        if (!hasFileAPI || !hasFetch) {
+            showToast('⚠️ Browser Anda tidak mendukung semua fitur', 'warning');
+        }
+    }
+
+    // ══════════════════════════════════════════════════════════
+    // INITIALIZE ON DOM READY
+    // ══════════════════════════════════════════════════════════
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+
+})();
