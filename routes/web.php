@@ -72,11 +72,14 @@ Route::post('/media-downloader/process',[MediaDownloaderController::class, 'proc
 
 // ========== File Converter ========== //
 Route::prefix('file-converter')->group(function () {
-    Route::get('/',                   [FileConverterController::class, 'index'])   ->name('tools.fileconverter');
-    Route::post('/process',           [FileConverterController::class, 'process']) ->name('tools.fileconverter.process');
-    Route::get('/download/{filename}',[FileConverterController::class, 'download'])->name('tools.fileconverter.download');
-    Route::post('/cleanup',           [FileConverterController::class, 'cleanup']) ->name('tools.fileconverter.cleanup');
-    Route::get('/debug',              [FileConverterController::class, 'debug'])->name('tools.fileconverter.debug');
+    Route::get('/',                    [FileConverterController::class, 'index'])
+         ->name('tools.fileconverter');
+    Route::post('/process',            [FileConverterController::class, 'process'])
+         ->name('tools.fileconverter.process');
+    Route::get('/download/{token}',    [FileConverterController::class, 'download'])
+         ->name('tools.fileconverter.download');
+    Route::post('/cleanup',            [FileConverterController::class, 'cleanup'])
+         ->name('tools.fileconverter.cleanup');
 });
 
 // ========== Auth Routes ========== //

@@ -3,9 +3,13 @@
 @section('og_image', 'fileconverter')
 @section('title', 'File Converter Online Gratis — PDF Word Excel JPG PowerPoint | MediaTools')
 @section('meta_description', 'Konversi PDF ke Word, Word ke PDF, Excel ke PDF, JPG ke PDF dan sebaliknya secara gratis. Upload 5 file sekaligus, hasil instan, privasi terjaga.')
-@section('meta_keywords', 'pdf to word, word to pdf, konversi pdf, compress pdf, excel to pdf, jpg to pdf, pdf converter gratis, convert pdf online, ilovepdf alternative, konversi file online, pdf ke word gratis, word ke pdf, powerpoint to pdf, pdf to jpg, merge pdf')
+@section('meta_keywords', 'pdf to word, word to pdf, konversi pdf, excel to pdf, jpg to pdf, pdf converter gratis, ilovepdf alternative')
 
 @section('content')
+{{-- Pass routes to JS without inline JS --}}
+<meta name="fc-process-url"  content="{{ route('tools.fileconverter.process') }}">
+<meta name="fc-download-url" content="{{ url('file-converter/download') }}">
+
 <link rel="stylesheet" href="{{ asset('css/fileconverter.css') }}">
 
 <div class="fc-page">
@@ -96,14 +100,12 @@
           </button>
           @endforeach
         </div>
-
-        {{-- Info box untuk PDF → Office --}}
-        <div style="margin-top: 10px; padding: 10px 14px; background: rgba(251,191,36,0.06); border: 1px solid rgba(251,191,36,0.18); border-radius: var(--radius-md); font-size: 11px; color: var(--text-muted); display: flex; gap: 8px; align-items: flex-start;">
-          <i class="fa-solid fa-circle-info" style="color: #fbbf24; margin-top: 1px; flex-shrink: 0;"></i>
+        <div style="margin-top:10px;padding:10px 14px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.18);border-radius:12px;font-size:11px;color:#6b7280;display:flex;gap:8px;align-items:flex-start;">
+          <i class="fa-solid fa-circle-info" style="color:#fbbf24;margin-top:1px;flex-shrink:0;"></i>
           <span>
-            <strong style="color: var(--text-dim);">PDF → Word/Excel/PPT</strong>
-            membutuhkan PDF yang memiliki teks yang bisa dipilih (bukan scan/gambar).
-            PDF berbasis scan disarankan menggunakan <strong style="color: var(--text-dim);">PDF → JPG</strong> terlebih dahulu.
+            <strong style="color:#9ca3af;">PDF → Word/Excel/PPT</strong>
+            membutuhkan PDF berteks (bukan hasil scan). Untuk PDF scan gunakan
+            <strong style="color:#9ca3af;">PDF → JPG</strong> lalu edit manual.
           </span>
         </div>
       </div>
@@ -150,7 +152,7 @@
           <span class="fc-accepted-hint" id="accepted-hint">Format: —</span>
         </div>
 
-        <div class="fc-drop-zone" id="drop-zone" role="button" tabindex="0"
+        <div class="fc-drop-zone" id="drop-zone" tabindex="0"
              aria-label="Klik atau drag file ke sini">
           <input type="file" id="file-input" class="fc-file-input" accept="" multiple
                  aria-label="Pilih file untuk dikonversi">
@@ -187,15 +189,15 @@
 
       {{-- Processing State --}}
       <div class="fc-state fc-hidden" id="state-processing" role="status" aria-live="polite">
-        <div class="fc-spinner-ring"><div class="fc-spinner-inner"></div></div>
+        <div class="fc-spinner-ring"></div>
         <p class="fc-state-title" id="proc-title">Mengkonversi file...</p>
         <div class="fc-progress-wrap">
           <div class="fc-progress-bar" id="progress-bar"></div>
         </div>
         <p class="fc-state-sub" id="proc-sub">Memproses file...</p>
-        <p style="font-size:10px;color:var(--text-muted);margin-top:8px;">
+        <p style="font-size:10.5px;color:#4b5563;margin-top:10px;">
           <i class="fa-solid fa-clock"></i>
-          PDF → Word/Excel/PPT memerlukan waktu 10–60 detik tergantung ukuran file
+          PDF → Word/Excel/PPT memerlukan 10–60 detik tergantung ukuran dan kompleksitas file
         </p>
       </div>
 
@@ -223,8 +225,7 @@
         <div class="fc-error-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
         <p class="fc-state-title">Konversi Gagal</p>
         <p class="fc-state-sub" id="error-msg">Terjadi kesalahan.</p>
-
-        <button type="button" id="btn-retry" class="fc-btn-reset" style="margin-top: 14px;">
+        <button type="button" id="btn-retry" class="fc-btn-reset" style="margin-top:14px;">
           <i class="fa-solid fa-rotate-right"></i>
           <span>Coba Lagi</span>
         </button>
@@ -237,12 +238,12 @@
       <div class="fc-info-card">
         <div class="fc-info-icon"><i class="fa-solid fa-layer-group"></i></div>
         <h3>Multi-File Sekaligus</h3>
-        <p>Upload hingga 5 file sekaligus. Setiap file diproses dan bisa didownload individual atau semua sekaligus (ZIP).</p>
+        <p>Upload hingga 5 file sekaligus. Setiap file bisa didownload individual atau semua sekaligus (ZIP).</p>
       </div>
       <div class="fc-info-card">
         <div class="fc-info-icon"><i class="fa-solid fa-lock"></i></div>
         <h3>Privasi Terjaga</h3>
-        <p>File dihapus otomatis dari server setelah 30 menit. Tidak ada yang menyimpan atau mengakses dokumen Anda.</p>
+        <p>File dihapus otomatis dari server setelah 1 jam. Tidak ada yang menyimpan atau mengakses dokumen Anda.</p>
       </div>
       <div class="fc-info-card">
         <div class="fc-info-icon"><i class="fa-solid fa-infinity"></i></div>
@@ -256,7 +257,7 @@
 
 {{-- Toast Notification --}}
 <div id="fc-toast" class="fc-toast" role="alert" aria-live="assertive">
-  <i class="fa-solid fa-check fc-toast-ico"></i>
+  <i class="fa-solid fa-check fc-toast-ico" style="color:#a3e635;"></i>
   <span id="fc-toast-msg">Berhasil!</span>
 </div>
 

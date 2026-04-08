@@ -1,863 +1,604 @@
 /**
- * Enhanced File Converter JavaScript
- * Version: 2.0 - High-Fidelity with Preview Support
- * 
- * Features:
- * ✅ Real-time progress tracking with visual feedback
- * ✅ Preview before download
- * ✅ Side-by-side comparison view
- * ✅ Conversion quality indicators
- * ✅ Better error handling with retry mechanism
- * ✅ Multi-file batch processing with individual status
+ * MediaTools File Converter — fileconverter.js  v3 PRO
+ * =====================================================
+ * - Fixes double-upload bug (single click-handler on drop zone)
+ * - Reliable state machine: idle → uploading → processing → done / error
+ * - Multi-file support with remove-per-file
+ * - JSZip-based Download All
+ * - Clean category & type switching
  */
 
-(function() {
-    'use strict';
+(function () {
+    "use strict";
 
-    // ══════════════════════════════════════════════════════════
-    // STATE MANAGEMENT
-    // ══════════════════════════════════════════════════════════
-    
-    const state = {
-        selectedType: null,
-        uploadedFiles: [],
-        convertedResults: [],
-        isConverting: false,
-        sessionId: null
-    };
+    /* ──────────────────────────────────────────────
+       DOM REFS
+    ────────────────────────────────────────────── */
+    const dropZone       = document.getElementById("drop-zone");
+    const fileInput      = document.getElementById("file-input");
+    const fileList       = document.getElementById("file-list");
+    const btnConvert     = document.getElementById("btn-convert");
+    const btnConvertLbl  = document.getElementById("btn-convert-label");
+    const btnAddMore     = document.getElementById("btn-add-more");
+    const addCount       = document.getElementById("add-count");
+    const acceptedHint   = document.getElementById("accepted-hint");
+    const mainCard       = document.getElementById("fc-main-card");
 
-    const DOM = {};
-    const config = {
-        maxFiles: 5,
-        maxFileSize: 52428800, // 50MB
-        pollInterval: 500, // Progress polling interval (ms)
-        previewEnabled: true
-    };
+    const stepUpload     = document.getElementById("step-upload");
+    const stateProc      = document.getElementById("state-processing");
+    const stateResult    = document.getElementById("state-result");
+    const stateError     = document.getElementById("state-error");
 
-    // ══════════════════════════════════════════════════════════
-    // INITIALIZATION
-    // ══════════════════════════════════════════════════════════
+    const procTitle      = document.getElementById("proc-title");
+    const procSub        = document.getElementById("proc-sub");
+    const progressBar    = document.getElementById("progress-bar");
+    const resultTitle    = document.getElementById("result-title");
+    const resultSub      = document.getElementById("result-sub");
+    const resultFiles    = document.getElementById("result-files");
+    const btnDownloadAll = document.getElementById("btn-download-all");
+    const btnReset       = document.getElementById("btn-reset");
+    const btnRetry       = document.getElementById("btn-retry");
+    const errorMsg       = document.getElementById("error-msg");
+    const toast          = document.getElementById("fc-toast");
+    const toastMsg       = document.getElementById("fc-toast-msg");
 
-    function init() {
-        cacheDOM();
-        bindEvents();
-        setupCategoryTabs();
-        setupDragDrop();
-        checkBrowserSupport();
-    }
+    /* ──────────────────────────────────────────────
+       STATE
+    ────────────────────────────────────────────── */
+    let selectedType  = null;   // e.g. "pdf_to_word"
+    let selectedFmt   = "";     // e.g. "PDF"
+    let selectedFiles = [];     // File[]
+    let toastTimer    = null;
+    let fakeTimer     = null;
 
-    function cacheDOM() {
-        // Category tabs
-        DOM.catTabs = document.querySelectorAll('.fc-cat-btn');
-        DOM.typeGroups = document.querySelectorAll('.fc-type-group');
-        
-        // Type selection
-        DOM.typeBtns = document.querySelectorAll('.fc-type-btn');
-        
-        // Upload
-        DOM.mainCard = document.getElementById('fc-main-card');
-        DOM.dropZone = document.getElementById('drop-zone');
-        DOM.fileInput = document.getElementById('file-input');
-        DOM.fileList = document.getElementById('file-list');
-        DOM.addMoreBtn = document.getElementById('btn-add-more');
-        DOM.addCount = document.getElementById('add-count');
-        DOM.acceptedHint = document.getElementById('accepted-hint');
-        
-        // Convert
-        DOM.btnConvert = document.getElementById('btn-convert');
-        DOM.btnConvertLabel = document.getElementById('btn-convert-label');
-        
-        // States
-        DOM.stepUpload = document.getElementById('step-upload');
-        DOM.stateProcessing = document.getElementById('state-processing');
-        DOM.stateResult = document.getElementById('state-result');
-        DOM.stateError = document.getElementById('state-error');
-        
-        // Processing
-        DOM.procTitle = document.getElementById('proc-title');
-        DOM.procSub = document.getElementById('proc-sub');
-        DOM.progressBar = document.getElementById('progress-bar');
-        
-        // Results
-        DOM.resultTitle = document.getElementById('result-title');
-        DOM.resultSub = document.getElementById('result-sub');
-        DOM.resultFiles = document.getElementById('result-files');
-        DOM.btnDownloadAll = document.getElementById('btn-download-all');
-        DOM.btnReset = document.getElementById('btn-reset');
-        
-        // Error
-        DOM.errorMsg = document.getElementById('error-msg');
-        DOM.btnRetry = document.getElementById('btn-retry');
-        
-        // Toast
-        DOM.toast = document.getElementById('fc-toast');
-        DOM.toastMsg = document.getElementById('fc-toast-msg');
-        DOM.toastIcon = DOM.toast.querySelector('.fc-toast-ico');
-    }
+    /* ──────────────────────────────────────────────
+       ROUTES  (read from meta tags or fallback)
+    ────────────────────────────────────────────── */
+    const processUrl  = document.querySelector('meta[name="fc-process-url"]')?.content
+                     || "/file-converter/process";
+    const downloadUrl = document.querySelector('meta[name="fc-download-url"]')?.content
+                     || "/file-converter/download";
 
-    function bindEvents() {
-        // Category tabs
-        DOM.catTabs.forEach(tab => {
-            tab.addEventListener('click', () => handleCategoryChange(tab));
+    /* ──────────────────────────────────────────────
+       CATEGORY TABS
+    ────────────────────────────────────────────── */
+    document.querySelectorAll(".fc-cat-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+            const cat = btn.dataset.cat;
+
+            // Update tab active state
+            document.querySelectorAll(".fc-cat-btn").forEach((b) => {
+                b.classList.toggle("active", b === btn);
+                b.setAttribute("aria-selected", String(b === btn));
+            });
+
+            // Show/hide type groups
+            document.querySelectorAll(".fc-type-group").forEach((g) => {
+                g.classList.toggle("fc-hidden", g.dataset.cat !== cat);
+            });
+
+            // Reset type selection when switching category
+            clearTypeSelection();
         });
-        
-        // Type selection
-        DOM.typeBtns.forEach(btn => {
-            btn.addEventListener('click', () => handleTypeSelection(btn));
+    });
+
+    /* ──────────────────────────────────────────────
+       TYPE BUTTONS
+    ────────────────────────────────────────────── */
+    document.querySelectorAll(".fc-type-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+            // Deselect all
+            document.querySelectorAll(".fc-type-btn").forEach((b) => b.classList.remove("selected"));
+
+            // Select clicked
+            btn.classList.add("selected");
+            selectedType = btn.dataset.type;
+            selectedFmt  = btn.dataset.fmt || "";
+
+            // Update accept attribute and hint
+            const exts = selectedFmt.split(",").map((e) => "." + e.trim().toLowerCase());
+            fileInput.accept = exts.join(",");
+            if (acceptedHint) acceptedHint.textContent = "Format: " + selectedFmt;
+
+            // Show main card
+            mainCard.classList.remove("fc-hidden");
+
+            // Update convert button
+            updateConvertBtn();
         });
-        
-        // File upload
-        DOM.dropZone.addEventListener('click', () => DOM.fileInput.click());
-        DOM.fileInput.addEventListener('change', handleFileSelect);
-        DOM.addMoreBtn.addEventListener('click', () => DOM.fileInput.click());
-        
-        // Conversion
-        DOM.btnConvert.addEventListener('click', handleConvert);
-        DOM.btnReset.addEventListener('click', resetConverter);
-        DOM.btnRetry.addEventListener('click', handleRetry);
-        
-        // Download all
-        DOM.btnDownloadAll.addEventListener('click', downloadAllAsZip);
-    }
+    });
 
-    // ══════════════════════════════════════════════════════════
-    // CATEGORY & TYPE SELECTION
-    // ══════════════════════════════════════════════════════════
-
-    function setupCategoryTabs() {
-        const firstTab = DOM.catTabs[0];
-        if (firstTab) {
-            handleCategoryChange(firstTab);
+    function clearTypeSelection() {
+        document.querySelectorAll(".fc-type-btn").forEach((b) => b.classList.remove("selected"));
+        selectedType = null;
+        selectedFmt  = "";
+        if (acceptedHint) acceptedHint.textContent = "Format: —";
+        updateConvertBtn();
+        // Hide card only if no files
+        if (selectedFiles.length === 0) {
+            mainCard.classList.add("fc-hidden");
         }
     }
 
-    function handleCategoryChange(tabEl) {
-        const category = tabEl.dataset.cat;
-        
-        // Update tab active states
-        DOM.catTabs.forEach(t => {
-            t.classList.toggle('active', t === tabEl);
-            t.setAttribute('aria-selected', String(t === tabEl));
+    /* ──────────────────────────────────────────────
+       FILE INPUT  (fix double-upload: ONE handler)
+    ────────────────────────────────────────────── */
+
+    // The <input type="file"> is positioned absolute over the drop zone.
+    // We listen ONLY on the input's 'change' event — never trigger .click() manually.
+    fileInput.addEventListener("change", (e) => {
+        addFiles(Array.from(e.target.files || []));
+        // Reset the input value so the same file can be re-selected
+        fileInput.value = "";
+    });
+
+    // "Add More" button: open the same file input
+    if (btnAddMore) {
+        btnAddMore.addEventListener("click", (e) => {
+            e.stopPropagation();
+            fileInput.click();
         });
-        
-        // Show corresponding type group
-        DOM.typeGroups.forEach(group => {
-            const isVisible = group.dataset.cat === category;
-            group.classList.toggle('fc-hidden', !isVisible);
-        });
-        
-        // Reset selection
-        resetTypeSelection();
     }
 
-    function handleTypeSelection(btnEl) {
-        const type = btnEl.dataset.type;
-        const formats = btnEl.dataset.fmt;
-        
-        // Update visual selection
-        DOM.typeBtns.forEach(b => b.classList.remove('selected'));
-        btnEl.classList.add('selected');
-        
-        // Update state
-        state.selectedType = type;
-        
-        // Update file input accept
-        const acceptStr = formats.split(',').map(f => `.${f.trim().toLowerCase()}`).join(',');
-        DOM.fileInput.setAttribute('accept', acceptStr);
-        DOM.acceptedHint.textContent = `Format: ${formats}`;
-        
-        // Show upload card
-        DOM.mainCard.classList.remove('fc-hidden');
-        
-        // Update convert button
-        updateConvertButton();
-        
-        // Smooth scroll to upload
-        setTimeout(() => {
-            DOM.mainCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }, 100);
-        
-        showToast(`📄 ${btnEl.querySelector('.fc-type-name').textContent} dipilih`, 'success');
-    }
-
-    function resetTypeSelection() {
-        DOM.typeBtns.forEach(b => b.classList.remove('selected'));
-        state.selectedType = null;
-        state.uploadedFiles = [];
-        DOM.mainCard.classList.add('fc-hidden');
-        DOM.fileList.innerHTML = '';
-        DOM.addMoreBtn.classList.add('fc-hidden');
-        updateConvertButton();
-    }
-
-    // ══════════════════════════════════════════════════════════
-    // FILE UPLOAD HANDLING
-    // ══════════════════════════════════════════════════════════
-
-    function setupDragDrop() {
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            DOM.dropZone.addEventListener(eventName, preventDefaults, false);
-        });
-        
-        ['dragenter', 'dragover'].forEach(eventName => {
-            DOM.dropZone.addEventListener(eventName, () => {
-                DOM.dropZone.classList.add('drag-over');
-            });
-        });
-        
-        ['dragleave', 'drop'].forEach(eventName => {
-            DOM.dropZone.addEventListener(eventName, () => {
-                DOM.dropZone.classList.remove('drag-over');
-            });
-        });
-        
-        DOM.dropZone.addEventListener('drop', handleDrop);
-    }
-
-    function preventDefaults(e) {
+    /* ──────────────────────────────────────────────
+       DRAG & DROP
+    ────────────────────────────────────────────── */
+    dropZone.addEventListener("dragover", (e) => {
         e.preventDefault();
-        e.stopPropagation();
-    }
+        dropZone.classList.add("drag-over");
+    });
 
-    function handleDrop(e) {
-        const dt = e.dataTransfer;
-        const files = dt.files;
-        handleFiles(files);
-    }
+    ["dragleave", "dragend"].forEach((evt) => {
+        dropZone.addEventListener(evt, () => dropZone.classList.remove("drag-over"));
+    });
 
-    function handleFileSelect(e) {
-        handleFiles(e.target.files);
-        e.target.value = ''; // Reset so same file can be selected again
-    }
+    dropZone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        dropZone.classList.remove("drag-over");
+        const files = Array.from(e.dataTransfer?.files || []);
+        if (files.length) addFiles(files);
+    });
 
-    function handleFiles(files) {
-        if (!state.selectedType) {
-            showToast('⚠️ Pilih jenis konversi terlebih dahulu', 'error');
+    /* ──────────────────────────────────────────────
+       ADD FILES
+    ────────────────────────────────────────────── */
+    function addFiles(incoming) {
+        const MAX = 5;
+        const MAX_BYTES = 50 * 1024 * 1024; // 50 MB
+
+        if (!selectedType) {
+            showToast("Pilih jenis konversi terlebih dahulu.", "warn");
             return;
         }
-        
-        const filesArray = Array.from(files);
-        const remainingSlots = config.maxFiles - state.uploadedFiles.length;
-        
-        if (filesArray.length > remainingSlots) {
-            showToast(`⚠️ Maksimal ${config.maxFiles} file. ${remainingSlots} slot tersisa.`, 'error');
-            return;
-        }
-        
-        // Validate files
-        const validFiles = [];
-        const errors = [];
-        
-        filesArray.forEach(file => {
-            if (file.size > config.maxFileSize) {
-                errors.push(`${file.name}: File terlalu besar (maks 50MB)`);
-            } else if (!validateFileType(file)) {
-                errors.push(`${file.name}: Format file tidak sesuai`);
-            } else {
-                validFiles.push(file);
+
+        const allowedExts = selectedFmt
+            .split(",")
+            .map((e) => e.trim().toLowerCase());
+
+        let added = 0;
+
+        for (const f of incoming) {
+            if (selectedFiles.length >= MAX) {
+                showToast(`Maksimal ${MAX} file per konversi.`, "warn");
+                break;
             }
+
+            // Extension check
+            const ext = f.name.split(".").pop().toLowerCase();
+            if (allowedExts.length && !allowedExts.includes(ext)) {
+                showToast(`Format .${ext} tidak didukung untuk konversi ini.`, "warn");
+                continue;
+            }
+
+            // Size check
+            if (f.size > MAX_BYTES) {
+                showToast(`${f.name} melebihi batas 50 MB.`, "warn");
+                continue;
+            }
+
+            // Duplicate check
+            if (selectedFiles.some((sf) => sf.name === f.name && sf.size === f.size)) {
+                showToast(`${f.name} sudah ditambahkan.`, "warn");
+                continue;
+            }
+
+            selectedFiles.push(f);
+            added++;
+        }
+
+        if (added > 0) renderFileList();
+        updateConvertBtn();
+        updateAddMore();
+    }
+
+    /* ──────────────────────────────────────────────
+       RENDER FILE LIST
+    ────────────────────────────────────────────── */
+    function renderFileList() {
+        fileList.innerHTML = "";
+
+        selectedFiles.forEach((f, idx) => {
+            const item = document.createElement("div");
+            item.className = "fc-file-item";
+            item.setAttribute("role", "listitem");
+
+            const iconCls = getFileIconClass(f.name);
+            const iconSvg = getFileIconSymbol(f.name);
+
+            item.innerHTML = `
+                <div class="fc-file-icon ${iconCls}">
+                    <i class="fa-solid ${iconSvg}"></i>
+                </div>
+                <div class="fc-file-meta">
+                    <span class="fc-file-name" title="${escHtml(f.name)}">${escHtml(f.name)}</span>
+                    <span class="fc-file-size">${formatBytes(f.size)}</span>
+                </div>
+                <button class="fc-file-remove" aria-label="Hapus ${escHtml(f.name)}" data-idx="${idx}">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            `;
+            fileList.appendChild(item);
         });
-        
-        if (errors.length > 0) {
-            showToast(`❌ ${errors[0]}`, 'error');
-        }
-        
-        if (validFiles.length === 0) return;
-        
-        // Add valid files
-        validFiles.forEach(file => {
-            const fileId = 'file_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-            const fileObj = {
-                id: fileId,
-                file: file,
-                name: file.name,
-                size: file.size,
-                sizeHuman: formatBytes(file.size)
-            };
-            
-            state.uploadedFiles.push(fileObj);
-            renderFileItem(fileObj);
-        });
-        
-        updateFileListUI();
-        updateConvertButton();
-        
-        showToast(`✅ ${validFiles.length} file ditambahkan`, 'success');
-    }
 
-    function validateFileType(file) {
-        const acceptedFormats = DOM.fileInput.getAttribute('accept');
-        if (!acceptedFormats) return true;
-        
-        const ext = '.' + file.name.split('.').pop().toLowerCase();
-        return acceptedFormats.split(',').some(format => format.trim() === ext);
-    }
+        // Remove handlers
+        fileList.querySelectorAll(".fc-file-remove").forEach((btn) => {
+            btn.addEventListener("click", (e) => {
+                const i = parseInt(btn.dataset.idx, 10);
+                selectedFiles.splice(i, 1);
+                renderFileList();
+                updateConvertBtn();
+                updateAddMore();
 
-    function renderFileItem(fileObj) {
-        const div = document.createElement('div');
-        div.className = 'fc-file-item';
-        div.dataset.fileId = fileObj.id;
-        div.setAttribute('role', 'listitem');
-        
-        div.innerHTML = `
-            <div class="fc-file-icon">
-                <i class="fa-solid ${getFileIcon(fileObj.name)}"></i>
-            </div>
-            <div class="fc-file-info">
-                <div class="fc-file-name" title="${escapeHtml(fileObj.name)}">${escapeHtml(fileObj.name)}</div>
-                <div class="fc-file-size">${fileObj.sizeHuman}</div>
-            </div>
-            <div class="fc-file-status" data-status="pending">
-                <span class="fc-status-badge fc-status-pending">
-                    <i class="fa-solid fa-clock"></i> Siap
-                </span>
-            </div>
-            <button type="button" class="fc-file-remove" aria-label="Hapus file" data-file-id="${fileObj.id}">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-        `;
-        
-        // Add remove handler
-        const removeBtn = div.querySelector('.fc-file-remove');
-        removeBtn.addEventListener('click', () => removeFile(fileObj.id));
-        
-        DOM.fileList.appendChild(div);
-    }
-
-    function removeFile(fileId) {
-        state.uploadedFiles = state.uploadedFiles.filter(f => f.id !== fileId);
-        
-        const fileEl = document.querySelector(`[data-file-id="${fileId}"]`).closest('.fc-file-item');
-        fileEl.style.opacity = '0';
-        fileEl.style.transform = 'translateX(20px)';
-        
-        setTimeout(() => {
-            fileEl.remove();
-            updateFileListUI();
-            updateConvertButton();
-        }, 300);
-        
-        showToast('🗑️ File dihapus', 'info');
-    }
-
-    function updateFileListUI() {
-        const hasFiles = state.uploadedFiles.length > 0;
-        const canAddMore = state.uploadedFiles.length < config.maxFiles;
-        
-        // Show/hide placeholder
-        const placeholder = document.getElementById('drop-placeholder');
-        if (placeholder) {
-            placeholder.style.display = hasFiles ? 'none' : 'flex';
-        }
-        
-        // Show/hide add more button
-        DOM.addMoreBtn.classList.toggle('fc-hidden', !hasFiles || !canAddMore);
-        if (hasFiles) {
-            DOM.addCount.textContent = `${state.uploadedFiles.length}/${config.maxFiles}`;
-        }
-    }
-
-    function updateConvertButton() {
-        const hasFiles = state.uploadedFiles.length > 0;
-        const hasType = state.selectedType !== null;
-        const canConvert = hasFiles && hasType && !state.isConverting;
-        
-        DOM.btnConvert.disabled = !canConvert;
-        
-        if (!hasType) {
-            DOM.btnConvertLabel.textContent = 'Pilih jenis konversi dahulu';
-        } else if (!hasFiles) {
-            DOM.btnConvertLabel.textContent = 'Upload file untuk dikonversi';
-        } else if (state.isConverting) {
-            DOM.btnConvertLabel.textContent = 'Mengkonversi...';
-        } else {
-            DOM.btnConvertLabel.textContent = `Konversi ${state.uploadedFiles.length} File`;
-        }
-    }
-
-    // ══════════════════════════════════════════════════════════
-    // CONVERSION PROCESS
-    // ══════════════════════════════════════════════════════════
-
-    async function handleConvert() {
-        if (state.isConverting) return;
-        if (state.uploadedFiles.length === 0 || !state.selectedType) return;
-        
-        state.isConverting = true;
-        updateConvertButton();
-        
-        // Switch to processing state
-        switchState('processing');
-        
-        // Prepare form data
-        const formData = new FormData();
-        formData.append('conversion_type', state.selectedType);
-        
-        state.uploadedFiles.forEach((fileObj, index) => {
-            formData.append('files[]', fileObj.file);
-        });
-        
-        // Add CSRF token
-        const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-        if (token) {
-            formData.append('_token', token);
-        }
-        
-        try {
-            // Start conversion
-            const response = await fetch('/file-converter/process', {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'Accept': 'application/json'
+                if (selectedFiles.length === 0) {
+                    // Show drop zone placeholder again
+                    document.getElementById("drop-placeholder")?.classList.remove("fc-hidden");
                 }
             });
-            
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
-            
-            const result = await response.json();
-            
-            if (result.success) {
-                state.sessionId = result.session_id;
-                state.convertedResults = result.results;
-                
-                // Update UI for each file with progress
-                await monitorConversionProgress(result.results);
-                
-                // Show results
-                displayResults(result);
-                switchState('result');
-            } else {
-                throw new Error(result.error || 'Conversion failed');
-            }
-            
-        } catch (error) {
-            console.error('Conversion error:', error);
-            showError(error.message || 'Terjadi kesalahan saat mengkonversi file');
-            switchState('error');
-        } finally {
-            state.isConverting = false;
-            updateConvertButton();
+        });
+
+        // Hide placeholder when files present
+        const placeholder = document.getElementById("drop-placeholder");
+        if (placeholder) {
+            placeholder.classList.toggle("fc-hidden", selectedFiles.length > 0);
         }
     }
 
-    async function monitorConversionProgress(results) {
-        // Simulate progress monitoring
-        // In real implementation, this would poll the server for progress updates
-        
-        const updateProgress = (percent, message) => {
-            DOM.progressBar.style.width = percent + '%';
-            DOM.procSub.textContent = message;
-        };
-        
-        updateProgress(10, 'Memulai konversi...');
-        await sleep(500);
-        
-        updateProgress(30, 'Menganalisis struktur dokumen...');
-        await sleep(800);
-        
-        updateProgress(50, 'Mengkonversi format...');
-        await sleep(1000);
-        
-        updateProgress(70, 'Memproses tabel dan formatting...');
-        await sleep(800);
-        
-        updateProgress(85, 'Membuat preview...');
-        await sleep(500);
-        
-        updateProgress(100, 'Selesai!');
-    }
+    /* ──────────────────────────────────────────────
+       UI HELPERS
+    ────────────────────────────────────────────── */
+    function updateConvertBtn() {
+        const ready = selectedType && selectedFiles.length > 0;
+        btnConvert.disabled = !ready;
 
-    function displayResults(result) {
-        DOM.resultFiles.innerHTML = '';
-        
-        const successful = result.results.filter(r => r.success);
-        const failed = result.results.filter(r => !r.success);
-        
-        DOM.resultTitle.textContent = `✅ ${successful.length} dari ${result.total_files} File Berhasil`;
-        DOM.resultSub.textContent = failed.length > 0 
-            ? `${failed.length} file gagal dikonversi`
-            : 'Semua file berhasil dikonversi!';
-        
-        // Render successful conversions
-        successful.forEach((fileResult, index) => {
-            renderResultItem(fileResult, index);
-        });
-        
-        // Render failed conversions
-        failed.forEach((fileResult, index) => {
-            renderResultError(fileResult, index);
-        });
-        
-        // Show download all button if multiple files
-        if (successful.length > 1) {
-            DOM.btnDownloadAll.classList.remove('fc-hidden');
+        if (!selectedType) {
+            btnConvertLbl.textContent = "Pilih jenis konversi dahulu";
+        } else if (selectedFiles.length === 0) {
+            btnConvertLbl.textContent = "Upload file terlebih dahulu";
+        } else {
+            const n = selectedFiles.length;
+            btnConvertLbl.textContent = `Konversi ${n} File${n > 1 ? "s" : ""}`;
         }
     }
 
-    function renderResultItem(fileResult, index) {
-        const div = document.createElement('div');
-        div.className = 'fc-result-item';
-        
-        const qualityBadge = fileResult.quality_score 
-            ? `<span class="fc-quality-badge ${getQualityClass(fileResult.quality_score)}">
-                    ${getQualityLabel(fileResult.quality_score)}
-               </span>`
-            : '';
-        
-        const tablesInfo = fileResult.tables_detected 
-            ? `<span class="fc-info-badge">
-                    <i class="fa-solid fa-table"></i> ${fileResult.tables_detected} tabel terdeteksi
-               </span>`
-            : '';
-        
-        const warningsHtml = fileResult.warnings && fileResult.warnings.length > 0
-            ? `<div class="fc-warnings">
-                    <i class="fa-solid fa-triangle-exclamation"></i>
-                    ${fileResult.warnings.join(', ')}
-               </div>`
-            : '';
-        
-        div.innerHTML = `
-            <div class="fc-result-header">
-                <div class="fc-result-icon">
-                    <i class="fa-solid fa-file-check"></i>
-                </div>
-                <div class="fc-result-info">
-                    <div class="fc-result-name">${escapeHtml(fileResult.original_name)}</div>
-                    <div class="fc-result-meta">
-                        ${fileResult.file_size_human || ''} · ${fileResult.method || ''}
-                        ${qualityBadge}
-                        ${tablesInfo}
-                    </div>
-                    ${warningsHtml}
-                </div>
-            </div>
-            <div class="fc-result-actions">
-                ${config.previewEnabled && fileResult.preview_url ? `
-                    <button type="button" class="fc-btn-preview" data-preview="${fileResult.preview_url}" data-name="${escapeHtml(fileResult.original_name)}">
-                        <i class="fa-solid fa-eye"></i>
-                        <span>Preview</span>
-                    </button>
-                ` : ''}
-                <a href="${fileResult.download_url}" class="fc-btn-download-single" download>
-                    <i class="fa-solid fa-download"></i>
-                    <span>Download</span>
-                </a>
-            </div>
-        `;
-        
-        // Add preview handler
-        const previewBtn = div.querySelector('.fc-btn-preview');
-        if (previewBtn) {
-            previewBtn.addEventListener('click', () => {
-                showPreviewModal(fileResult);
+    function updateAddMore() {
+        if (!btnAddMore || !addCount) return;
+        const n = selectedFiles.length;
+        const visible = n > 0 && n < 5;
+        btnAddMore.classList.toggle("fc-hidden", !visible);
+        addCount.textContent = `${n}/5`;
+    }
+
+    /* ──────────────────────────────────────────────
+       CONVERT
+    ────────────────────────────────────────────── */
+    btnConvert.addEventListener("click", doConvert);
+
+    async function doConvert() {
+        if (!selectedType || selectedFiles.length === 0) return;
+
+        showState("processing");
+        startFakeProgress();
+
+        const fd = new FormData();
+        fd.append("conv_type", selectedType);
+        fd.append("_token", getCsrf());
+        selectedFiles.forEach((f) => fd.append("files[]", f));
+
+        try {
+            const resp = await fetch(processUrl, {
+                method: "POST",
+                body: fd,
+                headers: { "X-CSRF-TOKEN": getCsrf() },
             });
-        }
-        
-        DOM.resultFiles.appendChild(div);
-    }
 
-    function renderResultError(fileResult, index) {
-        const div = document.createElement('div');
-        div.className = 'fc-result-item fc-result-item--error';
-        
-        div.innerHTML = `
-            <div class="fc-result-header">
-                <div class="fc-result-icon fc-result-icon--error">
-                    <i class="fa-solid fa-triangle-exclamation"></i>
-                </div>
-                <div class="fc-result-info">
-                    <div class="fc-result-name">${escapeHtml(fileResult.original_name)}</div>
-                    <div class="fc-result-error">${escapeHtml(fileResult.error || 'Konversi gagal')}</div>
-                </div>
-            </div>
-        `;
-        
-        DOM.resultFiles.appendChild(div);
-    }
+            stopFakeProgress(100);
 
-    // ══════════════════════════════════════════════════════════
-    // PREVIEW MODAL
-    // ══════════════════════════════════════════════════════════
+            const data = await resp.json().catch(() => ({
+                success: false,
+                message: `Server returned ${resp.status} — bukan JSON.`,
+            }));
 
-    function showPreviewModal(fileResult) {
-        const modal = document.createElement('div');
-        modal.className = 'fc-preview-modal';
-        modal.innerHTML = `
-            <div class="fc-preview-backdrop"></div>
-            <div class="fc-preview-content">
-                <div class="fc-preview-header">
-                    <h3>
-                        <i class="fa-solid fa-eye"></i>
-                        Preview: ${escapeHtml(fileResult.original_name)}
-                    </h3>
-                    <button type="button" class="fc-preview-close" aria-label="Close">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
-                </div>
-                <div class="fc-preview-body">
-                    <div class="fc-preview-loading">
-                        <div class="fc-spinner-ring"><div class="fc-spinner-inner"></div></div>
-                        <p>Loading preview...</p>
-                    </div>
-                    <img src="${fileResult.preview_url}" alt="Preview" class="fc-preview-image" style="display:none;" />
-                </div>
-                <div class="fc-preview-footer">
-                    <a href="${fileResult.download_url}" class="fc-btn-download-single" download>
-                        <i class="fa-solid fa-download"></i>
-                        Download File
-                    </a>
-                </div>
-            </div>
-        `;
-        
-        document.body.appendChild(modal);
-        document.body.style.overflow = 'hidden';
-        
-        // Load image
-        const img = modal.querySelector('.fc-preview-image');
-        const loading = modal.querySelector('.fc-preview-loading');
-        
-        img.onload = () => {
-            loading.style.display = 'none';
-            img.style.display = 'block';
-        };
-        
-        img.onerror = () => {
-            loading.innerHTML = `
-                <i class="fa-solid fa-triangle-exclamation" style="font-size: 2rem; color: var(--error);"></i>
-                <p>Preview tidak tersedia</p>
-            `;
-        };
-        
-        // Close handlers
-        const closeBtn = modal.querySelector('.fc-preview-close');
-        const backdrop = modal.querySelector('.fc-preview-backdrop');
-        
-        const closeModal = () => {
-            modal.classList.add('fc-preview-modal--closing');
-            setTimeout(() => {
-                modal.remove();
-                document.body.style.overflow = '';
-            }, 300);
-        };
-        
-        closeBtn.addEventListener('click', closeModal);
-        backdrop.addEventListener('click', closeModal);
-        
-        // ESC key
-        const escHandler = (e) => {
-            if (e.key === 'Escape') {
-                closeModal();
-                document.removeEventListener('keydown', escHandler);
+            if (!resp.ok || !data.success) {
+                const msg = data.message || data.errors?.[0]?.error || "Konversi gagal.";
+                showErrorState(msg);
+                return;
             }
-        };
-        document.addEventListener('keydown', escHandler);
-        
-        // Animate in
-        requestAnimationFrame(() => {
-            modal.classList.add('fc-preview-modal--open');
+
+            showResultState(data.files || [], data.errors || []);
+        } catch (err) {
+            stopFakeProgress(0);
+            showErrorState("Tidak dapat terhubung ke server. Periksa koneksi internet Anda.");
+            console.error("FC Error:", err);
+        }
+    }
+
+    /* ──────────────────────────────────────────────
+       PROGRESS (fake visual feedback)
+    ────────────────────────────────────────────── */
+    let fakeVal = 0;
+
+    function startFakeProgress() {
+        fakeVal = 0;
+        progressBar.style.width = "0%";
+        procTitle.textContent = "Mengkonversi file...";
+        procSub.textContent   = "Memproses...";
+
+        const steps = [
+            { pct: 15, delay: 400,  msg: "Membaca file..." },
+            { pct: 35, delay: 1200, msg: "Mengkonversi..." },
+            { pct: 60, delay: 3000, msg: "Membangun dokumen output..." },
+            { pct: 80, delay: 6000, msg: "Hampir selesai..." },
+            { pct: 90, delay: 12000, msg: "Menyelesaikan..." },
+        ];
+
+        let cumDelay = 0;
+        steps.forEach(({ pct, delay, msg }) => {
+            cumDelay += delay;
+            setTimeout(() => {
+                if (fakeVal < pct) {
+                    fakeVal = pct;
+                    progressBar.style.width = pct + "%";
+                    procSub.textContent = msg;
+                }
+            }, cumDelay);
         });
     }
 
-    // ══════════════════════════════════════════════════════════
-    // DOWNLOAD ALL AS ZIP
-    // ══════════════════════════════════════════════════════════
+    function stopFakeProgress(finalPct) {
+        if (fakeTimer) clearTimeout(fakeTimer);
+        fakeVal = finalPct;
+        progressBar.style.width = finalPct + "%";
+    }
 
-    async function downloadAllAsZip() {
-        if (typeof JSZip === 'undefined') {
-            showToast('❌ JSZip library tidak tersedia', 'error');
+    /* ──────────────────────────────────────────────
+       STATE MACHINE
+    ────────────────────────────────────────────── */
+    function showState(name) {
+        [stepUpload, stateProc, stateResult, stateError].forEach((el) => {
+            if (el) el.classList.add("fc-hidden");
+        });
+
+        switch (name) {
+            case "upload":
+                if (stepUpload)  stepUpload.classList.remove("fc-hidden");
+                if (btnConvert)  btnConvert.classList.remove("fc-hidden");
+                break;
+            case "processing":
+                if (stateProc)   stateProc.classList.remove("fc-hidden");
+                if (btnConvert)  btnConvert.classList.add("fc-hidden");
+                break;
+            case "result":
+                if (stateResult) stateResult.classList.remove("fc-hidden");
+                if (btnConvert)  btnConvert.classList.add("fc-hidden");
+                break;
+            case "error":
+                if (stateError)  stateError.classList.remove("fc-hidden");
+                if (btnConvert)  btnConvert.classList.add("fc-hidden");
+                break;
+        }
+    }
+
+    function showResultState(files, errors) {
+        showState("result");
+
+        const count = files.length;
+        resultTitle.textContent = count > 1
+            ? `${count} File Berhasil Dikonversi!`
+            : "Konversi Selesai!";
+        resultSub.textContent = "File siap diunduh.";
+
+        resultFiles.innerHTML = "";
+
+        files.forEach((f) => {
+            const row = document.createElement("div");
+            row.className = "fc-result-file";
+            row.setAttribute("role", "listitem");
+
+            const dlHref = `${downloadUrl}/${f.token}`;
+
+            row.innerHTML = `
+                <div class="fc-result-file-icon">
+                    <i class="fa-solid ${getFileIconSymbol(f.filename)}"></i>
+                </div>
+                <div class="fc-result-file-meta">
+                    <span class="fc-result-file-name" title="${escHtml(f.filename)}">${escHtml(f.filename)}</span>
+                    <span class="fc-result-file-size">${formatBytes(f.size)}</span>
+                    <span class="fc-result-file-engine">engine: ${escHtml(f.engine || "?")}</span>
+                </div>
+                <a href="${dlHref}" class="fc-btn-dl-single" download="${escHtml(f.filename)}">
+                    <i class="fa-solid fa-download"></i> Download
+                </a>
+            `;
+            resultFiles.appendChild(row);
+        });
+
+        // Partial errors notice
+        if (errors.length > 0) {
+            const notice = document.createElement("div");
+            notice.className = "fc-partial-notice";
+            notice.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i>
+                <span>${errors.length} file gagal dikonversi: ${errors.map((e) => escHtml(e.file)).join(", ")}</span>`;
+            resultFiles.appendChild(notice);
+        }
+
+        // "Download All" ZIP — if multiple files
+        if (files.length > 1) {
+            btnDownloadAll.classList.remove("fc-hidden");
+            btnDownloadAll.onclick = () => downloadAllAsZip(files);
+        } else {
+            btnDownloadAll.classList.add("fc-hidden");
+        }
+    }
+
+    function showErrorState(msg) {
+        showState("error");
+        if (errorMsg) errorMsg.textContent = msg;
+    }
+
+    /* ──────────────────────────────────────────────
+       DOWNLOAD ALL (ZIP via JSZip)
+    ────────────────────────────────────────────── */
+    async function downloadAllAsZip(files) {
+        if (typeof JSZip === "undefined") {
+            showToast("JSZip tidak tersedia — download satu per satu.", "warn");
             return;
         }
-        
-        showToast('📦 Membuat file ZIP...', 'info');
-        
-        try {
-            const zip = new JSZip();
-            const successful = state.convertedResults.filter(r => r.success);
-            
-            // Fetch and add each file to ZIP
-            for (const result of successful) {
-                const response = await fetch(result.download_url);
-                const blob = await response.blob();
-                zip.file(result.output_name, blob);
+
+        const zip = new JSZip();
+        btnDownloadAll.disabled = true;
+        btnDownloadAll.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Menyiapkan ZIP...</span>';
+
+        let ok = 0;
+        for (const f of files) {
+            try {
+                const dlHref = `${downloadUrl}/${f.token}`;
+                const resp   = await fetch(dlHref);
+                if (resp.ok) {
+                    const blob = await resp.blob();
+                    zip.file(f.filename, blob);
+                    ok++;
+                }
+            } catch (_) {
+                // skip failed file
             }
-            
-            // Generate ZIP
-            const zipBlob = await zip.generateAsync({ type: 'blob' });
-            
-            // Download
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(zipBlob);
-            link.download = `converted_files_${Date.now()}.zip`;
-            link.click();
-            
-            showToast('✅ File ZIP berhasil didownload!', 'success');
-            
-        } catch (error) {
-            console.error('ZIP creation error:', error);
-            showToast('❌ Gagal membuat file ZIP', 'error');
         }
-    }
 
-    // ══════════════════════════════════════════════════════════
-    // STATE MANAGEMENT
-    // ══════════════════════════════════════════════════════════
-
-    function switchState(stateName) {
-        // Hide all states
-        [DOM.stepUpload, DOM.stateProcessing, DOM.stateResult, DOM.stateError].forEach(el => {
-            el.classList.add('fc-hidden');
-        });
-        
-        // Show requested state
-        switch(stateName) {
-            case 'upload':
-                DOM.stepUpload.classList.remove('fc-hidden');
-                break;
-            case 'processing':
-                DOM.stateProcessing.classList.remove('fc-hidden');
-                DOM.progressBar.style.width = '0%';
-                break;
-            case 'result':
-                DOM.stateResult.classList.remove('fc-hidden');
-                break;
-            case 'error':
-                DOM.stateError.classList.remove('fc-hidden');
-                break;
+        if (ok === 0) {
+            showToast("Tidak ada file yang bisa di-ZIP.", "warn");
+            btnDownloadAll.disabled = false;
+            btnDownloadAll.innerHTML = '<i class="fa-solid fa-file-zipper"></i> <span>Download Semua (ZIP)</span>';
+            return;
         }
+
+        const content = await zip.generateAsync({ type: "blob" });
+        triggerDownload(content, "mediatools_converted.zip");
+        btnDownloadAll.disabled = false;
+        btnDownloadAll.innerHTML = '<i class="fa-solid fa-file-zipper"></i> <span>Download Semua (ZIP)</span>';
+        showToast(`${ok} file berhasil dizip!`);
     }
 
-    function showError(message) {
-        DOM.errorMsg.textContent = message;
-    }
-
-    function resetConverter() {
-        state.uploadedFiles = [];
-        state.convertedResults = [];
-        state.isConverting = false;
-        state.sessionId = null;
-        
-        DOM.fileList.innerHTML = '';
-        switchState('upload');
-        updateFileListUI();
-        updateConvertButton();
-        
-        // Cleanup old files on server
-        if (state.sessionId) {
-            fetch('/file-converter/cleanup', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
-                },
-                body: JSON.stringify({ session_id: state.sessionId })
-            }).catch(err => console.warn('Cleanup failed:', err));
-        }
-        
-        showToast('🔄 Reset berhasil', 'info');
-    }
-
-    function handleRetry() {
-        resetConverter();
-    }
-
-    // ══════════════════════════════════════════════════════════
-    // UTILITY FUNCTIONS
-    // ══════════════════════════════════════════════════════════
-
-    function getFileIcon(filename) {
-        const ext = filename.split('.').pop().toLowerCase();
-        const iconMap = {
-            pdf: 'fa-file-pdf',
-            doc: 'fa-file-word',
-            docx: 'fa-file-word',
-            xls: 'fa-file-excel',
-            xlsx: 'fa-file-excel',
-            ppt: 'fa-file-powerpoint',
-            pptx: 'fa-file-powerpoint',
-            jpg: 'fa-file-image',
-            jpeg: 'fa-file-image',
-            png: 'fa-file-image',
-            webp: 'fa-file-image'
-        };
-        return iconMap[ext] || 'fa-file';
-    }
-
-    function formatBytes(bytes, decimals = 2) {
-        if (bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const dm = decimals < 0 ? 0 : decimals;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-    }
-
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-
-    function getQualityClass(score) {
-        if (score >= 0.9) return 'fc-quality-excellent';
-        if (score >= 0.7) return 'fc-quality-good';
-        if (score >= 0.5) return 'fc-quality-fair';
-        return 'fc-quality-poor';
-    }
-
-    function getQualityLabel(score) {
-        if (score >= 0.9) return '⭐ Excellent';
-        if (score >= 0.7) return '👍 Good';
-        if (score >= 0.5) return '⚠️ Fair';
-        return '❌ Poor';
-    }
-
-    function showToast(message, type = 'info') {
-        DOM.toastMsg.textContent = message;
-        DOM.toast.className = 'fc-toast fc-toast--' + type;
-        
-        const iconMap = {
-            success: 'fa-check',
-            error: 'fa-triangle-exclamation',
-            warning: 'fa-exclamation',
-            info: 'fa-info'
-        };
-        DOM.toastIcon.className = `fa-solid ${iconMap[type] || 'fa-info'} fc-toast-ico`;
-        
-        DOM.toast.classList.add('show');
-        
+    function triggerDownload(blob, filename) {
+        const url = URL.createObjectURL(blob);
+        const a   = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
         setTimeout(() => {
-            DOM.toast.classList.remove('show');
-        }, 3000);
+            URL.revokeObjectURL(url);
+            a.remove();
+        }, 2000);
     }
 
-    function sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
+    /* ──────────────────────────────────────────────
+       RESET
+    ────────────────────────────────────────────── */
+    if (btnReset) {
+        btnReset.addEventListener("click", resetAll);
+    }
+    if (btnRetry) {
+        btnRetry.addEventListener("click", resetAll);
     }
 
-    function checkBrowserSupport() {
-        // Check for required APIs
-        const hasFileAPI = typeof File !== 'undefined' && typeof FileReader !== 'undefined';
-        const hasFetch = typeof fetch !== 'undefined';
-        
-        if (!hasFileAPI || !hasFetch) {
-            showToast('⚠️ Browser Anda tidak mendukung semua fitur', 'warning');
+    function resetAll() {
+        selectedFiles = [];
+        fileList.innerHTML = "";
+        fileInput.value   = "";
+
+        // Show placeholder
+        const placeholder = document.getElementById("drop-placeholder");
+        if (placeholder) placeholder.classList.remove("fc-hidden");
+
+        updateConvertBtn();
+        updateAddMore();
+        showState("upload");
+        btnConvert.classList.remove("fc-hidden");
+        progressBar.style.width = "0%";
+    }
+
+    /* ──────────────────────────────────────────────
+       TOAST
+    ────────────────────────────────────────────── */
+    function showToast(msg, type = "ok") {
+        if (!toast || !toastMsg) return;
+        if (toastTimer) clearTimeout(toastTimer);
+
+        toastMsg.textContent = msg;
+
+        const ico = toast.querySelector(".fc-toast-ico");
+        if (ico) {
+            ico.className = type === "warn"
+                ? "fa-solid fa-triangle-exclamation fc-toast-ico"
+                : "fa-solid fa-check fc-toast-ico";
+            ico.style.color = type === "warn" ? "#fbbf24" : "#a3e635";
         }
+
+        toast.classList.add("show");
+        toastTimer = setTimeout(() => toast.classList.remove("show"), 3200);
     }
 
-    // ══════════════════════════════════════════════════════════
-    // INITIALIZE ON DOM READY
-    // ══════════════════════════════════════════════════════════
-
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
+    /* ──────────────────────────────────────────────
+       UTILS
+    ────────────────────────────────────────────── */
+    function getCsrf() {
+        return document.querySelector('meta[name="csrf-token"]')?.content || "";
     }
+
+    function formatBytes(bytes) {
+        if (bytes === 0) return "0 B";
+        const k    = 1024;
+        const unit = ["B", "KB", "MB", "GB"];
+        const i    = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + unit[i];
+    }
+
+    function escHtml(str) {
+        const map = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
+        return String(str).replace(/[&<>"']/g, (c) => map[c]);
+    }
+
+    function getFileIconClass(name) {
+        const ext = name.split(".").pop().toLowerCase();
+        if (ext === "pdf") return "fc-file-icon--pdf";
+        if (["doc", "docx"].includes(ext)) return "fc-file-icon--word";
+        if (["xls", "xlsx"].includes(ext)) return "fc-file-icon--excel";
+        if (["ppt", "pptx"].includes(ext)) return "fc-file-icon--ppt";
+        if (["jpg", "jpeg", "png", "gif", "webp", "bmp"].includes(ext)) return "fc-file-icon--img";
+        return "fc-file-icon--def";
+    }
+
+    function getFileIconSymbol(name) {
+        const ext = name.split(".").pop().toLowerCase();
+        if (ext === "pdf") return "fa-file-pdf";
+        if (["doc", "docx"].includes(ext)) return "fa-file-word";
+        if (["xls", "xlsx"].includes(ext)) return "fa-file-excel";
+        if (["ppt", "pptx"].includes(ext)) return "fa-file-powerpoint";
+        if (["jpg", "jpeg", "png", "gif", "webp", "bmp"].includes(ext)) return "fa-image";
+        if (ext === "zip") return "fa-file-zipper";
+        return "fa-file";
+    }
+
+    /* init */
+    showState("upload");
 
 })();
