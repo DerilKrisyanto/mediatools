@@ -76,20 +76,16 @@
             </div>
         </div>
 
-        {{-- Tools --}}
+        {{-- Tools Poluler --}}
         <div class="footer-col">
-            <h4>Tools Populer</h4>
+            <h4>Tools Populer & Baru</h4>
             <div class="footer-links">
                 @foreach([
-                    ['tools.invoice',           'Invoice Generator'],
-                    ['tools.qr',                'QR Code Generator'],
-                    ['tools.bgremover',         'Background Remover'],
                     ['tools.linktree',          'LinkTree Builder'],
-                    ['tools.signature',         'Email Signature'],
-                    ['tools.pdfutilities',      'PDF Utilities'],
-                    ['tools.imageconverter',    'Image Converter'],
                     ['tools.fileconverter',     'File Converter'],
+                    ['tools.pdfutilities',      'PDF Utilities'],
                     ['tools.mediadownloader',   'Media Downloader'],
+                    ['tools.invoice',           'Invoice Generator'],
                     ['tools.passwordgenerator', 'Password Generator'],
                 ] as [$route, $label])
                 <a href="{{ route($route) }}" class="footer-link">{{ $label }}</a>
@@ -97,32 +93,34 @@
             </div>
         </div>
 
-        {{-- Company --}}
+        {{-- All Tools --}}
         <div class="footer-col">
-            <h4>Perusahaan</h4>
+            <h4>Semua Tools</h4>
             <div class="footer-links">
                 @foreach([
-                    [route('home').'#about',   'Tentang Kami'],
-                    [route('home').'#contact', 'Hubungi Kami'],
-                    ['#', 'Blog & Tutorial'],
-                    ['#', 'Update Fitur'],
-                    ['#', 'Roadmap'],
-                    ['#', 'Karir'],
-                ] as [$href, $label])
-                <a href="{{ $href }}" class="footer-link">{{ $label }}</a>
+                    ['tools.linktree',          'LinkTree Builder'],
+                    ['tools.fileconverter',     'File Converter'],
+                    ['tools.pdfutilities',      'PDF Utilities'],
+                    ['tools.bgremover',         'Background Remover'],
+                    ['tools.mediadownloader',   'Media Downloader'],
+                    ['tools.imageconverter',    'Image Converter'],
+                    ['tools.invoice',           'Invoice Generator'],
+                    ['tools.passwordgenerator', 'Password Generator'],
+                    ['tools.qr',                'QR Code Generator'],
+                    ['tools.signature',         'Email Signature'],
+                ] as [$route, $label])
+                <a href="{{ route($route) }}" class="footer-link">{{ $label }}</a>
                 @endforeach
             </div>
         </div>
 
         {{-- Support --}}
         <div class="footer-col">
-            <h4>Dukungan</h4>
+            <h4>Perusahaan</h4>
             <div class="footer-links">
                 @foreach([
-                    [route('home').'#contact', 'Pusat Bantuan'],
-                    ['#', 'Dokumentasi API'],
-                    ['#', 'Status Server'],
-                    ['#', 'Laporan Bug'],
+                    [route('home').'#about',   'Tentang Kami'],
+                    [route('home').'#contact', 'Hubungi Kami'],
                 ] as [$href, $label])
                 <a href="{{ $href }}" class="footer-link">{{ $label }}</a>
                 @endforeach
@@ -151,8 +149,8 @@
                 @endforeach
             </div>
             <p class="footer-copy">
-                © {{ date('Y') }} MediaTools Indonesia ·
-                Dibuat dengan <i class="fa-solid fa-heart" style="color:#f87171;margin:0 2px;"></i> untuk Indonesia
+                © {{ date('Y') }} MediaTools Indonesia -
+                Dibuat dengan <i class="fa-solid fa-heart" style="color:#f87171;margin:0 2px;"></i> untuk Produktivitas harian anda.
             </p>
         </div>
     </div>

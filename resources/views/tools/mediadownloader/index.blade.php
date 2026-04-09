@@ -1,10 +1,14 @@
 @extends('layouts.app')
 
 @section('og_image', 'mediadownloader')
-@section('title', 'Download Video YouTube TikTok Instagram Gratis — Tanpa Watermark | MediaTools')
-@section('meta_description', 'Download video YouTube, TikTok tanpa watermark, dan Instagram gratis. Cukup paste URL, pilih format MP4 atau MP3, langsung download kualitas hingga 1080p. Alternatif terbaik SaveFrom.net.')
-@section('meta_keywords', 'download video youtube, youtube downloader gratis, download tiktok tanpa watermark, download video tiktok, download video instagram, youtube to mp3, savefrom alternative, yt downloader online, download video online gratis, youtube mp3 downloader, download reels instagram, download tiktok video, youtube video downloader, download video shorts, savefrom')
+@section('title', 'Download Video YouTube TikTok Instagram MP4 MP3 Gratis Tanpa Watermark | MediaTools')
+@section('meta_description', 'Download video YouTube 1080p HD, convert YouTube ke MP3, TikTok tanpa watermark, Instagram Reels gratis. Cukup paste URL — langsung download. Alternatif terbaik SaveFrom.net & SnapTik.')
+@section('meta_keywords', 'download video youtube, youtube downloader gratis, youtube to mp3, download tiktok tanpa watermark, download video instagram, youtube mp3 downloader, savefrom alternative, snaptik alternative, download reels instagram, download video online gratis, yt downloader, youtube 1080p download, tiktok video download, instagram video download')
 @include('seo.mediadownloader')
+
+{{-- Routes for JS --}}
+<meta name="md-process-url"  content="{{ route('tools.mediadownloader.process') }}">
+<meta name="md-download-url" content="{{ url('media-downloader/download') }}">
 
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/mediadownloader.css') }}">
@@ -12,18 +16,19 @@
 <div class="md-page">
   <div class="md-container">
 
-    {{-- HEADER --}}
+    {{-- ── HEADER ── --}}
     <header class="md-header">
       <div class="md-badge-row">
         <span class="md-badge-free">100% Gratis</span>
         <span class="md-badge-secure"><i class="fa-solid fa-shield-halved"></i> No Watermark</span>
         <span class="md-badge-secure"><i class="fa-solid fa-bolt"></i> Instan</span>
+        <span class="md-badge-secure"><i class="fa-solid fa-star"></i> Hingga 1080p</span>
       </div>
       <h1 class="md-title">Media <span class="md-title-accent">Downloader.</span></h1>
-      <p class="md-subtitle">Download video & audio dari YouTube, TikTok, dan Instagram. Cukup paste URL — selesai.</p>
+      <p class="md-subtitle">Download video & audio dari YouTube, TikTok, Instagram, dan 20+ platform. Cukup paste URL — selesai.</p>
     </header>
 
-    {{-- PLATFORM TABS --}}
+    {{-- ── PLATFORM TABS ── --}}
     <div class="md-platform-tabs">
       <button class="md-platform-btn active" data-platform="youtube">
         <i class="fa-brands fa-youtube"></i>
@@ -43,11 +48,9 @@
       </button>
     </div>
 
-    {{-- MAIN CARD --}}
+    {{-- ── MAIN CARD ── --}}
     <div class="md-card">
-      <div class="md-card-glow"></div>
-
-      {{-- URL INPUT --}}
+      {{-- URL Input --}}
       <div class="md-input-section">
         <div class="md-input-label-row">
           <label class="md-label">URL Video / Postingan</label>
@@ -59,12 +62,13 @@
           </div>
           <input type="url" id="media-url" class="md-input"
                  placeholder="https://www.youtube.com/watch?v=..."
-                 autocomplete="off" spellcheck="false">
-          <button class="md-paste-btn" id="btn-paste" title="Tempel dari clipboard">
+                 autocomplete="off" spellcheck="false"
+                 aria-label="Masukkan URL video">
+          <button class="md-paste-btn" id="btn-paste" type="button">
             <i class="fa-regular fa-clipboard"></i>
             <span>Tempel</span>
           </button>
-          <button class="md-clear-btn" id="btn-clear" title="Hapus">
+          <button class="md-clear-btn" id="btn-clear" type="button" aria-label="Hapus URL">
             <i class="fa-solid fa-xmark"></i>
           </button>
         </div>
@@ -72,49 +76,52 @@
           <span class="md-example-label">Contoh:</span>
           <span class="md-example">youtube.com/watch?v=...</span>
           <span class="md-example">youtu.be/...</span>
-          <span class="md-example">youtube.com/shorts/...</span>
         </div>
       </div>
 
-      {{-- YOUTUBE OPTIONS --}}
-      <div class="md-options-section" id="yt-options">
-        <label class="md-label">Format Download</label>
+      {{-- ── YOUTUBE: Format Picker ── --}}
+      <div class="md-format-section" id="yt-format-section">
+        <label class="md-label">Pilih Format Download</label>
         <div class="md-format-grid">
-          <button class="md-format-btn active" data-format="mp4">
-            <div class="md-format-icon md-format-icon--video">
-              <i class="fa-solid fa-video"></i>
-            </div>
-            <div class="md-format-info">
-              <span class="md-format-name">MP4 Video</span>
-              <span class="md-format-desc">Video + Audio</span>
-            </div>
-            <div class="md-format-check"><i class="fa-solid fa-check"></i></div>
-          </button>
-          <button class="md-format-btn" data-format="mp3">
+          <button class="md-format-btn" data-format="mp3" type="button">
             <div class="md-format-icon md-format-icon--audio">
               <i class="fa-solid fa-music"></i>
             </div>
             <div class="md-format-info">
               <span class="md-format-name">MP3 Audio</span>
-              <span class="md-format-desc">Hanya suara</span>
+              <span class="md-format-desc">Hanya suara · Kualitas tinggi</span>
+            </div>
+            <div class="md-format-check"><i class="fa-solid fa-check"></i></div>
+          </button>
+          <button class="md-format-btn" data-format="mp4" type="button">
+            <div class="md-format-icon md-format-icon--video">
+              <i class="fa-solid fa-video"></i>
+            </div>
+            <div class="md-format-info">
+              <span class="md-format-name">MP4 Video</span>
+              <span class="md-format-desc">Video + Audio · Hingga 1080p</span>
             </div>
             <div class="md-format-check"><i class="fa-solid fa-check"></i></div>
           </button>
         </div>
+      </div>
 
-        {{-- Quality (YouTube MP4 only) --}}
-        <div class="md-quality-section" id="quality-section">
-          <label class="md-label">Kualitas Video</label>
-          <div class="md-quality-grid">
-            <button class="md-quality-btn" data-quality="144">144p</button>
-            <button class="md-quality-btn" data-quality="360">360p</button>
-            <button class="md-quality-btn active" data-quality="720">720p HD</button>
-            <button class="md-quality-btn" data-quality="1080">1080p FHD</button>
-          </div>
+      {{-- ── YOUTUBE: Quality Picker (MP4 only, shown dynamically) ── --}}
+      <div class="md-hidden" id="yt-quality-section" style="margin-bottom:16px;">
+        <label class="md-label">Pilih Kualitas Video</label>
+        <p class="md-quality-hint" id="quality-hint" style="font-size:11px;color:#6b7280;margin-bottom:10px;">
+          <i class="fa-solid fa-spinner fa-spin" style="font-size:10px;"></i>
+          Memuat kualitas yang tersedia...
+        </p>
+        <div class="md-quality-grid" id="quality-grid">
+          {{-- Populated by JS --}}
+          <div class="md-quality-skeleton"></div>
+          <div class="md-quality-skeleton"></div>
+          <div class="md-quality-skeleton"></div>
         </div>
       </div>
 
-      {{-- TIKTOK OPTIONS --}}
+      {{-- ── TIKTOK Options ── --}}
       <div class="md-options-section md-hidden" id="tt-options">
         <label class="md-label">Opsi TikTok</label>
         <div class="md-toggle-list">
@@ -131,7 +138,7 @@
           <label class="md-toggle-row">
             <div class="md-toggle-info">
               <span class="md-toggle-name">Audio Saja</span>
-              <span class="md-toggle-hint">Hanya download suara/musik</span>
+              <span class="md-toggle-hint">Download hanya suara/musik</span>
             </div>
             <div class="md-toggle-wrap">
               <input type="checkbox" id="tt-audio-only" class="md-toggle-input">
@@ -141,78 +148,78 @@
         </div>
       </div>
 
-      {{-- INSTAGRAM OPTIONS --}}
+      {{-- ── INSTAGRAM Options ── --}}
       <div class="md-options-section md-hidden" id="ig-options">
         <div class="md-info-box">
-          <i class="fa-solid fa-circle-info text-[#a3e635]"></i>
-          <p>Mendukung Reels, foto post, dan video post Instagram yang bersifat publik.</p>
+          <i class="fa-solid fa-circle-info"></i>
+          <p>Mendukung Reels, foto post, video, dan carousel Instagram dari akun <strong>publik</strong>.</p>
         </div>
       </div>
 
-      {{-- OTHER OPTIONS --}}
+      {{-- ── OTHER Options ── --}}
       <div class="md-options-section md-hidden" id="other-options">
         <div class="md-info-box">
-          <i class="fa-solid fa-circle-info text-[#a3e635]"></i>
-          <p>Mendukung Twitter/X, Reddit, Pinterest, SoundCloud, Vimeo, Dailymotion, dan 20+ platform lainnya.</p>
+          <i class="fa-solid fa-circle-info"></i>
+          <p>Mendukung Twitter/X, Reddit, Pinterest, SoundCloud, Vimeo, Dailymotion, dan <strong>20+ platform</strong> lainnya.</p>
         </div>
       </div>
 
-      {{-- PROCESS BUTTON --}}
+      {{-- ── PROCESS BUTTON ── --}}
       <button type="button" id="btn-process" class="md-btn-process" disabled>
         <i class="fa-solid fa-download"></i>
-        <span id="btn-process-label">Download Sekarang</span>
+        <span id="btn-process-label">Pilih format terlebih dahulu</span>
       </button>
 
-      {{-- STATES --}}
-
-      {{-- Processing --}}
-      <div class="md-state md-hidden" id="state-processing">
-        <div class="md-spinner-ring"><div class="md-spinner-inner"></div></div>
-        <p class="md-state-title">Memproses...</p>
-        <p class="md-state-sub" id="proc-detail">Mengambil informasi media</p>
-        <div class="md-progress-wrap">
-          <div class="md-progress-bar" id="progress-bar"></div>
-        </div>
-      </div>
-
-      {{-- Result --}}
-      <div class="md-state md-hidden" id="state-result">
-        <div class="md-result-thumb-wrap">
-          <img id="result-thumb" src="" alt="" class="md-result-thumb md-hidden">
-          <div class="md-result-success-icon">
-            <i class="fa-solid fa-check"></i>
+      {{-- ── PROCESSING STATE ── --}}
+      <div class="md-state md-hidden" id="state-processing" role="status" aria-live="polite">
+        <div class="md-spinner-wrap"></div>
+        <p class="md-state-title" id="proc-title">Memproses...</p>
+        <div class="md-progress-section">
+          <div class="md-progress-wrap">
+            <div class="md-progress-bar" id="progress-bar"></div>
+          </div>
+          <div class="md-progress-label">
+            <span id="progress-step">Memulai...</span>
+            <span class="md-progress-pct" id="progress-pct">0%</span>
           </div>
         </div>
-        <p class="md-result-title" id="result-title">Siap Download!</p>
-        <p class="md-result-sub" id="result-sub">File siap diunduh</p>
+        <p style="font-size:10.5px;color:#4b5563;margin-top:12px;">
+          <i class="fa-solid fa-clock"></i>
+          YouTube 1080p memerlukan 30–120 detik tergantung panjang video
+        </p>
+      </div>
 
-        {{-- Single download --}}
+      {{-- ── RESULT STATE ── --}}
+      <div class="md-state md-hidden" id="state-result" role="status" aria-live="polite">
+        <div class="md-result-icon"><i class="fa-solid fa-check"></i></div>
+        <p class="md-result-title" id="result-title">Siap Download!</p>
+        <p class="md-result-sub"   id="result-sub">File siap diunduh</p>
+
         <div id="result-single" class="md-result-actions md-hidden">
-          <a href="#" id="btn-download-single" class="md-btn-download" target="_blank" download>
+          <a href="#" id="btn-download-single" class="md-btn-download">
             <i class="fa-solid fa-download"></i>
             <span id="download-label">Download File</span>
           </a>
         </div>
 
-        {{-- Picker (multiple items, e.g. Instagram carousel) --}}
         <div id="result-picker" class="md-picker-grid md-hidden"></div>
 
-        <button type="button" id="btn-reset" class="md-btn-reset">
+        <button type="button" id="btn-reset" class="md-btn-reset" style="margin-top:14px;">
           <i class="fa-solid fa-rotate-left"></i>
           <span>Download Lagi</span>
         </button>
       </div>
 
-      {{-- Error --}}
-      <div class="md-state md-hidden" id="state-error">
+      {{-- ── ERROR STATE ── --}}
+      <div class="md-state md-hidden" id="state-error" role="alert">
         <div class="md-error-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
         <p class="md-state-title">Terjadi Kesalahan</p>
         <p class="md-state-sub" id="error-msg">URL tidak valid atau konten tidak bisa diakses.</p>
-        <div class="md-error-tips" id="error-tips">
+        <div class="md-error-tips">
           <p class="md-tips-title"><i class="fa-solid fa-lightbulb"></i> Tips:</p>
           <ul class="md-tips-list" id="tips-list"></ul>
         </div>
-        <button type="button" id="btn-retry" class="md-btn-reset">
+        <button type="button" id="btn-retry" class="md-btn-reset" style="margin-top:12px;">
           <i class="fa-solid fa-rotate-right"></i>
           <span>Coba Lagi</span>
         </button>
@@ -220,51 +227,30 @@
 
     </div>{{-- /md-card --}}
 
-    {{-- SUPPORTED PLATFORMS --}}
-    <div class="md-platforms-section">
-      <p class="md-platforms-title">Platform yang Didukung</p>
-      <div class="md-platforms-grid">
-        @foreach([
-          ['fa-youtube','YouTube','Video, Shorts, Music'],
-          ['fa-tiktok','TikTok','Video, Slideshow'],
-          ['fa-instagram','Instagram','Reels, Foto, Video'],
-          ['fa-twitter','Twitter/X','Video, GIF'],
-          ['fa-reddit','Reddit','Video, GIF'],
-          ['fa-pinterest','Pinterest','Video, Foto'],
-        ] as [$icon, $name, $desc])
-        <div class="md-platform-card">
-          <i class="fa-brands {{ $icon }}"></i>
-          <span class="md-pcard-name">{{ $name }}</span>
-          <span class="md-pcard-desc">{{ $desc }}</span>
-        </div>
-        @endforeach
-      </div>
-    </div>
-
-    {{-- INFO CARDS --}}
+    {{-- ── INFO CARDS ── --}}
     <div class="md-info-cards">
       <div class="md-info-card">
         <div class="md-icard-icon"><i class="fa-solid fa-bolt"></i></div>
-        <h3>Instan & Gratis</h3>
-        <p>Tidak perlu daftar akun. Cukup paste URL dan download langsung dalam hitungan detik.</p>
+        <h3>Cepat & Gratis</h3>
+        <p>Tidak perlu daftar akun. Paste URL dan download dalam hitungan detik.</p>
       </div>
       <div class="md-info-card">
         <div class="md-icard-icon"><i class="fa-solid fa-shield-halved"></i></div>
-        <h3>Aman & Privat</h3>
-        <p>Tidak ada file yang tersimpan di server kami. Konten diproses dan langsung diteruskan ke browser Anda.</p>
+        <h3>Privasi Aman</h3>
+        <p>File otomatis terhapus setelah didownload. Tidak ada yang tersimpan di server.</p>
       </div>
       <div class="md-info-card">
         <div class="md-icard-icon"><i class="fa-solid fa-star"></i></div>
-        <h3>Kualitas Terbaik</h3>
-        <p>Download dalam resolusi asli hingga 1080p untuk video dan kualitas audio terbaik yang tersedia.</p>
+        <h3>Kualitas Asli</h3>
+        <p>Download dalam resolusi asli hingga 1080p FHD, atau audio MP3 kualitas tinggi.</p>
       </div>
     </div>
 
   </div>
 </div>
 
-{{-- TOAST --}}
-<div id="md-toast" class="md-toast">
+{{-- Toast --}}
+<div id="md-toast" class="md-toast" role="alert" aria-live="assertive">
   <i class="fa-solid fa-check md-toast-ico" id="toast-ico"></i>
   <span id="toast-msg">Berhasil!</span>
 </div>

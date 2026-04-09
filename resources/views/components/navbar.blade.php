@@ -36,7 +36,7 @@
             @endphp
 
             <div class="relative" id="toolsWrap">
-                <button id="toolsBtn"
+                <!-- <button id="toolsBtn"
                         class="nav-tools-btn"
                         onclick="toggleToolsMenu()"
                         aria-haspopup="true"
@@ -44,7 +44,7 @@
                     <i class="fa-solid fa-grid-2 text-[11px]" style="color:var(--text-3)"></i>
                     <span>Tools</span>
                     <i class="fa-solid fa-chevron-down nav-tools-chevron"></i>
-                </button>
+                </button> -->
 
                 <div id="toolsDropdown" class="nav-dropdown" role="menu">
 
@@ -71,7 +71,7 @@
                             <i class="fa-solid fa-sparkles" style="color:var(--accent); margin-right:5px;"></i>
                             10 tools aktif · terus bertambah
                         </span>
-                        <button onclick="closeToolsMenu(); openSearch();"
+                        <button onclick="openSearch();"
                                 style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--accent);background:none;border:none;cursor:pointer;padding:6px 10px;border-radius:8px;transition:background 0.2s;"
                                 onmouseover="this.style.background='rgba(163,230,53,0.1)'"
                                 onmouseout="this.style.background='none'">
@@ -83,7 +83,8 @@
                 </div>
             </div>
 
-            <a href="{{ route('home') }}#about"   class="nav-link">Fitur</a>
+            <a href="{{ route('home') }}#tools"   class="nav-link">Semua Tools</a>
+            <a href="{{ route('home') }}#about"   class="nav-link">Tentang Kami</a>
             <a href="{{ route('home') }}#contact"  class="nav-link">Kontak</a>
 
         </div>
@@ -158,8 +159,8 @@
 
     <p class="mobile-section-title" style="margin-top:8px;">Umum</p>
     <a href="{{ route('home') }}#about"   class="mobile-nav-link">
-        <span class="icon"><i class="fa-solid fa-star" style="font-size:11px;color:var(--text-3)"></i></span>
-        Fitur
+        <span class="icon"><i class="fa-solid fa-users" style="font-size:11px;color:var(--text-3)"></i></span>
+        Tentang Kami
     </a>
     <a href="{{ route('home') }}#contact" class="mobile-nav-link">
         <span class="icon"><i class="fa-solid fa-envelope" style="font-size:11px;color:var(--text-3)"></i></span>
@@ -169,7 +170,10 @@
     <div class="mobile-auth-row">
         @guest
             <a href="{{ route('login') }}"    class="btn-outline" style="text-align:center;justify-content:center;">Masuk</a>
-            <a href="{{ route('register') }}" class="btn-primary" style="text-align:center;justify-content:center;">Daftar Gratis</a>
+            <a href="{{ route('register') }}" class="btn-primary">
+                    Mulai Gratis
+                    <i class="fa-solid fa-arrow-right" style="font-size:10px;"></i>
+                </a>
         @endguest
         @auth
             <div style="display:flex;align-items:center;gap:10px;grid-column:1/-1;padding:12px;background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r-lg);">

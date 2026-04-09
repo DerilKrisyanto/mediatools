@@ -1,34 +1,108 @@
+# ================================================================
+# robots.txt — MediaTools (mediatools.cloud)
+# ================================================================
+
 User-agent: *
 Allow: /
 
-# Blokir halaman auth — tidak perlu diindex Google
+# ── Aset publik ──
+Allow: /css/
+Allow: /js/
+Allow: /images/
+Allow: /favicon.ico
+Allow: /site.webmanifest
+Allow: /sitemap.xml
+
+# ── Halaman auth — tidak perlu diindex ──
 Disallow: /login
 Disallow: /register
 Disallow: /profile
+Disallow: /dashboard
 Disallow: /home
+Disallow: /auth/
 
-# Blokir folder internal Laravel
+# ── Internal Laravel & build ──
 Disallow: /storage/
 Disallow: /.env
 Disallow: /vendor/
 Disallow: /node_modules/
-Disallow: /auth/
+Disallow: /_debugbar/
+Disallow: /horizon/
 
-# Blokir API endpoints — bukan halaman untuk user
+# ── API & proses endpoints ──
+# Bukan halaman untuk pengguna, tidak perlu diindex
+Disallow: /api/
 Disallow: /file-converter/process
 Disallow: /file-converter/cleanup
 Disallow: /bg/process
 Disallow: /media-downloader/process
 Disallow: /pdfutilities/compress
+Disallow: /pdfutilities/merge
+Disallow: /pdfutilities/split
 Disallow: /linktree/store
 Disallow: /linktree/check-plan
 Disallow: /linktree/payment/
 Disallow: /signature/store
 Disallow: /qr/store
+Disallow: /invoice/generate
+Disallow: /invoice/preview
+Disallow: /imageconverter/process
+Disallow: /password-generator/generate
 
-# Izinkan aset publik
-Allow: /css/
-Allow: /js/
-Allow: /images/
+# ── Query string pages (duplikat) ──
+# Mencegah duplikat dari parameter URL
+Disallow: /*?s=
+Disallow: /*?page=
+Disallow: /*?sort=
+Disallow: /*?filter=
+Disallow: /*?ref=
+Disallow: /*?utm_
 
+# ── Sitemap ──
 Sitemap: https://mediatools.cloud/sitemap.xml
+
+# ================================================================
+# Googlebot — izinkan segalanya yang belum diblokir di atas
+# ================================================================
+User-agent: Googlebot
+Allow: /
+Disallow: /login
+Disallow: /register
+Disallow: /profile
+Disallow: /api/
+
+# ================================================================
+# Bot-bot yang dikenal baik
+# ================================================================
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+# ================================================================
+# CATATAN PENTING untuk mengatasi masalah indexing:
+# ================================================================
+#
+# 1. DUPLIKAT TANPA KANONIS → Sudah diatasi di app.blade.php:
+#    <link rel="canonical" href="{{ $canonicalUrl }}">
+#    pastikan SETIAP halaman render canonical yang benar.
+#
+# 2. HALAMAN ALTERNATIF DENGAN KANONIS TEPAT → Untuk tool pages
+#    yang punya versi /preview atau /result, tambahkan:
+#    <link rel="canonical" href="URL-TOOL-UTAMA">
+#
+# 3. TIDAK DITEMUKAN (404) → Pastikan route semua tool terdaftar
+#    di web.php dan TIDAK ada link mati di navbar/footer.
+#
+# 4. GOOGLE MEMILIH KANONIS BERBEDA → Terjadi jika ada link
+#    internal ke URL dengan www, http, atau trailing slash.
+#    Gunakan CanonicalUrl middleware (lihat sitemap_route.php).
+#
+# 5. DI-CRAWL TAPI TIDAK DIINDEX → Biasanya karena:
+#    a) Konten tipis — tambahkan deskripsi dan konten di tool page
+#    b) Internal links sedikit — pastikan semua tool ada di footer
+#    c) Core Web Vitals buruk — optimalkan CSS/JS

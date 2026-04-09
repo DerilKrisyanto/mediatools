@@ -140,7 +140,7 @@
 
     {{-- ── MAIN CARD ── --}}
     <div class="fc-card fc-hidden" id="fc-main-card">
-      <div class="fc-card-glow"></div>
+      <!-- <div class="fc-card-glow"></div> -->
 
       {{-- Upload Step --}}
       <div class="fc-step" id="step-upload">

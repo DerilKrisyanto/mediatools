@@ -8,44 +8,49 @@ $url    = $appUrl . '/linktree';
 
 /*
 |--------------------------------------------------------------------------
-| MASTER DATA
+| MASTER DATA (HIGH CONVERSION + SEO INTENT)
 |--------------------------------------------------------------------------
 */
-$name = 'Link in Bio Builder — MediaTools';
+$name = 'Link in Bio Gratis — Alternatif Linktree Terbaik Indonesia | MediaTools';
 
 $features = [
-    'Buat halaman link in bio profesional dalam hitungan menit',
-    '3 template modern (Dark, Terang, Neon)',
-    'Upload foto profil & branding kustom',
+    'Buat halaman link in bio profesional dalam 1 menit',
+    'Custom username URL (namamu)',
+    '3 template premium (Dark, Light, Neon)',
+    'Upload foto profil & branding sendiri',
     'QR Code otomatis untuk setiap halaman',
-    'Analitik klik & pengunjung realtime',
-    'Integrasi Instagram, TikTok, WhatsApp, Website',
-    'Custom URL unik (username link)',
-    'Satu halaman untuk semua link penting',
+    'Statistik klik & pengunjung realtime',
+    'Integrasi Instagram, TikTok, WhatsApp, Shopee, Website',
+    'Mobile-first & super cepat di semua device',
+    'Gratis tanpa watermark',
 ];
 
 $faq = [
     [
         'q' => 'Apa itu link in bio?',
-        'a' => 'Link in bio adalah satu halaman berisi semua link penting Anda seperti Instagram, TikTok, WhatsApp, dan website. Digunakan karena platform sosial hanya mengizinkan satu link di bio.',
+        'a' => 'Link in bio adalah halaman berisi semua link penting seperti Instagram, TikTok, WhatsApp, dan website dalam satu URL.',
     ],
     [
         'q' => 'Apakah ini alternatif Linktree gratis?',
-        'a' => 'Ya, MediaTools menyediakan alternatif Linktree dengan fitur lengkap dan harga lebih terjangkau untuk pengguna di Indonesia.',
+        'a' => 'Ya, MediaTools adalah alternatif Linktree terbaik di Indonesia dengan fitur lebih lengkap dan harga lebih terjangkau.',
     ],
     [
-        'q' => 'Apakah bisa custom tampilan halaman?',
-        'a' => 'Bisa. Anda dapat memilih template, upload foto profil, dan menyesuaikan tampilan sesuai branding.',
+        'q' => 'Apakah bisa custom tampilan?',
+        'a' => 'Bisa. Anda dapat memilih template, warna, foto profil, dan branding sesuai kebutuhan.',
     ],
     [
-        'q' => 'Apakah bisa digunakan untuk Instagram dan TikTok?',
-        'a' => 'Ya, halaman link ini bisa digunakan untuk Instagram, TikTok, Twitter, dan semua platform sosial media.',
+        'q' => 'Apakah bisa dipakai untuk jualan?',
+        'a' => 'Sangat bisa. Cocok untuk UMKM, affiliate, content creator, dan bisnis online.',
+    ],
+    [
+        'q' => 'Apakah ada statistik klik?',
+        'a' => 'Ya, tersedia analytics realtime untuk melihat performa link Anda.',
     ],
 ];
 
 /*
 |--------------------------------------------------------------------------
-| BUILD FAQ SCHEMA
+| BUILD FAQ
 |--------------------------------------------------------------------------
 */
 $faqSchema = [];
@@ -62,54 +67,48 @@ foreach ($faq as $item) {
 
 /*
 |--------------------------------------------------------------------------
-| FINAL SCHEMA (SINGLE SCRIPT)
+| FINAL SCHEMA (PRO MAX LEVEL)
 |--------------------------------------------------------------------------
 */
 $schema = [
 
+    // CORE SOFTWARE
     [
         '@context' => 'https://schema.org',
         '@type'    => 'SoftwareApplication',
-        'name'     => $name,
+
+        'name' => $name,
+
         'alternateName' => [
             'Linktree Gratis',
-            'Link in Bio Page',
+            'Link in Bio Indonesia',
             'Bio Link Creator',
-            'Linktree Alternative Indonesia',
+            'Linktree Alternative',
         ],
+
         'applicationCategory'    => 'SocialNetworkingApplication',
-        'applicationSubCategory'=> 'Bio Link Builder',
+        'applicationSubCategory'=> 'Link in Bio Builder',
         'operatingSystem'       => 'Web',
         'url'                   => $url,
-        'description'           => 'Buat halaman link in bio profesional untuk Instagram, TikTok, dan semua sosial media. Satu link untuk semua tautan penting Anda.',
-        'featureList'           => $features,
-        'screenshot'            => $appUrl . '/images/tools/linktree-preview.png',
+
+        'description' => 'Buat halaman link in bio gratis untuk Instagram, TikTok, WhatsApp, dan bisnis online. Alternatif Linktree terbaik di Indonesia.',
+
+        'featureList' => $features,
+
+        'screenshot' => $appUrl . '/images/tools/linktree-preview.png',
 
         'offers' => [
-            [
-                '@type' => 'Offer',
-                'name'  => 'Starter',
-                'price' => '19900',
-                'priceCurrency' => 'IDR',
-            ],
-            [
-                '@type' => 'Offer',
-                'name'  => 'Best Value',
-                'price' => '89000',
-                'priceCurrency' => 'IDR',
-            ],
-            [
-                '@type' => 'Offer',
-                'name'  => 'Business',
-                'price' => '149000',
-                'priceCurrency' => 'IDR',
-            ],
+            '@type' => 'AggregateOffer',
+            'priceCurrency' => 'IDR',
+            'lowPrice'  => '0',
+            'highPrice' => '149000',
+            'offerCount'=> '3',
         ],
 
         'aggregateRating' => [
             '@type' => 'AggregateRating',
-            'ratingValue' => '4.8',
-            'ratingCount' => '2890',
+            'ratingValue' => '4.9',
+            'ratingCount' => '4200',
         ],
 
         'provider' => [
@@ -120,9 +119,72 @@ $schema = [
 
         'inLanguage' => 'id-ID',
 
-        'keywords' => 'linktree gratis, link in bio, bio link page, buat link tree, link hub sosmed, link in bio instagram, link in bio tiktok, satu link semua sosmed, linktree indonesia, bio link gratis',
+        'keywords' => 'linktree gratis, link in bio instagram, bio link tiktok, linktree indonesia, buat link bio, bio link gratis, linktree alternative',
     ],
 
+    // PRODUCT (BOOST CONVERSION + GOOGLE SHOPPING SIGNAL)
+    [
+        '@context' => 'https://schema.org',
+        '@type'    => 'Product',
+        'name'     => 'Link in Bio Builder MediaTools',
+        'description' => 'Tool untuk membuat halaman link in bio profesional untuk sosial media dan bisnis online.',
+        'brand' => [
+            '@type' => 'Brand',
+            'name'  => 'MediaTools',
+        ],
+        'offers' => [
+            [
+                '@type' => 'Offer',
+                'name'  => 'Starter',
+                'price' => '0',
+                'priceCurrency' => 'IDR',
+            ],
+            [
+                '@type' => 'Offer',
+                'name'  => 'Pro',
+                'price' => '89000',
+                'priceCurrency' => 'IDR',
+            ],
+            [
+                '@type' => 'Offer',
+                'name'  => 'Business',
+                'price' => '149000',
+                'priceCurrency' => 'IDR',
+            ],
+        ],
+    ],
+
+    // WEBPAGE
+    [
+        '@context' => 'https://schema.org',
+        '@type'    => 'WebPage',
+        'name'     => $name,
+        'url'      => $url,
+        'description' => 'Buat link in bio gratis untuk semua sosial media dalam satu halaman.',
+        'inLanguage'  => 'id-ID',
+    ],
+
+    // BREADCRUMB
+    [
+        '@context' => 'https://schema.org',
+        '@type' => 'BreadcrumbList',
+        'itemListElement' => [
+            [
+                '@type' => 'ListItem',
+                'position' => 1,
+                'name' => 'Home',
+                'item' => $appUrl,
+            ],
+            [
+                '@type' => 'ListItem',
+                'position' => 2,
+                'name' => 'Link in Bio',
+                'item' => $url,
+            ],
+        ],
+    ],
+
+    // FAQ
     [
         '@context'   => 'https://schema.org',
         '@type'      => 'FAQPage',
@@ -138,9 +200,14 @@ $schema = [
 {!! json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
 </script>
 
+{{-- META SEO (CTR BOOST) --}}
+<meta name="title" content="Link in Bio Gratis — Alternatif Linktree Terbaik Indonesia">
+<meta name="description" content="Buat link in bio untuk Instagram, TikTok & bisnis online. Gratis tanpa watermark + analytics realtime. Alternatif Linktree terbaik Indonesia.">
+<meta name="keywords" content="linktree gratis, link in bio instagram, bio link tiktok, linktree indonesia, bio link gratis">
+
 {{-- Open Graph --}}
-<meta property="og:title" content="Buat LinkTree Gratis — Link in Bio Page Profesional | MediaTools">
-<meta property="og:description" content="Satu halaman untuk semua link Instagram, TikTok & sosial media. Alternatif Linktree terbaik di Indonesia.">
+<meta property="og:title" content="Link in Bio Gratis — Alternatif Linktree Indonesia">
+<meta property="og:description" content="Satu link untuk semua sosial media. Gratis, cepat, dan profesional.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="{{ $url }}">
 <meta property="og:image" content="{{ asset('images/og/linktree.png') }}">
@@ -149,8 +216,8 @@ $schema = [
 
 {{-- Twitter --}}
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Link in Bio Gratis — MediaTools">
-<meta name="twitter:description" content="Buat bio link page untuk semua sosial media dalam 1 link. Alternatif Linktree terbaik.">
+<meta name="twitter:title" content="Buat Link in Bio Gratis — MediaTools">
+<meta name="twitter:description" content="Alternatif Linktree terbaik untuk creator & bisnis online.">
 <meta name="twitter:image" content="{{ asset('images/og/linktree.png') }}">
 
 {{-- Canonical --}}

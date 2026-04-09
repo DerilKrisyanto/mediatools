@@ -67,8 +67,10 @@ Route::get('/imageconverter', [ImageConverterController::class, 'index'])->name(
 Route::get('/password-generator', [PasswordGeneratorController::class, 'index'])->name('tools.passwordgenerator');
 
 // ========== Media Downloader ========== //
-Route::get('/media-downloader',        [MediaDownloaderController::class, 'index'])  ->name('tools.mediadownloader');
-Route::post('/media-downloader/process',[MediaDownloaderController::class, 'process'])->name('tools.mediadownloader.process');
+Route::get('/media-downloader',                 [MediaDownloaderController::class, 'index'])->name('tools.mediadownloader');
+Route::post('/media-downloader/process',        [MediaDownloaderController::class, 'process'])->name('tools.mediadownloader.process');
+Route::get('/media-downloader/download/{token}',[MediaDownloaderController::class, 'download'])->name('tools.mediadownloader.download');
+Route::post('/media-downloader/cleanup',        [MediaDownloaderController::class, 'cleanup'])->name('tools.mediadownloader.cleanup');
 
 // ========== File Converter ========== //
 Route::prefix('file-converter')->group(function () {
@@ -95,61 +97,61 @@ Route::middleware('auth')->group(function () {
 
 // ========== SITEMAP.XML ========== //
 Route::get('/sitemap.xml', function () {
-
     $appUrl = rtrim(config('app.url', 'https://mediatools.cloud'), '/');
 
-    $tools = [
-        ['loc' => '/',                    'priority' => '1.0', 'changefreq' => 'weekly',  'lastmod' => '2025-01-01'],
-        ['loc' => '/invoice',             'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => '2025-01-01'],
-        ['loc' => '/pdfutilities',        'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => '2025-01-01'],
-        ['loc' => '/file-converter',      'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => '2025-01-01'],
-        ['loc' => '/imageconverter',      'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => '2025-01-01'],
-        ['loc' => '/bg',                  'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => '2025-01-01'],
-        ['loc' => '/media-downloader',    'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => '2025-01-01'],
-        ['loc' => '/linktree',            'priority' => '0.8', 'changefreq' => 'monthly', 'lastmod' => '2025-01-01'],
-        ['loc' => '/qr',                  'priority' => '0.8', 'changefreq' => 'monthly', 'lastmod' => '2025-01-01'],
-        ['loc' => '/password-generator',  'priority' => '0.8', 'changefreq' => 'monthly', 'lastmod' => '2025-01-01'],
-        ['loc' => '/signature',           'priority' => '0.8', 'changefreq' => 'monthly', 'lastmod' => '2025-01-01'],
+    $today = now()->format('Y-m-d');
+
+    $urls = [
+        ['loc' => '/',                   'priority' => '1.0', 'changefreq' => 'weekly',  'lastmod' => $today, 'image' => ['loc' => '/images/og/home.png', 'title' => 'MediaTools — All-in-One Tools Digital Gratis']],
+
+        ['loc' => '/bg',                 'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => $today, 'image' => ['loc' => '/images/og/bg.png',      'title' => 'Background Remover Gratis — Hapus Background Foto Online']],
+        ['loc' => '/invoice',            'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => $today, 'image' => ['loc' => '/images/og/invoice.png',  'title' => 'Invoice Generator Gratis Online']],
+        ['loc' => '/pdfutilities',       'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => $today, 'image' => ['loc' => '/images/og/pdf.png',      'title' => 'PDF Utilities — Merge Split Compress PDF Gratis']],
+        ['loc' => '/file-converter',     'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => $today, 'image' => ['loc' => '/images/og/converter.png','title' => 'File Converter — PDF ke Word, Excel, JPG Gratis']],
+        ['loc' => '/imageconverter',     'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => $today, 'image' => ['loc' => '/images/og/image.png',    'title' => 'Image Converter — Resize Compress Konversi Gambar Gratis']],
+        ['loc' => '/media-downloader',   'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => $today, 'image' => ['loc' => '/images/og/media.png',    'title' => 'Media Downloader — Download YouTube TikTok Gratis']],
+
+        ['loc' => '/linktree',           'priority' => '0.8', 'changefreq' => 'monthly', 'lastmod' => $today, 'image' => ['loc' => '/images/og/linktree.png', 'title' => 'LinkTree Builder — Buat Link in Bio Gratis']],
+        ['loc' => '/qr',                 'priority' => '0.8', 'changefreq' => 'monthly', 'lastmod' => $today, 'image' => ['loc' => '/images/og/qr.png',       'title' => 'QR Code Generator — Buat QR Code Custom Gratis']],
+        ['loc' => '/password-generator', 'priority' => '0.8', 'changefreq' => 'monthly', 'lastmod' => $today, 'image' => ['loc' => '/images/og/password.png', 'title' => 'Password Generator — Buat Password Kuat Gratis']],
+        ['loc' => '/signature',          'priority' => '0.8', 'changefreq' => 'monthly', 'lastmod' => $today, 'image' => ['loc' => '/images/og/signature.png','title' => 'Email Signature Generator Profesional Gratis']],
     ];
 
-    // Build XML string — NO leading whitespace, starts exactly with <?xml
-    $lines = [];
+    $lines   = [];
     $lines[] = '<?xml version="1.0" encoding="UTF-8"?>';
     $lines[] = '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"';
     $lines[] = '        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"';
     $lines[] = '        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"';
-    $lines[] = '        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">';
+    $lines[] = '        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9';
+    $lines[] = '          http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">';
 
-    foreach ($tools as $u) {
-        $fullUrl = $appUrl . $u['loc'];
+    foreach ($urls as $u) {
+        $fullUrl = rtrim(preg_replace('/^http:\/\//', 'https://', $appUrl . $u['loc']), '/');
+        if ($u['loc'] === '/') $fullUrl = rtrim($appUrl, '/');
+
         $lines[] = '  <url>';
         $lines[] = '    <loc>' . htmlspecialchars($fullUrl, ENT_XML1 | ENT_COMPAT, 'UTF-8') . '</loc>';
         $lines[] = '    <lastmod>' . $u['lastmod'] . '</lastmod>';
         $lines[] = '    <changefreq>' . $u['changefreq'] . '</changefreq>';
         $lines[] = '    <priority>' . $u['priority'] . '</priority>';
 
-        // Add OG image for homepage
-        if ($u['loc'] === '/') {
+        if (!empty($u['image'])) {
+            $imgUrl = $appUrl . $u['image']['loc'];
             $lines[] = '    <image:image>';
-            $lines[] = '      <image:loc>' . $appUrl . '/images/og/home.png</image:loc>';
-            $lines[] = '      <image:title>MediaTools — All-in-One Media Suite</image:title>';
+            $lines[] = '      <image:loc>' . htmlspecialchars($imgUrl, ENT_XML1 | ENT_COMPAT, 'UTF-8') . '</image:loc>';
+            $lines[] = '      <image:title>' . htmlspecialchars($u['image']['title'], ENT_XML1 | ENT_COMPAT, 'UTF-8') . '</image:title>';
             $lines[] = '    </image:image>';
         }
-
         $lines[] = '  </url>';
     }
 
     $lines[] = '</urlset>';
 
-    $xml = implode("\n", $lines);
-
-    // Use response()->make() — avoids any Blade/middleware interference
-    return response()->make($xml, 200, [
+    return response()->make(implode("\n", $lines), 200, [
         'Content-Type'  => 'application/xml; charset=UTF-8',
-        'Cache-Control' => 'public, max-age=86400, stale-while-revalidate=3600',
-        'X-Robots-Tag'  => 'noindex',   // sitemap itself shouldn't be indexed
+        'Cache-Control' => 'public, max-age=43200, stale-while-revalidate=3600',
+        'X-Robots-Tag'  => 'noindex',
     ]);
-
 })->name('sitemap');
 
 require __DIR__ . '/auth.php';

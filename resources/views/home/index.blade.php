@@ -18,7 +18,7 @@
     <div class="hero-content">
         <div class="hero-badge reveal">
             <span class="hero-badge-dot"></span>
-            10+ Tools Gratis · Tanpa Daftar
+            10+ Tools Gratis
         </div>
 
         <h1 class="hero-title reveal reveal-d1">
@@ -36,11 +36,6 @@
                 <i class="fa-solid fa-grid-2" style="font-size:13px;"></i>
                 Jelajahi Semua Tools
             </a>
-            <button onclick="openSearch()" class="btn-hero-secondary">
-                <i class="fa-solid fa-magnifying-glass" style="font-size:12px;"></i>
-                Cari Tools
-                <kbd style="padding:2px 8px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:6px;font-size:11px;font-family:inherit;color:var(--text-2);">⌘K</kbd>
-            </button>
         </div>
 
         <div class="hero-trust reveal reveal-d4">
@@ -74,15 +69,15 @@
             <div class="stat-label">Tools Aktif</div>
         </div>
         <div class="stat-cell reveal reveal-d1">
-            <div class="stat-num" data-target="1" data-suffix="M+">0</div>
+            <div class="stat-num" data-target="100" data-suffix="Rb+">0</div>
             <div class="stat-label">File Diproses</div>
         </div>
         <div class="stat-cell reveal reveal-d2">
-            <div class="stat-num" data-target="99.9" data-suffix="%">0%</div>
+            <div class="stat-num" data-target="98.7" data-suffix="%">0%</div>
             <div class="stat-label">Uptime Server</div>
         </div>
         <div class="stat-cell reveal reveal-d3">
-            <div class="stat-num" data-target="4.9" data-suffix="/5">0/5</div>
+            <div class="stat-num" data-target="4.8" data-suffix="/5">0/5</div>
             <div class="stat-label">Rating Kepuasan</div>
         </div>
     </div>
@@ -138,16 +133,16 @@
     @php
     $tools = [
         // [cat, icon, icon-bg-color, icon-text-color, name, desc, badge, route, available]
-        ['doc',  'fa-file-invoice-dollar', 'rgba(245,158,11,0.12)',  '#fbbf24', 'Invoice Generator',  'Buat tagihan profesional dengan template yang bisa dikustomisasi penuh.',            null,  'invoice',           true],
+        ['doc',  'fa-file-invoice-dollar', 'rgba(245,158,11,0.12)',  '#fbbf24', 'Invoice Generator',  'Buat tagihan profesional dengan template yang bisa dikustomisasi penuh.',            'BARU',  'invoice',           true],
         ['social','fa-link',              'rgba(139,92,246,0.12)',  '#a78bfa', 'LinkTree Builder',   'Satukan semua link penting di satu halaman landing yang elegan.',                  'HOT',  'linktree',          true],
-        ['doc',  'fa-qrcode',             'rgba(59,130,246,0.12)',  '#60a5fa', 'QR Code Generator',  'QR Code custom untuk menu, pembayaran, kontak, atau URL bisnis Anda.',             'BARU', 'qr',                true],
+        ['doc',  'fa-qrcode',             'rgba(59,130,246,0.12)',  '#60a5fa', 'QR Code Generator',  'QR Code custom untuk menu, pembayaran, kontak, atau URL bisnis Anda.',             null, 'qr',                true],
         ['security','fa-signature',       'rgba(163,230,53,0.10)', 'var(--accent)','Email Signature','Tanda tangan email profesional untuk Gmail, Outlook & semua email client.',       null,   'signature',         true],
         ['image','fa-scissors',           'rgba(244,63,94,0.12)',   '#fb7185', 'Background Remover', 'Hapus background foto otomatis dengan AI BiRefNet — presisi pada rambut.',        null,   'bgremover',         true],
         ['image','fa-image',              'rgba(59,130,246,0.12)',  '#60a5fa', 'Image Converter',    'Resize, compress & convert JPG/PNG/WebP langsung di browser, tanpa upload.',      null,   'imageconverter',    true],
-        ['doc',  'fa-repeat',             'rgba(245,158,11,0.12)',  '#fbbf24', 'File Converter',     'Konversi PDF ke Word, Excel, PPT & sebaliknya. Upload 5 file sekaligus.',          null,   'fileconverter',     true],
-        ['doc',  'fa-file-pdf',           'rgba(239,68,68,0.12)',   '#f87171', 'PDF Utilities',      'Merge, split & compress PDF di browser — tanpa upload ke server.',                'PRO',  'pdfutilities',      true],
-        ['social','fa-cloud-arrow-down',  'rgba(139,92,246,0.12)',  '#a78bfa', 'Media Downloader',   'Download video & audio dari YouTube, TikTok, Instagram dalam hitungan detik.',     null,   'mediadownloader',   true],
-        ['security','fa-key',             'rgba(163,230,53,0.10)', 'var(--accent)','Password Generator','Buat password kuat & unik secara instan — semua proses di browser Anda.',      null,   'passwordgenerator', true],
+        ['doc',  'fa-repeat',             'rgba(245,158,11,0.12)',  '#fbbf24', 'File Converter',     'Konversi PDF ke Word, Excel, PPT & sebaliknya. Upload 5 file sekaligus.',          'HOT',   'fileconverter',     true],
+        ['doc',  'fa-file-pdf',           'rgba(239,68,68,0.12)',   '#f87171', 'PDF Utilities',      'Merge, split & compress PDF di browser — tanpa upload ke server.',                'HOT',  'pdfutilities',      true],
+        ['social','fa-cloud-arrow-down',  'rgba(139,92,246,0.12)',  '#a78bfa', 'Media Downloader',   'Download video & audio dari YouTube, TikTok, Instagram dalam hitungan detik.',     'BARU',   'mediadownloader',   true],
+        ['security','fa-key',             'rgba(163,230,53,0.10)', 'var(--accent)','Password Generator','Buat password kuat & unik secara instan — semua proses di browser Anda.',      'BARU',   'passwordgenerator', true],
         ['doc',  'fa-id-card',            'rgba(100,116,139,0.12)', '#94a3b8', 'Business Card',      'Kartu nama digital yang bisa dibagikan via link atau QR Code.',                   'SOON', '#',                 false],
         ['image','fa-chart-bar',          'rgba(100,116,139,0.12)', '#94a3b8', 'Proposal Builder',   'Buat proposal bisnis dan presentasi klien yang rapi dan terstruktur.',             'SOON', '#',                 false],
     ];
@@ -257,7 +252,7 @@
 {{-- ================================================================
      TESTIMONIALS
 ================================================================ --}}
-<section class="testimonials-section">
+<!-- <section class="testimonials-section">
     <div class="testimonials-inner">
 
         <div class="text-center" style="margin-bottom:0;">
@@ -304,7 +299,7 @@
         </div>
 
     </div>
-</section>
+</section> -->
 
 {{-- ================================================================
      CONTACT
@@ -399,13 +394,12 @@
                               class="form-input" style="resize:none;"
                               placeholder="Ceritakan apa yang ingin Anda sampaikan..."></textarea>
                 </div>
-                <button type="submit"
-                        style="display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;background:var(--accent);color:#0a0a0b;font-size:14px;font-weight:700;border-radius:var(--r-md);border:none;cursor:pointer;transition:all 0.2s;width:100%;"
+                <a href="#" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;background:var(--accent);color:#0a0a0b;font-size:14px;font-weight:700;border-radius:var(--r-md);border:none;cursor:pointer;transition:all 0.2s;width:100%;"
                         onmouseover="this.style.background='var(--accent-hover)'"
                         onmouseout="this.style.background='var(--accent)'">
                     <i class="fa-solid fa-paper-plane" style="font-size:12px;"></i>
                     Kirim Pesan
-                </button>
+                </a>
             </form>
         </div>
 
@@ -475,7 +469,7 @@
         <div class="cta-actions">
             <a href="{{ route('register') }}" class="btn-hero-primary" style="font-size:15px;padding:13px 28px;">
                 <i class="fa-solid fa-bolt" style="font-size:12px;"></i>
-                Daftar Gratis
+                Daftar Sekarang
             </a>
             <a href="#tools" class="btn-hero-secondary" style="font-size:15px;padding:13px 28px;">
                 Lihat Semua Tools

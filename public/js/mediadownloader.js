@@ -1,580 +1,713 @@
-'use strict';
+/**
+ * MediaTools Media Downloader — mediadownloader.js  v3 PRO
+ * =========================================================
+ * Flow:
+ *  YouTube:
+ *    1. Paste URL → auto-detect platform
+ *    2. Choose MP3 or MP4
+ *       MP3 → process button enabled immediately
+ *       MP4 → fetch real formats from server → user picks quality → process
+ *    3. Download via token (server streams file)
+ *
+ *  TikTok / Instagram / Other:
+ *    1. Paste URL → select platform
+ *    2. Process button enabled → download via Cobalt proxy
+ */
 
-document.addEventListener('DOMContentLoaded', function () {
+(function () {
+    "use strict";
 
-    /* =========================================================
-       COBALT INSTANCE CONFIG
-       Diambil dari window variable yang di-set di blade
-    ========================================================= */
-
-    /* =========================================================
-       PLATFORM CONFIG
-    ========================================================= */
-    const PLATFORM_CONFIG = {
+    /* ──────────────────────────────────────────────
+       CONSTANTS
+    ────────────────────────────────────────────── */
+    const PLATFORM_CFG = {
         youtube: {
             hint:        'YouTube · Shorts · Music',
             placeholder: 'https://www.youtube.com/watch?v=...',
             examples:    ['youtube.com/watch?v=...', 'youtu.be/...', 'youtube.com/shorts/...'],
-            icon:        'fa-youtube',
-            patterns:    [/youtube\.com/, /youtu\.be/],
+            icon:        'fa-brands fa-youtube',
         },
         tiktok: {
             hint:        'TikTok · Video · Audio',
             placeholder: 'https://www.tiktok.com/@user/video/...',
             examples:    ['tiktok.com/@user/video/...', 'vm.tiktok.com/...'],
-            icon:        'fa-tiktok',
-            patterns:    [/tiktok\.com/, /vm\.tiktok/],
+            icon:        'fa-brands fa-tiktok',
         },
         instagram: {
             hint:        'Reels · Foto · Video',
             placeholder: 'https://www.instagram.com/reel/...',
             examples:    ['instagram.com/reel/...', 'instagram.com/p/...'],
-            icon:        'fa-instagram',
-            patterns:    [/instagram\.com/],
+            icon:        'fa-brands fa-instagram',
         },
         other: {
-            hint:        'Twitter · Reddit · Pinterest · dll',
+            hint:        'Twitter · Reddit · Pinterest · Vimeo',
             placeholder: 'https://twitter.com/...',
             examples:    ['twitter.com/...', 'reddit.com/...', 'pinterest.com/...'],
-            icon:        'fa-globe',
-            patterns:    [],
+            icon:        'fa-solid fa-globe',
         },
     };
 
-    const PLATFORM_TIPS = {
-        youtube: [
-            'Pastikan video bersifat publik (bukan private atau unlisted)',
-            'Untuk audio, pilih format "MP3 Audio" sebelum klik download',
-            'YouTube Shorts dan YouTube Music juga didukung',
-        ],
-        tiktok: [
-            'Pastikan akun TikTok bersifat publik',
-            'Aktifkan opsi "Tanpa Watermark" untuk hasil yang bersih',
-            'Link harus dari postingan spesifik, bukan halaman profil',
-        ],
-        instagram: [
-            'Hanya konten dari akun publik yang dapat didownload',
-            'Salin link langsung dari browser, bukan dari aplikasi',
-            'Instagram Reels dan foto carousel didukung',
-        ],
-        other: [
-            'Pastikan konten bersifat publik dan dapat diakses umum',
-            'Gunakan link langsung dari browser desktop untuk hasil terbaik',
-            'Beberapa platform mungkin tidak selalu berhasil',
-        ],
+    const PLATFORM_PATTERNS = {
+        youtube:   [/youtube\.com/, /youtu\.be/],
+        tiktok:    [/tiktok\.com/, /vm\.tiktok/],
+        instagram: [/instagram\.com/, /instagr\.am/],
     };
 
-    const ERROR_MAP = {
-        'error.api.link.invalid':        'URL tidak valid. Pastikan link benar.',
-        'error.api.link.unsupported':    'Platform ini belum didukung.',
-        'error.api.content.unavailable': 'Konten tidak tersedia atau telah dihapus.',
-        'error.api.content.private':     'Konten ini bersifat privat.',
-        'error.api.rate_exceeded':       'Terlalu banyak permintaan. Coba lagi sebentar.',
-        'error.api.youtube.decipher':    'YouTube memblokir sementara. Coba lagi.',
-        'error.api.youtube.login':       'Konten ini memerlukan login YouTube.',
-        'error.api.youtube.age':         'Konten ini dibatasi usia.',
-        'error.api.fetch.fail':          'Gagal mengambil data. Coba lagi.',
-        'error.api.auth.jwt.invalid':    'Token verifikasi tidak valid. Segarkan halaman.',
-        'error.api.auth.turnstile':      'Verifikasi Turnstile gagal. Segarkan halaman dan coba lagi.',
+    const TIPS = {
+        youtube:   ['Video harus bersifat publik (bukan private/unlisted)', 'YouTube Shorts dan Music juga didukung', 'Jika gagal, coba URL yang disalin langsung dari browser'],
+        tiktok:    ['Akun TikTok harus bersifat publik', 'Link harus ke video spesifik, bukan halaman profil', 'Aktifkan "Tanpa Watermark" untuk hasil bersih'],
+        instagram: ['Hanya konten dari akun publik', 'Salin link dari browser, bukan aplikasi IG', 'Reels, foto, dan video post didukung'],
+        other:     ['Pastikan konten bisa diakses tanpa login', 'Gunakan link langsung dari browser desktop', 'Beberapa platform mungkin tidak selalu berhasil'],
     };
 
-    /* =========================================================
+    /* ──────────────────────────────────────────────
        STATE
-    ========================================================= */
-    let currentPlatform  = 'youtube';
-    let currentFormat    = 'mp4';
-    let currentQuality   = '720';
-    let progressTimer    = null;
+    ────────────────────────────────────────────── */
+    const S = {
+        platform:         'youtube',
+        format:           null,      // 'mp3' | 'mp4' — null = not chosen yet
+        quality:          null,      // selected height (720 etc)
+        formatsLoaded:    false,
+        loadingFormats:   false,
+        processing:       false,
+    };
 
-    /* =========================================================
-       DOM REFS
-    ========================================================= */
-    const platformBtns      = document.querySelectorAll('.md-platform-btn');
-    const platformHint      = document.getElementById('platform-hint');
-    const inputPlatformIcon = document.getElementById('input-platform-icon').querySelector('i');
-    const urlInput          = document.getElementById('media-url');
-    const btnPaste          = document.getElementById('btn-paste');
-    const btnClear          = document.getElementById('btn-clear');
-    const urlExamples       = document.getElementById('url-examples');
+    /* ──────────────────────────────────────────────
+       DOM
+    ────────────────────────────────────────────── */
+    const $ = id => document.getElementById(id);
 
-    const ytOptions      = document.getElementById('yt-options');
-    const ttOptions      = document.getElementById('tt-options');
-    const igOptions      = document.getElementById('ig-options');
-    const otherOptions   = document.getElementById('other-options');
-    const qualitySection = document.getElementById('quality-section');
+    const DOM = {
+        platformBtns:   document.querySelectorAll('.md-platform-btn'),
+        platformHint:   $('platform-hint'),
+        inputIcon:      document.querySelector('#input-platform-icon i'),
+        urlInput:       $('media-url'),
+        btnPaste:       $('btn-paste'),
+        btnClear:       $('btn-clear'),
+        urlExamples:    $('url-examples'),
 
-    const formatBtns  = document.querySelectorAll('.md-format-btn');
-    const qualityBtns = document.querySelectorAll('.md-quality-btn');
+        // Sections
+        ytFormatSec:    $('yt-format-section'),
+        ytQualitySec:   $('yt-quality-section'),
+        ttOptions:      $('tt-options'),
+        igOptions:      $('ig-options'),
+        otherOptions:   $('other-options'),
 
-    const btnProcess    = document.getElementById('btn-process');
-    const btnProcessLbl = document.getElementById('btn-process-label');
+        // YouTube format buttons
+        formatBtns:     document.querySelectorAll('.md-format-btn'),
 
-    const stateProcessing = document.getElementById('state-processing');
-    const stateResult     = document.getElementById('state-result');
-    const stateError      = document.getElementById('state-error');
-    const procDetail      = document.getElementById('proc-detail');
-    const progressBar     = document.getElementById('progress-bar');
+        // Quality area
+        qualityGrid:    $('quality-grid'),
+        qualityHint:    $('quality-hint'),
 
-    const resultTitle       = document.getElementById('result-title');
-    const resultSub         = document.getElementById('result-sub');
-    const resultSingle      = document.getElementById('result-single');
-    const btnDownloadSingle = document.getElementById('btn-download-single');
-    const downloadLabel     = document.getElementById('download-label');
-    const resultPicker      = document.getElementById('result-picker');
-    const btnReset          = document.getElementById('btn-reset');
+        // Process
+        btnProcess:     $('btn-process'),
+        btnProcessLbl:  $('btn-process-label'),
 
-    const errorMsg  = document.getElementById('error-msg');
-    const errorTips = document.getElementById('error-tips');
-    const tipsList  = document.getElementById('tips-list');
-    const btnRetry  = document.getElementById('btn-retry');
+        // States
+        stateProc:      $('state-processing'),
+        stateResult:    $('state-result'),
+        stateError:     $('state-error'),
 
-    const toast    = document.getElementById('md-toast');
-    const toastMsg = document.getElementById('toast-msg');
+        procTitle:      $('proc-title'),
+        procSub:        $('proc-sub'),
+        progressBar:    $('progress-bar'),
+        progressPct:    $('progress-pct'),
+        progressStep:   $('progress-step'),
 
-    /* =========================================================
+        resultTitle:    $('result-title'),
+        resultSub:      $('result-sub'),
+        resultSingle:   $('result-single'),
+        btnDlSingle:    $('btn-download-single'),
+        dlLabel:        $('download-label'),
+        resultPicker:   $('result-picker'),
+        btnReset:       $('btn-reset'),
+
+        errorMsg:       $('error-msg'),
+        tipsList:       $('tips-list'),
+        btnRetry:       $('btn-retry'),
+
+        toast:          $('md-toast'),
+        toastMsg:       $('toast-msg'),
+        toastIco:       $('toast-ico'),
+    };
+
+    /* ──────────────────────────────────────────────
+       ROUTES
+    ────────────────────────────────────────────── */
+    const ROUTES = {
+        process:  document.querySelector('meta[name="md-process-url"]')?.content  || '/media-downloader/process',
+        download: document.querySelector('meta[name="md-download-url"]')?.content || '/media-downloader/download',
+    };
+
+    const CSRF = () => document.querySelector('meta[name="csrf-token"]')?.content || '';
+
+    /* ──────────────────────────────────────────────
        HELPERS
-    ========================================================= */
-    const show = el => el.classList.remove('md-hidden');
-    const hide = el => el.classList.add('md-hidden');
+    ────────────────────────────────────────────── */
+    const show = el => el && el.classList.remove('md-hidden');
+    const hide = el => el && el.classList.add('md-hidden');
+    const esc  = s  => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-    function showToast(msg, duration = 2500) {
-        toastMsg.textContent = msg;
-        toast.classList.add('show');
-        clearTimeout(showToast._t);
-        showToast._t = setTimeout(() => toast.classList.remove('show'), duration);
+    let _toastT = null;
+    function toast(msg, type = 'ok', dur = 2800) {
+        if (!DOM.toast) return;
+        DOM.toastMsg.textContent = msg;
+        if (DOM.toastIco) {
+            DOM.toastIco.className = type === 'warn'
+                ? 'fa-solid fa-triangle-exclamation md-toast-ico'
+                : 'fa-solid fa-check md-toast-ico';
+            DOM.toastIco.style.color = type === 'warn' ? '#fbbf24' : '#a3e635';
+        }
+        DOM.toast.classList.add('show');
+        clearTimeout(_toastT);
+        _toastT = setTimeout(() => DOM.toast.classList.remove('show'), dur);
     }
 
     function hideAllStates() {
-        hide(stateProcessing);
-        hide(stateResult);
-        hide(stateError);
+        hide(DOM.stateProc);
+        hide(DOM.stateResult);
+        hide(DOM.stateError);
     }
 
-    function startProgress(label) {
-        procDetail.textContent = label;
-        progressBar.style.width = '5%';
-        progressBar.style.transition = 'width 0.4s ease';
-        let w = 5;
-        progressTimer = setInterval(() => {
-            const step = w < 40 ? 10 : w < 70 ? 5 : w < 88 ? 1.5 : 0;
-            w = Math.min(w + step * Math.random(), 88);
-            progressBar.style.width = w + '%';
-        }, 500);
-    }
-
-    function finishProgress() {
-        clearInterval(progressTimer);
-        progressBar.style.transition = 'width 0.3s ease';
-        progressBar.style.width = '100%';
-    }
-
-    function resetProgress() {
-        clearInterval(progressTimer);
-        progressBar.style.transition = 'none';
-        progressBar.style.width = '0%';
-    }
-
-    function updateUrlExamples() {
-        const cfg = PLATFORM_CONFIG[currentPlatform];
-        urlExamples.innerHTML =
-            `<span class="md-example-label">Contoh:</span>` +
-            cfg.examples.map(e => `<span class="md-example">${e}</span>`).join('');
-    }
-
-    function autoDetectPlatform(url) {
-        for (const [key, cfg] of Object.entries(PLATFORM_CONFIG)) {
-            if (cfg.patterns.some(p => p.test(url))) return key;
+    function autoDetect(url) {
+        for (const [plat, patterns] of Object.entries(PLATFORM_PATTERNS)) {
+            if (patterns.some(p => p.test(url))) return plat;
         }
         return null;
     }
 
-    function validateUrl() {
-        const val = urlInput.value.trim();
-        btnClear.classList.toggle('visible', val.length > 0);
-        btnProcess.disabled = val.length < 10;
-
-        if (val.length > 10) {
-            const detected = autoDetectPlatform(val);
-            if (detected && detected !== currentPlatform) {
-                switchPlatform(detected);
-            }
-        }
-    }
-
-    
-    /* =========================================================
+    /* ──────────────────────────────────────────────
        PLATFORM SWITCHING
-    ========================================================= */
-    function switchPlatform(platform) {
-        currentPlatform = platform;
-        platformBtns.forEach(b =>
-            b.classList.toggle('active', b.dataset.platform === platform)
-        );
-        const cfg = PLATFORM_CONFIG[platform];
-        platformHint.textContent    = cfg.hint;
-        urlInput.placeholder        = cfg.placeholder;
-        inputPlatformIcon.className = `fa-brands ${cfg.icon}`;
+    ────────────────────────────────────────────── */
+    function switchPlatform(p) {
+        S.platform = p;
+        S.format   = null;
+        S.quality  = null;
+        S.formatsLoaded = false;
 
-        hide(ytOptions); hide(ttOptions); hide(igOptions); hide(otherOptions);
-        if (platform === 'youtube')   show(ytOptions);
-        if (platform === 'tiktok')    show(ttOptions);
-        if (platform === 'instagram') show(igOptions);
-        if (platform === 'other')     show(otherOptions);
+        DOM.platformBtns.forEach(b => b.classList.toggle('active', b.dataset.platform === p));
 
-        updateUrlExamples();
-        updateProcessLabel();
+        const cfg = PLATFORM_CFG[p];
+        DOM.platformHint.textContent = cfg.hint;
+        DOM.urlInput.placeholder     = cfg.placeholder;
+        DOM.inputIcon.className      = cfg.icon;
+
+        // Update examples
+        DOM.urlExamples.innerHTML =
+            `<span class="md-example-label">Contoh:</span>` +
+            cfg.examples.map(e => `<span class="md-example">${esc(e)}</span>`).join('');
+
+        // Show/hide option panels
+        hide(DOM.ytFormatSec);
+        hide(DOM.ytQualitySec);
+        hide(DOM.ttOptions);
+        hide(DOM.igOptions);
+        hide(DOM.otherOptions);
+
+        if (p === 'youtube')   show(DOM.ytFormatSec);
+        if (p === 'tiktok')    show(DOM.ttOptions);
+        if (p === 'instagram') show(DOM.igOptions);
+        if (p === 'other')     show(DOM.otherOptions);
+
+        updateProcessBtn();
     }
 
-    platformBtns.forEach(btn => {
+    DOM.platformBtns.forEach(btn => {
         btn.addEventListener('click', () => switchPlatform(btn.dataset.platform));
     });
 
-    /* =========================================================
-       FORMAT & QUALITY
-    ========================================================= */
-    formatBtns.forEach(btn => {
+    /* ──────────────────────────────────────────────
+       FORMAT SELECTION (YouTube)
+    ────────────────────────────────────────────── */
+    DOM.formatBtns.forEach(btn => {
         btn.addEventListener('click', function () {
-            currentFormat = this.dataset.format;
-            formatBtns.forEach(b => b.classList.remove('active'));
+            const fmt = this.dataset.format;
+            if (S.format === fmt) return;
+
+            S.format  = fmt;
+            S.quality = null;
+            S.formatsLoaded = false;
+
+            DOM.formatBtns.forEach(b => b.classList.remove('active'));
             this.classList.add('active');
-            currentFormat === 'mp4' ? show(qualitySection) : hide(qualitySection);
+
+            if (fmt === 'mp3') {
+                hide(DOM.ytQualitySec);
+                updateProcessBtn();
+            } else {
+                // MP4 — need to fetch formats first if URL valid
+                const url = DOM.urlInput.value.trim();
+                if (url.length > 10) {
+                    show(DOM.ytQualitySec);
+                    fetchFormats(url);
+                } else {
+                    show(DOM.ytQualitySec);
+                    renderQualitySkeleton();
+                }
+                updateProcessBtn();
+            }
         });
     });
 
-    qualityBtns.forEach(btn => {
-        btn.addEventListener('click', function () {
-            currentQuality = this.dataset.quality;
-            qualityBtns.forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-        });
-    });
+    /* ──────────────────────────────────────────────
+       FETCH REAL FORMATS FROM SERVER
+    ────────────────────────────────────────────── */
+    async function fetchFormats(url) {
+        if (S.loadingFormats) return;
+        S.loadingFormats = true;
+        S.formatsLoaded  = false;
+        S.quality        = null;
 
-    function updateProcessLabel() {
-        const labels = {
-            youtube:   'Download dari YouTube',
-            tiktok:    'Download dari TikTok',
-            instagram: 'Download dari Instagram',
-            other:     'Download Sekarang',
-        };
-        btnProcessLbl.textContent = labels[currentPlatform] || 'Download Sekarang';
+        renderQualitySkeleton();
+        updateProcessBtn();
+
+        try {
+            const resp = await fetch(ROUTES.process, {
+                method:  'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': CSRF(),
+                    'Accept':       'application/json',
+                },
+                body: JSON.stringify({ url, action: 'get_formats' }),
+            });
+
+            const data = await resp.json();
+
+            if (data.status === 'formats') {
+                renderQualities(data.qualities || [], data.title);
+                S.formatsLoaded = true;
+            } else {
+                // Fallback qualities
+                renderQualities([
+                    { height: 1080, label: '1080p Full HD', filesize_fmt: null },
+                    { height: 720,  label: '720p HD',       filesize_fmt: null },
+                    { height: 480,  label: '480p',          filesize_fmt: null },
+                    { height: 360,  label: '360p',          filesize_fmt: null },
+                ], null);
+                S.formatsLoaded = true;
+                toast('Info format tidak tersedia — menggunakan pilihan standar.', 'warn');
+            }
+        } catch {
+            renderQualities([
+                { height: 1080, label: '1080p Full HD', filesize_fmt: null },
+                { height: 720,  label: '720p HD',       filesize_fmt: null },
+                { height: 480,  label: '480p',          filesize_fmt: null },
+                { height: 360,  label: '360p',          filesize_fmt: null },
+            ], null);
+            S.formatsLoaded = true;
+        } finally {
+            S.loadingFormats = false;
+            updateProcessBtn();
+        }
     }
 
-    /* =========================================================
-       URL INPUT EVENTS
-    ========================================================= */
-    urlInput.addEventListener('input', validateUrl);
-    urlInput.addEventListener('paste', () => setTimeout(validateUrl, 50));
+    function renderQualitySkeleton() {
+        DOM.qualityGrid.innerHTML = [1,2,3,4].map(() =>
+            `<div class="md-quality-skeleton"></div>`
+        ).join('');
+    }
 
-    btnPaste.addEventListener('click', async () => {
+    function renderQualities(qualities, title) {
+        DOM.qualityGrid.innerHTML = '';
+
+        if (title && DOM.qualityHint) {
+            DOM.qualityHint.textContent = `Format tersedia untuk: "${title.substring(0, 50)}${title.length > 50 ? '…' : ''}"`;
+        }
+
+        qualities.forEach(q => {
+            const btn = document.createElement('button');
+            btn.className       = 'md-quality-btn';
+            btn.dataset.quality = q.height;
+            btn.type            = 'button';
+
+            btn.innerHTML = `
+                <div class="md-quality-badge">${esc(q.label.split(' ')[0])}</div>
+                <div class="md-quality-meta">
+                    <span class="md-quality-label">${esc(q.label)}</span>
+                    ${q.filesize_fmt ? `<span class="md-quality-size">≈ ${esc(q.filesize_fmt)}</span>` : '<span class="md-quality-size">Ukuran tidak tersedia</span>'}
+                </div>
+                <div class="md-quality-radio"></div>
+            `;
+
+            btn.addEventListener('click', () => {
+                S.quality = q.height;
+                DOM.qualityGrid.querySelectorAll('.md-quality-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                updateProcessBtn();
+            });
+
+            DOM.qualityGrid.appendChild(btn);
+        });
+
+        // Auto-select first (best) quality
+        const first = DOM.qualityGrid.querySelector('.md-quality-btn');
+        if (first) {
+            first.click();
+        }
+    }
+
+    /* ──────────────────────────────────────────────
+       URL INPUT
+    ────────────────────────────────────────────── */
+    DOM.urlInput.addEventListener('input', onUrlChange);
+    DOM.urlInput.addEventListener('paste', () => setTimeout(onUrlChange, 60));
+
+    let _formatDebounce = null;
+    function onUrlChange() {
+        const val = DOM.urlInput.value.trim();
+        DOM.btnClear.classList.toggle('visible', val.length > 0);
+
+        // Auto-detect platform
+        if (val.length > 10) {
+            const detected = autoDetect(val);
+            if (detected && detected !== S.platform) {
+                switchPlatform(detected);
+            }
+        }
+
+        // If YouTube + MP4 format already selected, fetch formats on URL change
+        if (S.platform === 'youtube' && S.format === 'mp4' && val.length > 10) {
+            clearTimeout(_formatDebounce);
+            _formatDebounce = setTimeout(() => {
+                S.formatsLoaded = false;
+                fetchFormats(val);
+            }, 800);
+        }
+
+        updateProcessBtn();
+    }
+
+    DOM.btnPaste.addEventListener('click', async () => {
         try {
             const text = await navigator.clipboard.readText();
-            if (text && text.trim()) {
-                urlInput.value = text.trim();
-                validateUrl();
-                showToast('URL ditempelkan!');
+            if (text && text.startsWith('http')) {
+                DOM.urlInput.value = text.trim();
+                onUrlChange();
+                toast('URL ditempel!');
             }
         } catch {
-            urlInput.focus();
-            showToast('Tekan Ctrl+V untuk menempelkan URL');
+            toast('Izin clipboard ditolak — tempel manual (Ctrl+V)', 'warn');
         }
     });
 
-    btnClear.addEventListener('click', () => {
-        urlInput.value = '';
-        validateUrl();
-        urlInput.focus();
+    DOM.btnClear.addEventListener('click', () => {
+        DOM.urlInput.value = '';
+        DOM.btnClear.classList.remove('visible');
+        S.format        = null;
+        S.quality       = null;
+        S.formatsLoaded = false;
+
+        DOM.formatBtns.forEach(b => b.classList.remove('active'));
+        if (DOM.qualityGrid) DOM.qualityGrid.innerHTML = '';
+        if (S.platform === 'youtube') {
+            hide(DOM.ytQualitySec);
+        }
+
+        updateProcessBtn();
     });
 
-    /* =========================================================
-       BUILD PAYLOAD
-    ========================================================= */
-    function buildPayload(url) {
-        const payload = { url };
+    /* ──────────────────────────────────────────────
+       UPDATE PROCESS BUTTON
+    ────────────────────────────────────────────── */
+    function updateProcessBtn() {
+        const url    = DOM.urlInput.value.trim();
+        const hasUrl = url.length > 10;
+        let   ready  = false;
+        let   label  = 'Download Sekarang';
 
-        if (currentPlatform === 'youtube') {
-            if (currentFormat === 'mp3') {
-                payload.downloadMode = 'audio';
-                payload.audioFormat  = 'mp3';
+        if (!hasUrl) {
+            label = 'Paste URL terlebih dahulu';
+        } else if (S.platform === 'youtube') {
+            if (!S.format) {
+                label = 'Pilih format MP3 atau MP4';
+            } else if (S.format === 'mp3') {
+                ready = true;
+                label = 'Download Audio MP3';
             } else {
-                payload.downloadMode = 'auto';
-                payload.videoQuality = currentQuality;
+                // MP4
+                if (S.loadingFormats) {
+                    label = 'Memuat format tersedia...';
+                } else if (!S.quality) {
+                    label = 'Pilih kualitas video';
+                } else {
+                    ready = true;
+                    label = `Download MP4 ${S.quality}p`;
+                }
             }
+        } else {
+            // TikTok / IG / Other — just need URL
+            ready = true;
+            const platformLabels = {
+                tiktok:    'Download dari TikTok',
+                instagram: 'Download dari Instagram',
+                other:     'Download Sekarang',
+            };
+            label = platformLabels[S.platform] || 'Download Sekarang';
         }
 
-        if (currentPlatform === 'tiktok') {
-            const audioOnly = document.getElementById('tt-audio-only')?.checked ?? false;
-            payload.tiktokFullAudio = true;
-            if (audioOnly) payload.downloadMode = 'audio';
-        }
-
-        return payload;
+        DOM.btnProcess.disabled        = !ready;
+        DOM.btnProcessLbl.textContent  = label;
     }
 
-    /* =========================================================
-       PROXY REQUEST — Laravel forward ke Cobalt dengan token
-    ========================================================= */
-    async function callViaProxy(payload) {
-        const csrf = document.querySelector('meta[name="csrf-token"]');
-        const res  = await fetch('/media-downloader/process', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept':       'application/json',
-                'X-CSRF-TOKEN': csrf ? csrf.content : '',
-            },
-            body: JSON.stringify(payload),
+    /* ──────────────────────────────────────────────
+       PROCESS / DOWNLOAD
+    ────────────────────────────────────────────── */
+    DOM.btnProcess.addEventListener('click', doProcess);
+
+    async function doProcess() {
+        if (DOM.btnProcess.disabled || S.processing) return;
+        S.processing = true;
+
+        const url = DOM.urlInput.value.trim();
+        hideAllStates();
+        show(DOM.stateProc);
+        DOM.btnProcess.disabled = true;
+        DOM.btnProcess.classList.add('loading');
+
+        try {
+            if (S.platform === 'youtube') {
+                await processYouTube(url);
+            } else {
+                await processOther(url);
+            }
+        } finally {
+            S.processing = false;
+            DOM.btnProcess.classList.remove('loading');
+        }
+    }
+
+    /* ─── YouTube processing ─── */
+    async function processYouTube(url) {
+        const isAudio = S.format === 'mp3';
+
+        setProgress(5, isAudio ? 'Memulai konversi audio...' : 'Memulai download video...');
+
+        // Simulated progress phases (real progress comes from server response time)
+        const phases = isAudio
+            ? [
+                { pct: 20, delay: 800,  msg: 'Mengambil info lagu...' },
+                { pct: 45, delay: 2000, msg: 'Mendownload audio...' },
+                { pct: 70, delay: 5000, msg: 'Mengkonversi ke MP3...' },
+                { pct: 85, delay: 10000, msg: 'Memfinalisasi...' },
+            ]
+            : [
+                { pct: 15, delay: 600,  msg: 'Mengambil info video...' },
+                { pct: 35, delay: 2000, msg: 'Mendownload video stream...' },
+                { pct: 55, delay: 5000, msg: 'Mendownload audio stream...' },
+                { pct: 75, delay: 10000, msg: 'Menggabungkan video & audio...' },
+                { pct: 88, delay: 20000, msg: 'Memfinalisasi...' },
+            ];
+
+        let cumDelay = 0;
+        const timers = phases.map(({ pct, delay, msg }) => {
+            cumDelay += delay;
+            return setTimeout(() => {
+                if (S.processing) setProgress(pct, msg);
+            }, cumDelay);
         });
 
-        let data;
         try {
-            data = await res.json();
+            const body = {
+                url,
+                action:       'process',
+                downloadMode: isAudio ? 'audio' : 'video',
+                quality:      S.quality || 720,
+            };
+
+            const resp = await fetch(ROUTES.process, {
+                method:  'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': CSRF(),
+                    'Accept':       'application/json',
+                },
+                body: JSON.stringify(body),
+            });
+
+            timers.forEach(clearTimeout);
+            setProgress(100, 'Selesai!');
+            await sleep(300);
+
+            const data = await resp.json();
+
+            if (data.status === 'ready' && data.token) {
+                showResultDownload(data.token, data.type, data.filesize);
+            } else {
+                showError(data.message || 'Gagal memproses video.');
+            }
         } catch {
-            throw new Error(`Server mengembalikan respons tidak valid (HTTP ${res.status})`);
+            timers.forEach(clearTimeout);
+            showError('Tidak dapat terhubung ke server. Periksa koneksi internet.');
         }
-
-        if (!res.ok) {
-            throw new Error(data?.message || `Server error: HTTP ${res.status}`);
-        }
-
-        return data;
     }
 
-    /* =========================================================
-       PROSES DOWNLOAD
-    ========================================================= */
-    btnProcess.addEventListener('click', async function () {
-        const url = urlInput.value.trim();
-        if (!url) return;
+    /* ─── TikTok / Instagram / Other ─── */
+    async function processOther(url) {
+        setProgress(10, 'Mengambil info media...');
 
-        hideAllStates();
-        resetProgress();
-        show(stateProcessing);
-        btnProcess.disabled = true;
-        startProgress('Menghubungi server...');
+        const body = { url, action: 'process' };
+
+        if (S.platform === 'tiktok') {
+            const noWm = document.getElementById('tt-no-watermark');
+            const aoOnly = document.getElementById('tt-audio-only');
+            body.removeTikTokWatermark = noWm?.checked ?? true;
+            if (aoOnly?.checked) body.downloadMode = 'audio';
+        }
+
+        // Fake progress (server is fast, typically 2-5s)
+        const t1 = setTimeout(() => setProgress(35, 'Memproses URL...'), 600);
+        const t2 = setTimeout(() => setProgress(65, 'Menyiapkan file...'), 2000);
+        const t3 = setTimeout(() => setProgress(85, 'Hampir selesai...'), 4000);
 
         try {
-            procDetail.textContent = 'Sedang memproses URL Anda...';
-            const payload = buildPayload(url);
-            const data    = await callViaProxy(payload);
+            const resp = await fetch(ROUTES.process, {
+                method:  'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': CSRF(),
+                    'Accept':       'application/json',
+                },
+                body: JSON.stringify(body),
+            });
 
-            finishProgress();
+            [t1, t2, t3].forEach(clearTimeout);
+            setProgress(100, 'Selesai!');
+            await sleep(300);
 
-            if (data.status === 'error') {
-                const code = data.error?.code || data.message || 'error.unknown';
-                showError(code);
-                return;
+            const data = await resp.json();
+
+            if (data.status === 'ready' && data.token) {
+                showResultDownload(data.token, data.type || 'video', null);
+            } else if (data.status === 'picker') {
+                showResultPicker(data.picker || []);
+            } else {
+                showError(data.message || 'Gagal memproses URL.');
             }
-
-            handleCobaltResponse(data);
-
-        } catch (err) {
-            finishProgress();
-            showError(err.message);
+        } catch {
+            [t1, t2, t3].forEach(clearTimeout);
+            showError('Tidak dapat terhubung ke server. Periksa koneksi internet.');
         }
-    });
+    }
 
-    /* =========================================================
-       HANDLE COBALT RESPONSE
-    ========================================================= */
-    function handleCobaltResponse(data) {
+    /* ──────────────────────────────────────────────
+       PROGRESS HELPERS
+    ────────────────────────────────────────────── */
+    function setProgress(pct, msg) {
+        if (DOM.progressBar)  DOM.progressBar.style.width  = pct + '%';
+        if (DOM.progressPct)  DOM.progressPct.textContent  = pct + '%';
+        if (DOM.progressStep) DOM.progressStep.textContent = msg || '';
+    }
+
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    /* ──────────────────────────────────────────────
+       RESULT STATES
+    ────────────────────────────────────────────── */
+    function showResultDownload(token, type, filesize) {
         hideAllStates();
-        show(stateResult);
+        show(DOM.stateResult);
+        hide(DOM.resultPicker);
+        DOM.resultPicker.innerHTML = '';
 
-        hide(resultSingle);
-        hide(resultPicker);
-        resultPicker.innerHTML = '';
+        const isAudio = type === 'audio';
+        DOM.resultTitle.textContent = isAudio ? 'Audio Siap!' : 'Video Siap!';
+        DOM.resultSub.textContent   = filesize
+            ? `Ukuran file: ${filesize} — klik untuk download`
+            : 'File siap diunduh';
 
-        if (data.status === 'redirect' || data.status === 'tunnel') {
-            let ext = 'mp4';
-            if (currentFormat === 'mp3') ext = 'mp3';
-            else if (currentPlatform === 'tiktok' && document.getElementById('tt-audio-only')?.checked) ext = 'mp3';
+        const dlUrl = `${ROUTES.download}/${token}`;
+        const ext   = isAudio ? 'mp3' : 'mp4';
 
-            const filename = `mediatools_${currentPlatform}_${Date.now()}.${ext}`;
+        DOM.btnDlSingle.href                = dlUrl;
+        DOM.btnDlSingle.setAttribute('download', `mediatools_${Date.now()}.${ext}`);
+        DOM.dlLabel.textContent             = isAudio ? 'Download Audio MP3' : 'Download Video MP4';
 
-            resultTitle.textContent = 'Siap Download!';
-            resultSub.textContent   = `File ${ext.toUpperCase()} siap — klik tombol di bawah`;
+        // After click, trigger auto-cleanup on server (fire & forget)
+        DOM.btnDlSingle.onclick = () => {
+            toast('Download dimulai!');
+            // Re-enable process button for next download
+            setTimeout(() => {
+                S.processing = false;
+                updateProcessBtn();
+            }, 2000);
+        };
 
-            // Gunakan proxy download Laravel — bukan buka URL Cobalt langsung
-            btnDownloadSingle.href = '#';
-            btnDownloadSingle.removeAttribute('download');
-            btnDownloadSingle.removeAttribute('target');
-
-            // Simpan data untuk dipakai saat klik
-            btnDownloadSingle.dataset.proxyUrl  = data.url;
-            btnDownloadSingle.dataset.filename  = filename;
-            btnDownloadSingle.dataset.proxyMode = 'fetch'; // gunakan fetch download
-
-            downloadLabel.textContent = ext === 'mp3' ? 'Download Audio MP3' : 'Download Video';
-            show(resultSingle);
-            showToast('File siap didownload!');
-
-        } else if (data.status === 'picker') {
-            const items = data.picker || [];
-            resultTitle.textContent = `${items.length} Item Tersedia`;
-            resultSub.textContent   = 'Klik item untuk mendownload';
-
-            items.forEach((item, i) => {
-                const a = document.createElement('a');
-                a.href      = '#';
-                a.className = 'md-picker-item';
-                a.innerHTML = item.thumb
-                    ? `<img src="${item.thumb}" class="md-picker-thumb" alt="Item ${i + 1}" loading="lazy">`
-                    : `<div class="md-picker-thumb" style="display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--text-muted)"><i class="fa-solid fa-file-video"></i></div>`;
-                a.innerHTML += `<span class="md-picker-label"><i class="fa-solid fa-download" style="font-size:8px"></i> Item ${i + 1}</span>`;
-
-                // Download via proxy
-                a.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    triggerProxyDownload(item.url, `mediatools_item_${i + 1}.mp4`);
-                });
-
-                resultPicker.appendChild(a);
-            });
-
-            show(resultPicker);
-            showToast(`${items.length} item ditemukan!`);
-
-        } else if (data.status === 'youtube_external') {
-            hideAllStates();
-            show(stateResult);
-            hide(resultSingle);
-            hide(resultPicker);
-            resultPicker.innerHTML = '';
-
-            resultTitle.textContent = 'Pilih Layanan Download';
-            resultSub.textContent   = data.message || 'YouTube memerlukan layanan khusus.';
-
-            const services = data.services || [];
-            services.forEach((svc) => {
-                const a = document.createElement('a');
-                a.href      = svc.url;
-                a.target    = '_blank';
-                a.rel       = 'noopener noreferrer';
-                a.className = 'md-picker-item';
-                a.style.cssText = 'flex-direction:row;gap:12px;align-items:center;padding:14px 16px;';
-                a.innerHTML = `
-                    <div style="width:38px;height:38px;border-radius:10px;background:var(--accent-dim);
-                                display:flex;align-items:center;justify-content:center;
-                                color:var(--accent);font-size:16px;flex-shrink:0;">
-                        <i class="fa-solid fa-external-link-alt"></i>
-                    </div>
-                    <div style="flex:1;text-align:left;">
-                        <p style="font-size:13px;font-weight:700;color:var(--text-primary);margin:0 0 2px">${svc.name}</p>
-                        <p style="font-size:11px;color:var(--text-muted);margin:0">${svc.desc}</p>
-                    </div>
-                    <i class="fa-solid fa-arrow-right" style="font-size:11px;color:var(--text-muted)"></i>
-                `;
-                resultPicker.appendChild(a);
-            });
-
-            show(resultPicker);
-
-        } else {
-            showError('Respons dari server tidak dikenali.');
-        }
+        show(DOM.resultSingle);
+        toast(isAudio ? 'Audio siap download!' : 'Video siap download!');
     }
 
-    /* =========================================================
-    DIRECT DOWNLOAD — fetch langsung dari browser ke URL Cobalt
-    URL Cobalt terikat ke session/IP, tidak bisa di-proxy server
-    ========================================================= */
-    async function triggerProxyDownload(sourceUrl, filename) {
+    function showResultPicker(items) {
+        hideAllStates();
+        show(DOM.stateResult);
+        hide(DOM.resultSingle);
+        DOM.resultPicker.innerHTML = '';
 
-        // Ubah tombol jadi loading state
-        const originalLabel = downloadLabel.textContent;
-        downloadLabel.textContent = 'Menyiapkan...';
-        btnDownloadSingle.style.opacity       = '0.7';
-        btnDownloadSingle.style.pointerEvents = 'none';
+        DOM.resultTitle.textContent = `${items.length} Item Ditemukan`;
+        DOM.resultSub.textContent   = 'Klik item untuk download';
 
-        try {
-            // Fetch langsung dari browser ke URL Cobalt
-            // Tidak melalui Laravel karena URL-nya terikat ke IP/session user
-            const res = await fetch(sourceUrl, {
-                method:  'GET',
-                headers: { 'Accept': '*/*' },
-            });
+        items.forEach((item, i) => {
+            const el = document.createElement('a');
+            el.href      = `${ROUTES.download}/${item.token || '#'}`;
+            el.className = 'md-picker-item';
 
-            if (!res.ok) {
-                throw new Error(`HTTP ${res.status}`);
+            if (item.thumb) {
+                el.innerHTML = `<img src="${esc(item.thumb)}" class="md-picker-thumb" alt="Item ${i+1}" loading="lazy">`;
+            } else {
+                el.innerHTML = `<div class="md-picker-thumb" style="display:flex;align-items:center;justify-content:center;height:160px;background:rgba(255,255,255,0.03);font-size:28px;color:#4b5563;"><i class="fa-solid fa-file-video"></i></div>`;
+            }
+            el.innerHTML += `<span class="md-picker-label"><i class="fa-solid fa-download" style="font-size:8px"></i> ${i+1}</span>`;
+
+            if (item.url && !item.token) {
+                el.href = item.url;
+                el.target = '_blank';
+                el.rel = 'noopener noreferrer';
             }
 
-            downloadLabel.textContent = 'Mengunduh...';
+            DOM.resultPicker.appendChild(el);
+        });
 
-            // Stream ke blob lalu trigger download
-            const blob = await res.blob();
-            const url  = URL.createObjectURL(blob);
-            const a    = document.createElement('a');
-            a.href     = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-
-            // Bebaskan memori setelah beberapa detik
-            setTimeout(() => URL.revokeObjectURL(url), 30000);
-
-            showToast('Download dimulai!');
-
-        } catch (err) {
-            console.error('Download error:', err);
-
-            // Jika fetch gagal (CORS atau expired), buka URL langsung sebagai fallback
-            showToast('Membuka link download...', 3000);
-            const a    = document.createElement('a');
-            a.href     = sourceUrl;
-            a.target   = '_blank';
-            a.rel      = 'noopener noreferrer';
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-
-        } finally {
-            downloadLabel.textContent         = originalLabel;
-            btnDownloadSingle.style.opacity       = '';
-            btnDownloadSingle.style.pointerEvents = '';
-        }
+        show(DOM.resultPicker);
+        toast(`${items.length} item ditemukan!`);
     }
 
-    // Event listener untuk tombol download utama
-    btnDownloadSingle.addEventListener('click', function (e) {
-        e.preventDefault();
-        const sourceUrl = this.dataset.proxyUrl;
-        const filename  = this.dataset.filename;
-        if (sourceUrl && filename) {
-            triggerProxyDownload(sourceUrl, filename);
-        }
-    });
-
-    /* =========================================================
-       ERROR HANDLER
-    ========================================================= */
     function showError(msg) {
         hideAllStates();
-        show(stateError);
-        errorMsg.textContent = ERROR_MAP[msg] || msg || 'Terjadi kesalahan. Silakan coba lagi.';
-        tipsList.innerHTML = (PLATFORM_TIPS[currentPlatform] || PLATFORM_TIPS.other)
-            .map(t => `<li>${t}</li>`).join('');
-        show(errorTips);
+        show(DOM.stateError);
+        DOM.errorMsg.textContent = msg;
+        DOM.tipsList.innerHTML   = (TIPS[S.platform] || TIPS.other).map(t => `<li>${esc(t)}</li>`).join('');
+        S.processing             = false;
+        DOM.btnProcess.disabled  = false;
+        updateProcessBtn();
     }
 
-    /* =========================================================
+    /* ──────────────────────────────────────────────
        RESET
-    ========================================================= */
+    ────────────────────────────────────────────── */
     function resetApp() {
         hideAllStates();
-        resetProgress();
-        btnProcess.disabled = urlInput.value.trim().length < 10;
+        setProgress(0, '');
+        S.processing     = false;
+        S.format         = null;
+        S.quality        = null;
+        S.formatsLoaded  = false;
+        S.loadingFormats = false;
+
+        DOM.formatBtns.forEach(b => b.classList.remove('active'));
+        hide(DOM.ytQualitySec);
+        if (DOM.qualityGrid) DOM.qualityGrid.innerHTML = '';
+        DOM.resultPicker.innerHTML = '';
+
+        updateProcessBtn();
     }
 
-    btnReset.addEventListener('click', resetApp);
-    btnRetry.addEventListener('click', () => {
-        resetApp();
-    });
+    DOM.btnReset.addEventListener('click', resetApp);
+    DOM.btnRetry.addEventListener('click', resetApp);
 
-    /* =========================================================
+    /* ──────────────────────────────────────────────
        INIT
-    ========================================================= */
+    ────────────────────────────────────────────── */
     switchPlatform('youtube');
-    updateUrlExamples();
-});
+
+})();
