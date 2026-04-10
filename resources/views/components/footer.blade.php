@@ -86,7 +86,7 @@
                     ['tools.pdfutilities',      'PDF Utilities'],
                     ['tools.mediadownloader',   'Media Downloader'],
                     ['tools.invoice',           'Invoice Generator'],
-                    ['tools.passwordgenerator', 'Password Generator'],
+                    ['tools.sanitizer',         'File Security & Privacy Scanner'],
                 ] as [$route, $label])
                 <a href="{{ route($route) }}" class="footer-link">{{ $label }}</a>
                 @endforeach
@@ -105,6 +105,7 @@
                     ['tools.mediadownloader',   'Media Downloader'],
                     ['tools.imageconverter',    'Image Converter'],
                     ['tools.invoice',           'Invoice Generator'],
+                    ['tools.sanitizer',         'File Security & Privacy Scanner'],
                     ['tools.passwordgenerator', 'Password Generator'],
                     ['tools.qr',                'QR Code Generator'],
                     ['tools.signature',         'Email Signature'],

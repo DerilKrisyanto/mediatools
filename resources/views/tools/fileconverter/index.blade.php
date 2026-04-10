@@ -5,6 +5,8 @@
 @section('meta_description', 'Konversi PDF ke Word, Word ke PDF, Excel ke PDF, JPG ke PDF dan sebaliknya secara gratis. Upload 5 file sekaligus, hasil instan, privasi terjaga.')
 @section('meta_keywords', 'pdf to word, word to pdf, konversi pdf, compress pdf, excel to pdf, jpg to pdf, pdf converter gratis, convert pdf online, ilovepdf alternative, konversi file online, pdf ke word gratis, word ke pdf, powerpoint to pdf, pdf to jpg, merge pdf')
 
+@include('seo.fileconverter')
+
 @section('content')
 {{-- Pass routes to JS without inline JS --}}
 <meta name="fc-process-url"  content="{{ route('tools.fileconverter.process') }}">

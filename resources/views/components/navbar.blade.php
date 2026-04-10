@@ -32,6 +32,7 @@
                 ['tools.pdfutilities',      'fa-file-pdf',            'PDF Utilities',       'Merge, split & compress',  'blue'],
                 ['tools.mediadownloader',   'fa-cloud-arrow-down',    'Media Downloader',    'YouTube, TikTok & IG',     'purple'],
                 ['tools.passwordgenerator', 'fa-key',                 'Password Generator',  'Kata sandi kuat & aman',   'purple'],
+                ['tools.sanitizer',         'fa-shield-halved',       'Metadata Sanitizer',  'Hapus EXIF, GPS & data tersembunyi',   'purple'],
             ];
             @endphp
 
@@ -236,6 +237,7 @@
                         ['tools.qr',            'fa-qrcode',           'purple','QR Code Generator',  'QR Code custom & branded',             ['qr','qrcode','barcode','scan']],
                     ]],
                     ['green','fa-shield-halved','Keamanan & Branding', [
+                        ['tools.sanitizer','fa-shield-halved',    'green','Metadata Sanitizer','Hapus EXIF, GPS & data tersembunyi',   ['Hapus', 'exif','gps', 'data tersembunyi','keamanan','security']],
                         ['tools.passwordgenerator','fa-key',      'green','Password Generator','Kata sandi kuat & aman instan',        ['password','kata sandi','keamanan','security']],
                         ['tools.signature',       'fa-signature', 'green','Email Signature',   'Tanda tangan email profesional',       ['signature','email','tanda tangan','branding']],
                     ]],

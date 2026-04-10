@@ -142,9 +142,9 @@
         ['doc',  'fa-repeat',             'rgba(245,158,11,0.12)',  '#fbbf24', 'File Converter',     'Konversi PDF ke Word, Excel, PPT & sebaliknya. Upload 5 file sekaligus.',          'HOT',   'fileconverter',     true],
         ['doc',  'fa-file-pdf',           'rgba(239,68,68,0.12)',   '#f87171', 'PDF Utilities',      'Merge, split & compress PDF di browser — tanpa upload ke server.',                'HOT',  'pdfutilities',      true],
         ['social','fa-cloud-arrow-down',  'rgba(139,92,246,0.12)',  '#a78bfa', 'Media Downloader',   'Download video & audio dari YouTube, TikTok, Instagram dalam hitungan detik.',     'BARU',   'mediadownloader',   true],
-        ['security','fa-key',             'rgba(163,230,53,0.10)', 'var(--accent)','Password Generator','Buat password kuat & unik secara instan — semua proses di browser Anda.',      'BARU',   'passwordgenerator', true],
+        ['security','fa-shield-halved',   'rgba(163,230,53,0.10)', 'var(--accent)','File Security & Privacy Scanner','Deteksi file berbahaya, malware tersembunyi, hingga ancaman lainnya, hapus metadata.',      'BARU',   'sanitizer', true],
+        ['security','fa-key',             'rgba(163,230,53,0.10)', 'var(--accent)','Password Generator','Buat password kuat & unik secara instan — semua proses di browser Anda.',      null,   'passwordgenerator', true],
         ['doc',  'fa-id-card',            'rgba(100,116,139,0.12)', '#94a3b8', 'Business Card',      'Kartu nama digital yang bisa dibagikan via link atau QR Code.',                   'SOON', '#',                 false],
-        ['image','fa-chart-bar',          'rgba(100,116,139,0.12)', '#94a3b8', 'Proposal Builder',   'Buat proposal bisnis dan presentasi klien yang rapi dan terstruktur.',             'SOON', '#',                 false],
     ];
     @endphp
 

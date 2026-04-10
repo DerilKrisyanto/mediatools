@@ -13,6 +13,7 @@ use App\Http\Controllers\Tools\ImageConverterController;
 use App\Http\Controllers\Tools\PasswordGeneratorController;
 use App\Http\Controllers\Tools\MediaDownloaderController;
 use App\Http\Controllers\Tools\FileConverterController;
+use App\Http\Controllers\Tools\MetadataSanitizerController;
 
 // ========== Halaman Utama ========== //
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -82,6 +83,26 @@ Route::prefix('file-converter')->group(function () {
          ->name('tools.fileconverter.download');
     Route::post('/cleanup',            [FileConverterController::class, 'cleanup'])
          ->name('tools.fileconverter.cleanup');
+});
+
+// ========== Metadata & Privacy Sanitizer ========== //
+Route::prefix('sanitizer')->group(function () {
+ 
+    Route::get('/', [MetadataSanitizerController::class, 'index'])
+        ->name('tools.sanitizer');
+ 
+    Route::post('/scan', [MetadataSanitizerController::class, 'scan'])
+        ->name('tools.sanitizer.scan')
+        ->middleware('throttle:20,1');   // ← 20 requests per minute per IP
+ 
+    Route::post('/process', [MetadataSanitizerController::class, 'process'])
+        ->name('tools.sanitizer.process')
+        ->middleware('throttle:20,1');
+ 
+    Route::get('/download/{token}', [MetadataSanitizerController::class, 'download'])
+        ->name('tools.sanitizer.download')
+        ->where('token', '[a-zA-Z0-9]{48}')
+        ->middleware('throttle:60,1');
 });
 
 // ========== Auth Routes ========== //
