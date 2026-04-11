@@ -7,6 +7,7 @@
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/sanitizer.css') }}">
+<link rel="stylesheet" href="{{ asset('css/ads.css') }}">
 @endpush
 
 @include('seo.sanitizer')
@@ -23,6 +24,10 @@
      HERO
      ================================================================ --}}
 <section class="san-hero">
+    {{-- ═══ SLOT 1: HEADER BANNER 728×90 ═══ --}}
+    <div class="ads-slot-header no-print">
+        @include('components.ads.banner-header')
+    </div>
     <div class="hero-grid-bg"></div>
     <div class="blob" style="width:460px;height:460px;top:-100px;left:-140px;opacity:0.45;position:absolute;"></div>
     <div class="blob" style="width:320px;height:320px;top:20px;right:-80px;opacity:0.3;position:absolute;"></div>
@@ -437,6 +442,15 @@
 
 </section>
 
+{{-- ═══ SLOT 3: RESULT BANNER 300×250 ═══ --}}
+<div class="ads-slot-result no-print">
+    @include('components.ads.banner-result')
+</div>
+
+{{-- ═══ SLOT 4: NATIVE BANNER ═══ --}}
+<div class="ads-slot-native no-print">
+    @include('components.ads.banner-content')
+</div>
 
 {{-- ================================================================
      CTA

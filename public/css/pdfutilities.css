@@ -4,7 +4,10 @@
    ===================================================== */
 
 /* ── Page layout ── */
-.pdf-page { min-height: 100vh; padding: 88px 0 72px; }
+.pdf-page {
+    min-height: 100vh;
+    /* padding: 88px 0 72px; */
+}
 .pdf-wrap  { max-width: 820px; margin: 0 auto; padding: 0 20px; }
 
 /* ── Hero ── */

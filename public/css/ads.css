@@ -1,0 +1,220 @@
+/* ================================================================
+   MediaTools — ads.css
+   Universal Ad Layout System
+   ─────────────────────────────────────────────────────────────
+   Cara pakai di tiap halaman tools:
+
+   STRUKTUR BLADE:
+   ┌─ ads-slot-header ──────────────────────────────────────┐
+   │  banner 728×90 — centered, bawah title/controls        │
+   └────────────────────────────────────────────────────────┘
+   ┌─ ads-layout ───────────────────────────────────────────┐
+   │  ┌─ ads-layout__main ─────────────┐ ┌─ ads-layout__sidebar ─┐
+   │  │  konten utama tools            │ │  300×250 sticky       │
+   │  │  ...                           │ │  (desktop only)       │
+   │  │  ┌─ ads-slot-result ─────────┐ │ └───────────────────────┘
+   │  │  │  300×250 setelah output   │ │
+   │  │  └───────────────────────────┘ │
+   │  │  ┌─ ads-slot-native ─────────┐ │
+   │  │  │  native banner            │ │
+   │  │  └───────────────────────────┘ │
+   │  └────────────────────────────────┘
+   └────────────────────────────────────────────────────────┘
+
+   @include('components.ads.banner-header')  → di dalam ads-slot-header
+   @include('components.ads.banner-sidebar') → di dalam ads-layout__sidebar
+   @include('components.ads.banner-result')  → di dalam ads-slot-result
+   @include('components.ads.banner-content') → di dalam ads-slot-native
+   ================================================================ */
+
+
+/* ──────────────────────────────────────────────────────────
+   1. ADS LABEL — "Advertisement" kecil di atas tiap slot
+   ────────────────────────────────────────────────────────── */
+.ads-label {
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.2);
+    text-align: center;
+    margin-bottom: 6px;
+    user-select: none;
+}
+
+
+/* ──────────────────────────────────────────────────────────
+   2. ADS CONTAINER BASE — shared oleh semua slot
+   ────────────────────────────────────────────────────────── */
+.ads-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;    /* ← selalu center horizontal */
+    justify-content: center;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* Pastikan iframe/script output Adsterra centered */
+.ads-container iframe,
+.ads-container > script + div,
+.ads-container ins {
+    display: block;
+    margin: 0 auto;
+}
+
+
+/* ──────────────────────────────────────────────────────────
+   3. SLOT HEADER — 728×90, baris sendiri di atas konten
+   ────────────────────────────────────────────────────────── */
+.ads-slot-header {
+    width: 100%;
+    display: flex;
+    justify-content: center;    /* center horizontal */
+    padding: 10px 16px 14px;
+    /* border-bottom: 1px solid rgba(255, 255, 255, 0.04); */
+    margin-bottom: 24px;
+}
+
+.ads-slot-header .ads-container {
+    max-width: 740px;   /* sedikit lebih dari 728 untuk breathing room */
+    width: 100%;
+}
+
+/* Sembunyikan di mobile — 728px tidak muat di layar kecil */
+@media (max-width: 767px) {
+    .ads-slot-header {
+        display: none;
+    }
+}
+
+
+/* ──────────────────────────────────────────────────────────
+   4. ADS LAYOUT — wrapper flex: konten utama + sidebar
+      Bungkus SELURUH konten tools dengan div ini
+   ────────────────────────────────────────────────────────── */
+.ads-layout {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    width: 100%;
+    position: relative;
+}
+
+/* Kolom utama: konten tools */
+.ads-layout__main {
+    flex: 1;
+    min-width: 0;           /* cegah overflow flex child */
+    display: flex;
+    flex-direction: column;
+    align-items: center;    /* center konten di dalam kolom */
+}
+
+/* Kolom sidebar: 300×250 sticky */
+.ads-layout__sidebar {
+    width: 300px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 88px;              /* offset dari fixed navbar */
+    align-self: flex-start;
+
+    /* Hidden default, tampil hanya jika ada ruang */
+    display: none;
+}
+
+/* Tampilkan sidebar hanya jika layar cukup lebar */
+@media (min-width: 1240px) {
+    .ads-layout__sidebar {
+        display: block;
+    }
+}
+
+.ads-layout__sidebar .ads-container {
+    width: 300px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 14px;
+    padding: 10px;
+}
+
+.ads-layout__sidebar .ads-label {
+    margin-bottom: 8px;
+}
+
+
+/* ──────────────────────────────────────────────────────────
+   5. SLOT RESULT — 300×250, tepat setelah output tools
+      Paling penting: user baru saja puas → CTR tertinggi
+   ────────────────────────────────────────────────────────── */
+.ads-slot-result {
+    width: 100%;
+    max-width: 728px;       /* sejajar dengan konten utama */
+    margin: 28px auto 0;    /* auto = center horizontal */
+    display: flex;
+    justify-content: center;
+}
+
+.ads-slot-result .ads-container {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-top: 2px solid rgba(163, 230, 53, 0.12);  /* garis hijau tipis */
+    border-radius: 14px;
+    padding: 14px 16px;
+    width: 100%;
+}
+
+
+/* ──────────────────────────────────────────────────────────
+   6. SLOT NATIVE — native banner di bawah result
+   ────────────────────────────────────────────────────────── */
+.ads-slot-native {
+    width: 100%;
+    max-width: 728px;
+    margin: 12px auto 0;    /* auto = center horizontal */
+    display: flex;
+    justify-content: center;
+}
+
+.ads-slot-native .ads-container {
+    background: rgba(255, 255, 255, 0.015);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 12px;
+    padding: 10px 12px;
+    width: 100%;
+}
+
+
+/* ──────────────────────────────────────────────────────────
+   7. RESPONSIVE — penyesuaian ukuran kecil
+   ────────────────────────────────────────────────────────── */
+@media (max-width: 1023px) {
+    .ads-slot-result,
+    .ads-slot-native {
+        max-width: 100%;
+        padding: 0 8px;
+        margin-left: 0;
+        margin-right: 0;
+    }
+}
+
+@media (max-width: 639px) {
+    .ads-slot-result .ads-container,
+    .ads-slot-native .ads-container {
+        border-radius: 10px;
+        padding: 10px 8px;
+    }
+}
+
+
+/* ──────────────────────────────────────────────────────────
+   8. PRINT — sembunyikan semua iklan saat print/PDF
+   ────────────────────────────────────────────────────────── */
+@media print {
+    .ads-slot-header,
+    .ads-layout__sidebar,
+    .ads-slot-result,
+    .ads-slot-native {
+        display: none !important;
+    }
+}

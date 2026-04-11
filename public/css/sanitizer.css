@@ -7,7 +7,7 @@
 .san-hero {
     position: relative;
     text-align: center;
-    padding: 7rem 1.5rem 3rem;
+    /* padding: 7rem 1.5rem 3rem; */
     overflow: hidden;
     background: linear-gradient(180deg, rgba(163,230,53,0.04) 0%, transparent 55%);
 }

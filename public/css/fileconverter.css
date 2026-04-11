@@ -6,7 +6,7 @@
 /* ─── Page wrapper ─── */
 .fc-page {
     min-height: 100vh;
-    padding: 96px 0 80px;
+    /* padding: 96px 0 80px; */
 }
 
 .fc-container {

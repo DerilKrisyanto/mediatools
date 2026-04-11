@@ -20,8 +20,8 @@
 .lt-shell {
     background: var(--lt-bg);
     min-height: 100vh;
-    padding-top: 90px;
-    padding-bottom: 60px;
+    /* padding-top: 90px; */
+    /* padding-bottom: 60px; */
 }
 
 /* ── Top Bar ───────────────────────────────────────────── */

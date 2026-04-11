@@ -8,8 +8,13 @@
 
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/imageconverter.css') }}">
+<link rel="stylesheet" href="{{ asset('css/ads.css') }}">
 
 <div class="ic-page">
+  {{-- ═══ SLOT 1: HEADER BANNER 728×90 ═══ --}}
+  <div class="ads-slot-header no-print">
+      @include('components.ads.banner-header')
+  </div>
   <div class="max-w-7xl mx-auto px-4 sm:px-6">
 
     {{-- HEADER --}}
@@ -263,6 +268,17 @@
       <span id="toast-msg" class="ic-toast-msg">Operasi berhasil.</span>
     </div>
   </div>
+
+  {{-- ═══ SLOT 3: RESULT BANNER 300×250 ═══ --}}
+  <div class="ads-slot-result no-print">
+      @include('components.ads.banner-result')
+  </div>
+
+  {{-- ═══ SLOT 4: NATIVE BANNER ═══ --}}
+  <div class="ads-slot-native no-print">
+      @include('components.ads.banner-content')
+  </div>
+  
 </div>
 
 @push('scripts')

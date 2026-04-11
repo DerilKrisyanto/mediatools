@@ -8,6 +8,7 @@
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/linktree.css') }}">
+<link rel="stylesheet" href="{{ asset('css/ads.css') }}">
 @endpush
 
 @section('content')
@@ -16,6 +17,10 @@
 <input type="hidden" id="checkPlanUrl" value="{{ route('tools.linktree.checkplan') }}">
 
 <div class="lt-shell">
+    {{-- ═══ SLOT 1: HEADER BANNER 728×90 ═══ --}}
+  <div class="ads-slot-header no-print">
+      @include('components.ads.banner-header')
+  </div>
 <div class="max-w-6xl mx-auto px-4 sm:px-6">
 
     {{-- ═══ TOP BAR ═══ --}}
@@ -177,6 +182,15 @@
     </div>
 
 </div>
+    {{-- ═══ SLOT 3: RESULT BANNER 300×250 ═══ --}}
+  <div class="ads-slot-result no-print">
+      @include('components.ads.banner-result')
+  </div>
+
+  {{-- ═══ SLOT 4: NATIVE BANNER ═══ --}}
+  <div class="ads-slot-native no-print">
+      @include('components.ads.banner-content')
+  </div>
 </div>
 
 {{-- ════════════════════════════════════

@@ -7,8 +7,8 @@
 .invoice-shell {
     background: #040f0f;
     min-height: 100vh;
-    padding-top: 88px;
-    padding-bottom: 48px;
+    /* padding-top: 88px; */
+    /* padding-bottom: 48px; */
 }
 
 .invoice-topbar {

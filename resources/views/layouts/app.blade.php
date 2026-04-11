@@ -304,6 +304,8 @@
     })();
     </script>
 
+    @include('components.ads._manager')
+    
     @stack('scripts')
 </body>
 </html>

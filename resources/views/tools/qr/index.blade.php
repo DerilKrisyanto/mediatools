@@ -10,8 +10,13 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ asset('css/qr.css') }}">
+<link rel="stylesheet" href="{{ asset('css/ads.css') }}">
 
-<div class="min-h-screen bg-[#020d0d] text-white pt-24 pb-20 px-4 selection:bg-[#a3e635] selection:text-black">
+<div class="min-h-screen bg-[#020d0d] text-white px-4 selection:bg-[#a3e635] selection:text-black">
+    {{-- ═══ SLOT 1: HEADER BANNER 728×90 ═══ --}}
+    <div class="ads-slot-header no-print">
+        @include('components.ads.banner-header')
+    </div>
     <div class="max-w-7xl mx-auto">
         <!-- Header Section -->
         <header class="mb-12 flex flex-col md:flex-row md:items-center justify-between gap-8 border-b border-white/5 pb-10">
@@ -163,6 +168,16 @@
             <span class="text-[10px] uppercase font-black tracking-widest text-black/40">Notification</span>
             <span id="toast-msg" class="text-sm font-bold leading-tight">Success!</span>
         </div>
+    </div>
+
+    {{-- ═══ SLOT 3: RESULT BANNER 300×250 ═══ --}}
+    <div class="ads-slot-result no-print">
+        @include('components.ads.banner-result')
+    </div>
+
+    {{-- ═══ SLOT 4: NATIVE BANNER ═══ --}}
+    <div class="ads-slot-native no-print">
+        @include('components.ads.banner-content')
     </div>
 
 </div>

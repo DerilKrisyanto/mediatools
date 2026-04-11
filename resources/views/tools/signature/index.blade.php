@@ -8,11 +8,16 @@
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/signature.css') }}">
+<link rel="stylesheet" href="{{ asset('css/ads.css') }}">
 @endpush
 
 @section('content')
 
 <div class="sig-shell selection:bg-[#a3e635] selection:text-black">
+    {{-- ═══ SLOT 1: HEADER BANNER 728×90 ═══ --}}
+    <div class="ads-slot-header no-print">
+        @include('components.ads.banner-header')
+    </div>
 <div class="max-w-7xl mx-auto px-4 sm:px-6">
 
     {{-- ═══ TOP BAR ═══ --}}

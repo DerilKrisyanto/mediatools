@@ -8,8 +8,13 @@
 
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/pdfutilities.css') }}">
+<link rel="stylesheet" href="{{ asset('css/ads.css') }}">
 
 <div class="pdf-page">
+{{-- ═══ SLOT 1: HEADER BANNER 728×90 ═══ --}}
+<div class="ads-slot-header no-print">
+    @include('components.ads.banner-header')
+</div>
 <div class="pdf-wrap">
 
     {{-- ── HERO ── --}}
@@ -466,6 +471,15 @@
     </section>
 
 </div>{{-- /pdf-wrap --}}
+{{-- ═══ SLOT 3: RESULT BANNER 300×250 ═══ --}}
+<div class="ads-slot-result no-print">
+    @include('components.ads.banner-result')
+</div>
+
+{{-- ═══ SLOT 4: NATIVE BANNER ═══ --}}
+<div class="ads-slot-native no-print">
+    @include('components.ads.banner-content')
+</div>
 </div>{{-- /pdf-page --}}
 
 {{-- Toast --}}

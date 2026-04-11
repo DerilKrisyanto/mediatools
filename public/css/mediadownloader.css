@@ -6,7 +6,7 @@
 /* ─── Page layout ─── */
 .md-page {
     min-height: 100vh;
-    padding: 92px 0 80px;
+    /* padding: 92px 0 80px; */
 }
 
 .md-container {
