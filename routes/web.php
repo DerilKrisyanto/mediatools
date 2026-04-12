@@ -14,6 +14,7 @@ use App\Http\Controllers\Tools\PasswordGeneratorController;
 use App\Http\Controllers\Tools\MediaDownloaderController;
 use App\Http\Controllers\Tools\FileConverterController;
 use App\Http\Controllers\Tools\MetadataSanitizerController;
+use App\Http\Controllers\Tools\ProposalBuilderController;
 
 // ========== Halaman Utama ========== //
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -105,6 +106,31 @@ Route::prefix('sanitizer')->group(function () {
         ->middleware('throttle:60,1');
 });
 
+Route::prefix('proposal')->group(function () {
+ 
+    // Halaman utama
+    Route::get('/', [ProposalBuilderController::class, 'index'])
+        ->name('tools.proposal');
+ 
+    // Generate proposal (returns HTML preview + cache_key)
+    Route::post('/generate', [ProposalBuilderController::class, 'generate'])
+        ->name('tools.proposal.generate');
+ 
+    // Trigger konversi HTML → DOCX / PDF via LibreOffice (returns token)
+    Route::post('/download', [ProposalBuilderController::class, 'download'])
+        ->name('tools.proposal.download');
+ 
+    // Serve file ke browser berdasarkan token (GET, streaming download)
+    Route::get('/serve/{token}', [ProposalBuilderController::class, 'serveDownload'])
+        ->name('tools.proposal.serve')
+        ->where('token', '[a-zA-Z0-9]{48}');
+ 
+    // Cleanup direktori kerja lama (bisa dipanggil dari cron/scheduler)
+    Route::post('/cleanup', [ProposalBuilderController::class, 'cleanup'])
+        ->name('tools.proposal.cleanup');
+ 
+});
+
 // ========== Auth Routes ========== //
 Route::middleware('auth')->group(function () {
     Route::get('/home', function () {
@@ -115,6 +141,11 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile',  [ProfileController::class, 'update']) ->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+
+
+
+
 
 // ========== SITEMAP.XML ========== //
 Route::get('/sitemap.xml', function () {

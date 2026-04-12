@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
 @section('og_image', 'linktree')
-@section('title', 'Buat LinkTree Gratis — Link in Bio Page Profesional | MediaTools')
+@section('title', 'Free LinkTree Builder — Link in Bio Page Profesional | MediaTools')
 @section('meta_description', 'Buat halaman link in bio profesional untuk Instagram, TikTok & semua sosmed dalam hitungan menit. Satu link untuk semua tautan penting Anda. Alternatif Linktree terbaik gratis di Indonesia.')
-@section('meta_keywords', 'linktree gratis, link in bio, buat link tree, bio link page, link hub sosmed, link in bio instagram, halaman bio link, linktree alternative gratis, satu link semua sosmed, link in bio tiktok, linktree indonesia, bio link gratis, link in bio page creator, buat bio link, all links one page')
+@section('meta_keywords', 'linktree builder, linktree gratis, link in bio, buat link tree, bio link page, link hub sosmed, link in bio instagram, halaman bio link, linktree alternative gratis, satu link semua sosmed, link in bio tiktok, linktree indonesia, bio link gratis, link in bio page creator, buat bio link, all links one page')
 @include('seo.linktree')
 
 @push('styles')

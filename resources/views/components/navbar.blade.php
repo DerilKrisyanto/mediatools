@@ -33,6 +33,7 @@
                 ['tools.mediadownloader',   'fa-cloud-arrow-down',    'Media Downloader',    'YouTube, TikTok & IG',     'purple'],
                 ['tools.passwordgenerator', 'fa-key',                 'Password Generator',  'Kata sandi kuat & aman',   'purple'],
                 ['tools.sanitizer',         'fa-shield-halved',       'File Security & Privacy Scanner',  'Hapus EXIF, GPS & data tersembunyi',   'purple'],
+                ['tools.proposal',          'fa-file-contract',       'Proposal Builder',   'Buat proposal otomatis siap pakai', 'blue'],
             ];
             @endphp
 
@@ -226,6 +227,7 @@
                         ['tools.invoice',     'fa-file-invoice-dollar', 'amber', 'Invoice Generator',   'Buat tagihan profesional',            ['invoice','tagihan','billing']],
                         ['tools.pdfutilities','fa-file-pdf',            'blue',  'PDF Utilities',        'Merge, split & compress PDF',         ['pdf','merge','split','compress']],
                         ['tools.fileconverter','fa-repeat',             'blue',  'File Converter',       'Konversi PDF, Word, Excel, PPT',       ['pdf','word','excel','convert']],
+                        ['tools.proposal',    'fa-file-contract',       'amber', 'Proposal Builder',     'Buat proposal otomatis siap pakai',               ['proposal','skripsi','bisnis','event']],
                     ]],
                     ['blue', 'fa-image', 'Gambar & Media', [
                         ['tools.imageconverter','fa-image',   'blue',  'Image Converter',    'Resize, compress & convert gambar',   ['gambar','image','foto','resize','compress','webp','png','jpg']],

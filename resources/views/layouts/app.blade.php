@@ -23,6 +23,9 @@
         $ogImageKey = View::hasSection('og_image') ? trim(View::yieldContent('og_image')) : 'home';
         $ogImageUrl = $appUrl . '/images/og/' . $ogImageKey . '.png';
 
+        /* ── GA4 Measurement ID dari .env ── */
+        $gaId = env('GOOGLE_ANALYTICS_ID', '');
+
         /* ── Global JSON-LD ── */
         $globalSchema = [
             [
@@ -48,7 +51,7 @@
                 'url'      => $appUrl,
                 'logo' => [
                     '@type'  => 'ImageObject',
-                    'url'    => $appUrl . '/images/icons-mediatools.png',
+                    'url'    => $appUrl . '/images/mediatools.jpeg',
                     'width'  => 512,
                     'height' => 512,
                 ],
@@ -107,14 +110,18 @@
 
     {{-- ── Favicons ── --}}
     <link rel="icon"             href="{{ asset('favicon.ico') }}" type="image/x-icon">
-    <link rel="icon"             href="{{ asset('images/icons-mediatools.png') }}" type="image/png" sizes="32x32">
-    <link rel="apple-touch-icon" href="{{ asset('images/icons-mediatools.png') }}" sizes="180x180">
+    <link rel="icon"             href="{{ asset('images/mediatools.jpeg') }}" type="image/png" sizes="32x32">
+    <link rel="apple-touch-icon" href="{{ asset('images/mediatools.jpeg') }}" sizes="180x180">
     <link rel="manifest"         href="{{ asset('site.webmanifest') }}">
 
     {{-- ── Resource Hints ── --}}
     <link rel="preconnect"    href="https://fonts.googleapis.com">
     <link rel="preconnect"    href="https://fonts.gstatic.com" crossorigin>
     <link rel="dns-prefetch"  href="//cdnjs.cloudflare.com">
+    @if($gaId)
+    <link rel="dns-prefetch"  href="//www.googletagmanager.com">
+    <link rel="dns-prefetch"  href="//www.google-analytics.com">
+    @endif
 
     {{-- ── Fonts ── --}}
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -144,6 +151,22 @@
 
     {{-- ── Per-page styles ── --}}
     @stack('styles')
+
+    {{-- OOGLE ANALYTICS --}}
+    @if($gaId)
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ $gaId }}"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '{{ $gaId }}', {
+            // Nonaktifkan iklan Google Ads (privacy-friendly, hanya analytics)
+            allow_google_signals: false,
+            allow_ad_personalization_signals: false
+        });
+    </script>
+    @endif
 </head>
 <body class="antialiased">
 
@@ -305,7 +328,7 @@
     </script>
 
     @include('components.ads._manager')
-    
+
     @stack('scripts')
 </body>
 </html>
