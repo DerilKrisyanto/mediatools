@@ -178,16 +178,17 @@
     </div>
 
     {{-- ── Quick Action Buttons ── --}}
-    <div class="flex flex-wrap gap-3 mb-6">
-        <button onclick="openModal('incomeModal')" class="btn-add-income">
-            <i class="fa-solid fa-plus"></i>
-            Tambah Pemasukan
-        </button>
-        <button onclick="openModal('expenseModal')" class="btn-add-expense">
-            <i class="fa-solid fa-plus"></i>
-            Tambah Pengeluaran
-        </button>
-        <div style="margin-left:auto;font-size:0.78rem;color:var(--fi-text-muted);align-self:center;">
+    <div class="action-container">
+        <div class="flex gap-3">
+            <button onclick="openModal('incomeModal')" class="btn-add-income">
+                <i class="fa-solid fa-plus"></i>
+                <span>Pemasukan</span> </button>
+            <button onclick="openModal('expenseModal')" class="btn-add-expense">
+                <i class="fa-solid fa-plus"></i>
+                <span>Pengeluaran</span>
+            </button>
+        </div>
+        <div class="info-text">
             <i class="fa-solid fa-circle-info mr-1"></i>
             Data tersimpan otomatis ke akun Anda
         </div>
@@ -302,7 +303,7 @@
             <p>Mulai catat pemasukan atau pengeluaran Anda untuk bulan ini.</p>
         </div>
         @else
-        <div style="overflow-x:auto;">
+        <div class="table-responsive-container">
             <table class="fi-table" id="txTable">
                 <thead>
                     <tr>
