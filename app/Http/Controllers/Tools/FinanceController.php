@@ -20,59 +20,70 @@ class FinanceController extends Controller
     {
         $month = (int) $request->get('month', now()->month);
         $year  = (int) $request->get('year',  now()->year);
- 
-        // ── Transaksi bulan berjalan ──────────────────────
-        $transactions = Transaction::mine()
+        $type  = $request->get('type', 'all'); // Filter jenis transaksi
+
+        // 1. Ambil Statistik dalam SATU Query (Sangat Cepat)
+        $stats = Transaction::mine()
             ->inMonth($month, $year)
-            ->orderBy('transaction_date', 'desc')
-            ->orderBy('created_at', 'desc')
-            ->get();
- 
-        $totalIncome  = $transactions->where('type', 'income')->sum('total_amount');
-        $totalExpense = $transactions->where('type', 'expense')->sum('total_amount');
+            ->selectRaw("
+                SUM(CASE WHEN type = 'income' THEN total_amount ELSE 0 END) as total_income,
+                SUM(CASE WHEN type = 'expense' THEN total_amount ELSE 0 END) as total_expense,
+                COUNT(*) as total_count,
+                COUNT(CASE WHEN type = 'income' THEN 1 END) as income_count,
+                COUNT(CASE WHEN type = 'expense' THEN 1 END) as expense_count
+            ")
+            ->first();
+
+        $totalIncome  = (float) $stats->total_income;
+        $totalExpense = (float) $stats->total_expense;
         $balance      = $totalIncome - $totalExpense;
-        $txCount      = $transactions->count();
- 
-        // ── Data grafik 6 bulan terakhir ─────────────────
-        $chartLabels  = [];
-        $chartIncome  = [];
-        $chartExpense = [];
- 
+        $txCount      = (int) $stats->total_count;
+        $incTxCount   = (int) $stats->income_count;
+        $expTxCount   = (int) $stats->expense_count;
+
+        // 2. Query Transaksi dengan Pagination & Filter
+        $query = Transaction::mine()->inMonth($month, $year);
+        if ($type !== 'all') {
+            $query->where('type', $type);
+        }
+
+        $transactions = $query->orderBy('transaction_date', 'desc')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10)
+            ->withQueryString(); // Agar filter bulan/tahun tetap terbawa saat pindah halaman
+
+        // 3. Optimasi Grafik (Ambil data 6 bulan dalam SATU query)
+        $startDate = now()->subMonths(5)->startOfMonth();
+        $chartRaw = Transaction::mine()
+            ->where('transaction_date', '>=', $startDate)
+            ->selectRaw("
+                DATE_FORMAT(transaction_date, '%Y-%m') as month_year,
+                SUM(CASE WHEN type = 'income' THEN total_amount ELSE 0 END) as income,
+                SUM(CASE WHEN type = 'expense' THEN total_amount ELSE 0 END) as expense
+            ")
+            ->groupBy('month_year')
+            ->get()
+            ->keyBy('month_year');
+
+        $chartLabels = []; $chartIncome = []; $chartExpense = [];
         for ($i = 5; $i >= 0; $i--) {
             $date = now()->subMonths($i);
- 
-            $inc = Transaction::mine()
-                ->income()
-                ->inMonth($date->month, $date->year)
-                ->sum('total_amount');
- 
-            $exp = Transaction::mine()
-                ->expense()
-                ->inMonth($date->month, $date->year)
-                ->sum('total_amount');
- 
+            $key = $date->format('Y-m');
             $chartLabels[]  = $date->locale('id')->isoFormat('MMM YY');
-            $chartIncome[]  = (float) $inc;
-            $chartExpense[] = (float) $exp;
+            $chartIncome[]  = (float) ($chartRaw[$key]->income ?? 0);
+            $chartExpense[] = (float) ($chartRaw[$key]->expense ?? 0);
         }
- 
-        // ── Daftar tahun untuk filter ─────────────────────
+
+        // Daftar tahun untuk filter
         $years = Transaction::mine()
             ->selectRaw('YEAR(transaction_date) as yr')
-            ->distinct()
-            ->orderBy('yr', 'desc')
-            ->pluck('yr')
-            ->unique()
-            ->values();
- 
-        if ($years->isEmpty()) {
-            $years = collect([now()->year]);
-        }
- 
+            ->distinct()->orderBy('yr', 'desc')->pluck('yr');
+        if ($years->isEmpty()) $years = collect([now()->year]);
+
         return view('tools.finance.index', compact(
-            'transactions', 'totalIncome', 'totalExpense',
-            'balance', 'txCount', 'month', 'year', 'years',
-            'chartLabels', 'chartIncome', 'chartExpense'
+            'transactions', 'totalIncome', 'totalExpense', 'balance', 
+            'txCount', 'incTxCount', 'expTxCount', 'month', 'year', 'years',
+            'chartLabels', 'chartIncome', 'chartExpense', 'type'
         ));
     }
  
