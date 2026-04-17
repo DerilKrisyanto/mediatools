@@ -280,19 +280,22 @@
                     — {{ $txCount }} transaksi
                 </div>
             </div>
-            {{-- Tab Filter --}}
+            {{-- Tab Filter (menggunakan Link untuk akurasi Pagination) --}}
             <div style="display:flex;gap:6px;" id="tabBar">
-                <button class="tab-btn active-all" onclick="filterTable('all',this)">
+                <a href="{{ request()->fullUrlWithQuery(['type' => 'all', 'page' => 1]) }}" 
+                class="tab-btn {{ $type === 'all' ? 'active-all' : '' }}">
                     Semua ({{ $txCount }})
-                </button>
-                <button class="tab-btn" onclick="filterTable('income',this)">
+                </a>
+                <a href="{{ request()->fullUrlWithQuery(['type' => 'income', 'page' => 1]) }}" 
+                class="tab-btn {{ $type === 'income' ? 'active-income' : '' }}">
                     <i class="fa-solid fa-arrow-trend-up" style="color:var(--fi-green);font-size:0.7rem;"></i>
                     Masuk ({{ $incTxCount }})
-                </button>
-                <button class="tab-btn" onclick="filterTable('expense',this)">
+                </a>
+                <a href="{{ request()->fullUrlWithQuery(['type' => 'expense', 'page' => 1]) }}" 
+                class="tab-btn {{ $type === 'expense' ? 'active-expense' : '' }}">
                     <i class="fa-solid fa-arrow-trend-down" style="color:var(--fi-red);font-size:0.7rem;"></i>
                     Keluar ({{ $expTxCount }})
-                </button>
+                </a>
             </div>
         </div>
 
@@ -381,6 +384,15 @@
                     </tr>
                 </tfoot>
             </table>
+            <div class="fi-pagination-info">
+                <div style="font-size: 0.8rem; color: var(--fi-text-muted);">
+                    Menampilkan {{ $transactions->firstItem() ?? 0 }} - {{ $transactions->lastItem() ?? 0 }} 
+                    dari {{ $transactions->total() }} transaksi
+                </div>
+                <div class="custom-pagination">
+                    {{ $transactions->links() }}
+                </div>
+            </div>
         </div>
         @endif
     </div>

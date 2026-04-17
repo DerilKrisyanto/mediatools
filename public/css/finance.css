@@ -615,3 +615,30 @@ body.fi-active { background-color: var(--fi-bg) !important; }
     background: #e2e8f0;
     border-radius: 10px;
 }
+
+/* Styling Pagination */
+.fi-pagination-info {
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--fi-border2);
+    background: var(--fi-surface2);
+}
+
+.custom-pagination nav svg {
+    width: 20px;
+}
+
+.custom-pagination nav div:first-child {
+    display: none; /* Sembunyikan text 'Showing X to Y' bawaan Laravel jika ingin kustom */
+}
+
+/* Memperbaiki tampilan tab yang aktif */
+.tab-btn {
+    text-decoration: none;
+    transition: all 0.2s;
+}
+.tab-btn.active-all { background: var(--fi-text); color: #fff; }
+.tab-btn.active-income { background: var(--fi-green-dim); color: var(--fi-green); border-color: var(--fi-green); }
+.tab-btn.active-expense { background: var(--fi-red-dim); color: var(--fi-red); border-color: var(--fi-red); }
