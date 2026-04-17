@@ -30,7 +30,7 @@
         <div>
             <div class="report-brand">
                 <div class="logo-box">M</div>
-                <span class="brand-name">MediaTools · Keuangan UMKM</span>
+                <span class="brand-name">MediaTools · Pencatatan Keuangan</span>
             </div>
             <div class="report-title">{{ $typeLabel }}</div>
             <div class="report-period">{{ $periodLabel }}</div>

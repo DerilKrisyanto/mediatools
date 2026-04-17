@@ -557,3 +557,61 @@
 
 /* Override global dark bg for this page */
 body.fi-active { background-color: var(--fi-bg) !important; }
+
+.action-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 24px;
+    flex-wrap: wrap; /* Agar tetap aman jika layar sangat kecil */
+}
+
+/* Saat di HP (Layar < 640px) */
+@media (max-width: 640px) {
+    .action-container {
+        flex-direction: column; /* Tombol & Teks Info berjejer atas-bawah */
+        align-items: stretch;
+    }
+    
+    .action-container .flex {
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* Tombol kiri-kanan sama besar */
+        gap: 10px;
+    }
+
+    .btn-add-income, .btn-add-expense {
+        padding: 12px 8px !important;
+        font-size: 0.85rem !important;
+        justify-content: center;
+    }
+
+    .info-text {
+        text-align: center;
+        margin: 0 !important;
+        order: 3; /* Pastikan teks info selalu di bawah tombol */
+    }
+}
+
+.table-responsive-container {
+    width: 100%;
+    overflow-x: auto; /* Memungkinkan geser kanan-kiri */
+    -webkit-overflow-scrolling: touch; /* Scroll halus di iPhone/iOS */
+    border-radius: 0 0 12px 12px;
+}
+
+.fi-table {
+    width: 100%;
+    min-width: 800px; /* KRUSIAL: Memaksa tabel tetap lebar agar bisa di-scroll, bukan menciut */
+    border-collapse: collapse;
+}
+
+/* Indikator scroll untuk user (Opsional namun membantu) */
+.table-responsive-container::-webkit-scrollbar {
+    height: 4px;
+}
+.table-responsive-container::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 10px;
+}

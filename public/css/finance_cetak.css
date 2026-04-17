@@ -252,24 +252,88 @@ body {
     PRINT MEDIA QUERY
     ════════════════════════════════════════ */
 @media print {
-    @page {
-        size: A4;
-        margin: 15mm 12mm 15mm 12mm;
+    /* 1. SEMBUNYIKAN SEMUA ELEMEN LUAR LAYOUT */
+    /* Tambahkan selector navbar, sidebar, dan footer asli website Anda di sini */
+    nav, header, footer, .navbar, .main-footer, .no-print, 
+    aside, .ads-slot-header, .ads-slot-result, .ads-slot-native {
+        display: none !important;
     }
 
-    body { font-size: 11px; }
-    .page-wrap { padding: 0; max-width: 100%; }
+    @page {
+        size: A4;
+        margin: 10mm 10mm 10mm 10mm; /* Margin sedikit diperkecil agar lebih luas */
+    }
+
+    /* 2. RESET BODY & WRAPPER */
+    body { 
+        font-size: 11px; 
+        background: #fff !important; 
+        color: #000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* Menghapus pembatasan lebar dari layout utama app.blade */
+    .container, .main-content, #app {
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .page-wrap { 
+        padding: 0 !important; 
+        max-width: 100% !important; 
+        margin: 0 !important;
+        box-shadow: none !important; /* Hilangkan bayangan jika ada */
+    }
+
     .print-btn-wrap { display: none !important; }
 
-    .summary-grid { grid-template-columns: repeat(3, 1fr); }
+    /* 3. OPTIMASI GRID & TABEL */
+    .summary-grid { 
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important; 
+        gap: 10px !important;
+    }
 
-    .report-table-wrap { border-radius: 0; border: 1px solid #ccc; }
+    .report-table-wrap { 
+        border-radius: 0; 
+        border: 1px solid #eee; 
+        overflow: visible !important; /* Penting agar tabel tidak terpotong */
+    }
 
-    .report-table thead tr { background: #1e293b !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .report-table tbody tr:nth-child(even) td { background: #f8fafc !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .summary-box { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .type-badge  { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .report-table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+    }
 
-    /* Avoid page breaks inside rows */
+    /* 4. WARNA & BACKGROUND */
+    /* Memastikan warna background (hijau/merah) muncul di PDF */
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+    }
+
+    .report-table thead tr { 
+        background: #1e293b !important; 
+    }
+    
+    .report-table thead th {
+        color: #fff !important;
+    }
+
+    .report-table tbody tr:nth-child(even) td { 
+        background: #f8fafc !important; 
+    }
+
+    /* 5. PAGE BREAKS */
     .report-table tbody tr { page-break-inside: avoid; }
+    
+    /* Tambahkan jarak jika tabel sangat panjang agar tidak menempel di header kertas */
+    h2, .section-title { 
+        page-break-after: avoid; 
+        margin-top: 20px;
+    }
 }
