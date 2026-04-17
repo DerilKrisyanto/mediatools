@@ -4,10 +4,15 @@
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/finance_cetak.css') }}">
+<link rel="stylesheet" href="{{ asset('css/ads.css') }}">
 @endpush
 
 @section('content')
 <div class="page-wrap">
+    {{-- ═══ SLOT 1: HEADER BANNER 728×90 ═══ --}}
+    <div class="ads-slot-header no-print">
+        @include('components.ads.banner-header')
+    </div>
 
     {{-- ── Print Buttons (screen only) ── --}}
     <div class="print-btn-wrap">
@@ -222,6 +227,16 @@
     <div class="report-footer">
         Laporan digenerate otomatis oleh <strong>MediaTools — Pencatatan Keuangan UMKM</strong><br>
         Dokumen ini bersifat konfidensial dan hanya untuk penggunaan internal.
+    </div>
+
+    {{-- ═══ SLOT 3: RESULT BANNER 300×250 ═══ --}}
+    <div class="ads-slot-result no-print">
+        @include('components.ads.banner-result')
+    </div>
+
+    {{-- ═══ SLOT 4: NATIVE BANNER ═══ --}}
+    <div class="ads-slot-native no-print">
+        @include('components.ads.banner-content')
     </div>
 
 </div><!-- /page-wrap -->
