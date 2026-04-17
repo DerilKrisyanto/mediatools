@@ -4,6 +4,7 @@
 
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/finance.css') }}">
+<link rel="stylesheet" href="{{ asset('css/ads.css') }}">
 
 <div class="fi-page" id="financePage">
 <script>document.body.classList.add('fi-active');</script>
@@ -11,7 +12,7 @@
 {{-- ═══════════════════════════════════════
      PAGE HEADER
      ═══════════════════════════════════════ --}}
-<div style="background: linear-gradient(135deg,#0f172a 0%,#0b2323 100%); padding: 32px 0 40px; margin-top: -1px;">
+<div style="background: linear-gradient(135deg,#0f172a 0%,#0b2323 100%); padding: 32px 0 40px; margin-top: -50px; padding-top: 82px;">
     <div class="max-w-7xl mx-auto px-6">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
@@ -384,6 +385,15 @@
     </div>
 
 </div><!-- /max-w-7xl -->
+{{-- ═══ SLOT 3: RESULT BANNER 300×250 ═══ --}}
+<div class="ads-slot-result no-print">
+    @include('components.ads.banner-result')
+</div>
+
+{{-- ═══ SLOT 4: NATIVE BANNER ═══ --}}
+<div class="ads-slot-native no-print">
+    @include('components.ads.banner-content')
+</div>
 </div><!-- /fi-page -->
 
 
