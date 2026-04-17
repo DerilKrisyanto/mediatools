@@ -15,6 +15,8 @@ use App\Http\Controllers\Tools\MediaDownloaderController;
 use App\Http\Controllers\Tools\FileConverterController;
 use App\Http\Controllers\Tools\MetadataSanitizerController;
 use App\Http\Controllers\Tools\ProposalBuilderController;
+use App\Http\Controllers\Tools\PasFotoController;
+use App\Http\Controllers\Tools\FinanceController;
 
 // ========== Halaman Utama ========== //
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -37,6 +39,16 @@ Route::prefix('linktree')->group(function () {
     Route::middleware('auth')->group(function () {
         Route::post('/check-plan', [LinkTreeController::class, 'checkPlan'])->name('tools.linktree.checkplan');
         Route::post('/store',      [LinkTreeController::class, 'store'])    ->name('tools.linktree.store');
+    });
+});
+
+// ========== finance ========== //
+Route::prefix('finance')->group(function () {
+    Route::middleware('auth')->group(function () {
+        Route::get('/',               [FinanceController::class, 'index'])->name('tools.finance');
+        Route::post('/transactions', [FinanceController::class, 'store'])->name('tools.finance.transactions.store');
+        Route::delete('/transactions/{id}',      [FinanceController::class, 'destroy'])    ->name('tools.finance.transactions.destroy');
+        Route::get('/print', [FinanceController::class, 'print'])->name('tools.finance.print');
     });
 });
 
@@ -130,6 +142,11 @@ Route::prefix('proposal')->group(function () {
         ->name('tools.proposal.cleanup');
  
 });
+
+// ========== Pas Foto Online ========== //
+Route::get('/pasfoto', [PasFotoController::class, 'index'])
+    ->name('tools.pasfoto');
+
 
 // ========== Auth Routes ========== //
 Route::middleware('auth')->group(function () {

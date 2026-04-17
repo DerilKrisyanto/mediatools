@@ -34,6 +34,7 @@
                 ['tools.passwordgenerator', 'fa-key',                 'Password Generator',  'Kata sandi kuat & aman',   'purple'],
                 ['tools.sanitizer',         'fa-shield-halved',       'File Security & Privacy Scanner',  'Hapus EXIF, GPS & data tersembunyi',   'purple'],
                 ['tools.proposal',          'fa-file-contract',       'Proposal Builder',   'Buat proposal otomatis siap pakai', 'blue'],
+                ['tools.finance',           'fa-chart-pie',           'Pencatatan Keuangan',      'Catat pemasukan & pengeluaran', 'amber'],
             ];
             @endphp
 
@@ -227,9 +228,11 @@
                         ['tools.invoice',     'fa-file-invoice-dollar', 'amber', 'Invoice Generator',   'Buat tagihan profesional',            ['invoice','tagihan','billing']],
                         ['tools.pdfutilities','fa-file-pdf',            'blue',  'PDF Utilities',        'Merge, split & compress PDF',         ['pdf','merge','split','compress']],
                         ['tools.fileconverter','fa-repeat',             'blue',  'File Converter',       'Konversi PDF, Word, Excel, PPT',       ['pdf','word','excel','convert']],
-                        ['tools.proposal',    'fa-file-contract',       'amber', 'Proposal Builder',     'Buat proposal otomatis siap pakai',               ['proposal','skripsi','bisnis','event']],
+                        ['tools.proposal',    'fa-file-contract',       'amber', 'Proposal Builder',     'Buat proposal otomatis siap pakai',       ['proposal','skripsi','bisnis','event']],
+                        ['tools.finance',    'fa-chart-pie',            'amber', 'Pencatatan Keuangan',       'Catat pemasukan & pengeluaran',               ['catatan keuangan','finance','catat pemasukan','catat pengeluaran']],
                     ]],
                     ['blue', 'fa-image', 'Gambar & Media', [
+                        ['tools.pasfoto',       'fa-crop',   'blue',  'Pas Foto Online',    'Ubah ukuran, ganti background, kompres file',   ['gambar','image','foto','resize','compress','pdf','png','jpg']],
                         ['tools.imageconverter','fa-image',   'blue',  'Image Converter',    'Resize, compress & convert gambar',   ['gambar','image','foto','resize','compress','webp','png','jpg']],
                         ['tools.bgremover',    'fa-scissors', 'blue',  'Background Remover', 'Hapus background foto AI otomatis',   ['background','hapus','foto','remover','ai']],
                     ]],
