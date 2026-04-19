@@ -5,25 +5,31 @@
  * Returns a PNG Blob — same contract as the old client-side removeRMBG().
  *
  * Progress simulation:
- *   0-25%   real upload progress (XHR upload events)
- *   25-88%  simulated steps that mirror actual server-side stages
- *   88-100% set in index.js once the blob is received
+ *   0–25%  real upload progress (XHR upload events)
+ *   25–88% simulated steps that mirror actual server-side stages
+ *   88–100 set in index.js once the blob is received
+ *
+ * FIX (v2): Quality mapping was broken — the old code converted every quality
+ *   value other than 'small' to 'high', so 'fast', 'medium', and 'portrait'
+ *   were never sent to the backend correctly. Now the valid quality tokens are
+ *   passed through directly: 'fast' | 'medium' | 'high' | 'portrait'.
  */
 
-const PROCESS_URL = '/bg/process';
-const TIMEOUT_MS  = 180_000;  // 3 min hard limit
+const PROCESS_URL  = '/bg/process';
+const TIMEOUT_MS   = 180_000; // 3 min hard limit
+const VALID_QUALITY = new Set(['fast', 'medium', 'high', 'portrait']);
 
 /**
  * removeRMBG(file, quality, onProgress) → Promise<Blob (image/png)>
  *
- * @param {File}   file       - image file selected by user
- * @param {string} quality    - 'small'|'medium' (maps to fast/high internally)
+ * @param {File}     file       - image file selected by user
+ * @param {string}   quality    - 'fast' | 'medium' | 'high' | 'portrait'
  * @param {Function} onProgress - (pct: number, label: string) => void
  */
-export function removeRMBG(file, quality = 'medium', onProgress = () => {}) {
+export function removeRMBG(file, quality = 'high', onProgress = () => {}) {
 
-  // Map internal quality tokens to backend param
-  const q = quality === 'small' ? 'fast' : 'high';
+  // Pass quality directly; fall back to 'high' for any unknown value.
+  const q = VALID_QUALITY.has(quality) ? quality : 'high';
 
   return new Promise((resolve, reject) => {
 
@@ -44,7 +50,7 @@ export function removeRMBG(file, quality = 'medium', onProgress = () => {}) {
       [88, 'Mengoptimalkan kualitas output…'],
     ];
 
-    let simPct = 25;
+    let simPct  = 25;
     let stepIdx = 0;
 
     const simTick = setInterval(() => {
@@ -68,7 +74,7 @@ export function removeRMBG(file, quality = 'medium', onProgress = () => {}) {
     xhr.responseType = 'blob';
     xhr.timeout      = TIMEOUT_MS;
 
-    /* Upload progress → 0-25% */
+    /* Upload progress → 0–25% */
     xhr.upload.onprogress = (e) => {
       if (!e.lengthComputable) return;
       const pct = 2 + (e.loaded / e.total) * 23;
@@ -79,13 +85,12 @@ export function removeRMBG(file, quality = 'medium', onProgress = () => {}) {
       stopSim();
 
       if (xhr.status === 200) {
-        // Verify we got an image, not an error JSON
         const ct = xhr.getResponseHeader('Content-Type') ?? '';
         if (ct.startsWith('image/')) {
           onProgress(92, 'Memuat hasil…');
           resolve(xhr.response);
         } else {
-          // Server returned JSON error inside a blob — decode it
+          // Server returned a JSON error blob
           try {
             const text = await xhr.response.text();
             const json = JSON.parse(text);
@@ -95,7 +100,6 @@ export function removeRMBG(file, quality = 'medium', onProgress = () => {}) {
           }
         }
       } else {
-        // Try to extract message from JSON blob
         try {
           const text = await xhr.response.text();
           const json = JSON.parse(text);
