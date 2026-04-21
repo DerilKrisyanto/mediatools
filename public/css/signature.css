@@ -1,26 +1,21 @@
-/* ============================================================
-   MediaTools — Email Signature Studio
-   signature.css
-   ============================================================ */
-
 /* ── CSS Variables ──────────────────────────────────────── */
 :root {
-    --sig-bg:        #040f0f;
-    --sig-card:      #0b2323;
-    --sig-border:    rgba(255, 255, 255, 0.06);
+    --sig-bg:        transparent;
+    --sig-card:      var(--tlb-surface, #ffffff);
+    --sig-border:    var(--tlb-border2, #e2e8f0);
     --sig-accent:    #a3e635;
     --sig-accent-dim:rgba(163, 230, 53, 0.12);
     --sig-glow:      rgba(163, 230, 53, 0.25);
-    --sig-text:      #f0fdf4;
-    --sig-muted:     #6b7280;
-    --sig-dim:       #9ca3af;
+    --sig-text:      var(--tlb-text, #0f172a);
+    --sig-muted:     var(--tlb-text-muted, #64748b);
+    --sig-dim:       var(--tlb-text-light, #94a3b8);
     --ease-bounce:   cubic-bezier(0.175, 0.885, 0.32, 1.275);
     --ease-smooth:   cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ── Shell ──────────────────────────────────────────────── */
 .sig-shell {
-    background: var(--sig-bg);
+    background: transparent;
     min-height: 100vh;
     /* padding-top: 90px;
     padding-bottom: 60px; */
@@ -33,7 +28,7 @@
     gap: 6px;
     padding-bottom: 28px;
     margin-bottom: 36px;
-    border-bottom: 1px solid var(--sig-border);
+    border-bottom: 1px solid var(--tlb-border, #d1fae5);
 }
 
 @media (min-width: 768px) {
@@ -59,7 +54,7 @@
 .sig-topbar-title {
     font-size: clamp(2rem, 4vw, 3rem);
     font-weight: 900;
-    color: #ffffff;
+    color: var(--tlb-text, #0f172a);
     letter-spacing: -0.04em;
     line-height: 1;
 }
@@ -68,17 +63,17 @@
 
 .sig-topbar-sub {
     font-size: 13px;
-    color: var(--sig-muted);
+    color: var(--tlb-text-muted, #64748b);
     font-weight: 500;
     margin-top: 6px;
 }
 
 /* ── Glass Card ─────────────────────────────────────────── */
 .sig-glass {
-    background: linear-gradient(145deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
-    border: 1px solid var(--sig-border);
+    background: var(--tlb-surface, #ffffff);
+    border: 1px solid var(--tlb-border, #d1fae5);
     border-radius: 28px;
-    box-shadow: 0 32px 80px rgba(0,0,0,0.4);
+    box-shadow: var(--tlb-shadow, 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.06));
 }
 
 /* ── Form Section ───────────────────────────────────────── */
@@ -87,7 +82,7 @@
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 0.28em;
-    color: rgba(255,255,255,0.25);
+    color: var(--tlb-text-muted, #64748b);
     display: flex;
     align-items: center;
     gap: 8px;
@@ -108,7 +103,7 @@
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 0.18em;
-    color: rgba(255,255,255,0.3);
+    color: var(--tlb-text-muted, #64748b);
     margin-bottom: 8px;
 }
 
@@ -118,16 +113,16 @@
     border-radius: 14px;
     font-size: 13px;
     font-weight: 500;
-    background: rgba(0, 0, 0, 0.25);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    color: #ffffff;
+    background: var(--tlb-surface2, #f7fdf9);
+    border: 1px solid var(--tlb-border2, #e2e8f0);
+    color: var(--tlb-text, #0f172a);
     transition: all 0.35s var(--ease-smooth);
     font-family: 'Plus Jakarta Sans', sans-serif;
     outline: none;
     -webkit-appearance: none;
 }
 
-.sig-input::placeholder { color: rgba(255,255,255,0.18); }
+.sig-input::placeholder { color: var(--tlb-text-light, #94a3b8); }
 
 .sig-input:hover {
     border-color: rgba(163, 230, 53, 0.25);
@@ -179,7 +174,7 @@
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 0.18em;
-    color: rgba(255,255,255,0.3);
+    color: var(--tlb-text-muted, #64748b);
     margin-bottom: 10px;
 }
 
@@ -215,8 +210,8 @@
     align-items: center;
     gap: 8px;
     padding: 12px 8px;
-    background: rgba(0,0,0,0.2);
-    border: 1px solid var(--sig-border);
+    background: var(--tlb-surface2, #f7fdf9);
+    border: 1px solid var(--tlb-border2, #e2e8f0);
     border-radius: 14px;
     cursor: pointer;
     transition: all 0.25s var(--ease-smooth);
@@ -316,7 +311,7 @@
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: rgba(255,255,255,0.5);
+    color: var(--tlb-text-muted, #64748b);
 }
 
 .sig-tpl-btn.active .sig-tpl-name { color: var(--sig-accent); }
@@ -475,14 +470,14 @@
 }
 
 .sig-action-btn.secondary {
-    background: rgba(255,255,255,0.05);
-    color: rgba(255,255,255,0.6);
-    border: 1px solid var(--sig-border);
+    background: var(--tlb-surface2, #f7fdf9);
+    color: var(--tlb-text-muted, #64748b);
+    border: 1px solid var(--tlb-border2, #e2e8f0);
 }
 
 .sig-action-btn.secondary:hover {
-    background: rgba(255,255,255,0.1);
-    color: white;
+    background: var(--tlb-border, #d1fae5);
+    color: var(--tlb-text, #0f172a);
     transform: translateY(-2px);
 }
 
@@ -532,11 +527,11 @@
 
 .sig-guide-text {
     font-size: 11px;
-    color: rgba(255,255,255,0.4);
+    color: var(--tlb-text-muted, #64748b);
     line-height: 1.7;
 }
 
-.sig-guide-text b { color: rgba(255,255,255,0.7); font-weight: 700; }
+.sig-guide-text b { color: var(--tlb-text, #0f172a); font-weight: 700; }
 
 /* ── How-to steps ───────────────────────────────────────── */
 .sig-steps {
@@ -553,7 +548,7 @@
     align-items: flex-start;
     gap: 10px;
     font-size: 11px;
-    color: rgba(255,255,255,0.4);
+    color: var(--tlb-text-muted, #64748b);
     line-height: 1.5;
 }
 
@@ -576,6 +571,9 @@
 
 /* ── Toast ──────────────────────────────────────────────── */
 #toast {
+    background: #0f172a;
+    color: #f0fdf4;
+    border: 1px solid rgba(163,230,53,0.2);
     position: fixed;
     bottom: 32px;
     left: 50%;

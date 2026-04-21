@@ -1,11 +1,6 @@
-/* ============================================================
-   INVOICE TOOL — invoice.css
-   3 Template System: Klasik · Modern · Elegan
-   ============================================================ */
-
 /* ── Editor Shell ─────────────────────────────────────── */
 .invoice-shell {
-    background: #040f0f;
+    background: transparent;
     min-height: 100vh;
     /* padding-top: 88px; */
     /* padding-bottom: 48px; */
@@ -31,7 +26,7 @@
 .invoice-topbar-title {
     font-size: 1.2rem;
     font-weight: 800;
-    color: #f0fdf4;
+    color: var(--tlb-text, #0f172a);
     letter-spacing: -0.02em;
 }
 
@@ -52,8 +47,8 @@
     gap: 8px;
     padding: 8px 14px;
     border-radius: 10px;
-    border: 1px solid rgba(255,255,255,0.08);
-    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--tlb-border2, #e2e8f0);
+    background: var(--tlb-surface2, #f7fdf9);
     color: #9ca3af;
     font-size: 12px;
     font-weight: 700;
@@ -65,7 +60,7 @@
 .tpl-btn:hover {
     border-color: rgba(163,230,53,0.3);
     color: #d1d5db;
-    background: rgba(255,255,255,0.05);
+    background: var(--tlb-surface2, #f7fdf9);
 }
 
 .tpl-btn.active {
@@ -692,12 +687,12 @@ input[type="number"]:focus {
 [data-template="2"] .inv-number-field  { color: #a3e635; }
 
 [data-template="2"] .inv-logo-placeholder {
-    border-color: rgba(255,255,255,0.15);
-    background: rgba(255,255,255,0.04);
+    border-color: var(--tlb-border2, #e2e8f0);
+    background: var(--tlb-surface2, #f7fdf9);
 }
 
 [data-template="2"] .inv-logo-placeholder i,
-[data-template="2"] .inv-logo-placeholder span { color: rgba(255,255,255,0.3); }
+[data-template="2"] .inv-logo-placeholder span { color: var(--tlb-text-muted, #64748b); }
 
 /* Table header: dark */
 [data-template="2"] .inv-table thead tr {

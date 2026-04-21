@@ -12,6 +12,37 @@
 @endpush
 
 @section('content')
+<link rel="stylesheet" href="{{ asset('css/tools-base.css') }}">
+<script>document.body.classList.add('tlb-active');</script>
+
+<div class="tlb-page tlb-amber" id="tlbPage_invoice">
+
+{{-- ════ TLB HEADER ════ --}}
+<div class="tlb-header">
+    <div class="tlb-header-inner">
+        <div>
+            <div class="tlb-header-label-row">
+                <div class="tlb-header-icon">
+                    <i class="fa-solid fa-file-invoice-dollar"></i>
+                </div>
+                <span class="tlb-header-site">MediaTools</span>
+            </div>
+            <div class="tlb-header-badges">
+                <span class="tlb-hbadge"><i class="fa-solid fa-layer-group"></i> 3 Template</span>
+                <span class="tlb-hbadge"><i class="fa-solid fa-percent"></i> PPN & Diskon</span>
+                <span class="tlb-hbadge"><i class="fa-solid fa-file-pdf"></i> PDF Gratis</span>
+                <span class="tlb-hbadge"><i class="fa-solid fa-user-check"></i> Tanpa Daftar</span>
+            </div>
+            <h1 class="tlb-header-title">Invoice <span>Generator.</span></h1>
+            <p class="tlb-header-sub">Buat tagihan profesional dalam 2 menit. 3 template siap pakai, PPN & diskon otomatis, download PDF.</p>
+        </div>
+    </div>
+</div>
+<div class="tlb-header-curve"></div>
+
+<div class="tlb-body">
+{{-- ═══ ADS SLOT ═══ --}}
+<div class="ads-slot-header no-print" style="margin-bottom:20px;">@include('components.ads.banner-header')</div>
 
 <div class="invoice-shell">
 
@@ -48,9 +79,7 @@
     </div>
 
     {{-- ═══ SLOT 1: HEADER BANNER 728×90 ═══ --}}
-    <div class="ads-slot-header no-print">
-        @include('components.ads.banner-header')
-    </div>
+
 
     {{-- ═══ PAGE FIT WARNING ═══ --}}
     <div class="page-warning no-print" id="page-warning">
@@ -290,15 +319,11 @@
         </div>
         {{-- /Kolom kiri --}}
 
-        {{-- ═══ SLOT 3: RESULT BANNER 300×250 ═══ --}}
-        <div class="ads-slot-result no-print">
-            @include('components.ads.banner-result')
-        </div>
-
-        {{-- ═══ SLOT 4: NATIVE BANNER ═══ --}}
-        <div class="ads-slot-native no-print">
-            @include('components.ads.banner-content')
-        </div>
+        {{-- ═══ ADS SLOT: HEADER ═══ --}}
+        <div class="ads-slot-header no-print" style="margin-bottom:5px;">@include('components.ads.banner-header')</div>
+        <div class="ads-slot-header no-print" style="margin-bottom:5px;">@include('components.ads.banner-header')</div>
+        {{-- ═══ ADS SLOT: NATIVE BANNER ═══ --}}
+        <div class="ads-slot-native no-print">@include('components.ads.banner-content')</div>
  
     </div>
     {{-- /MAIN LAYOUT --}}
@@ -350,3 +375,6 @@
 })();
 </script>
 @endpush
+
+</div>{{-- /.tlb-body --}}
+</div>{{-- /.tlb-page --}}

@@ -7,36 +7,47 @@
 @include('seo.imageconverter')
 
 @section('content')
+<link rel="stylesheet" href="{{ asset('css/tools-base.css') }}">
+<script>document.body.classList.add('tlb-active');</script>
+
+<div class="tlb-page tlb-blue" id="tlbPage_imageconverter">
+
+{{-- ════ TLB HEADER ════ --}}
+<div class="tlb-header">
+    <div class="tlb-header-inner">
+        <div>
+            <div class="tlb-header-label-row">
+                <div class="tlb-header-icon">
+                    <i class="fa-solid fa-image"></i>
+                </div>
+                <span class="tlb-header-site">MediaTools</span>
+            </div>
+            <div class="tlb-header-badges">
+                <span class="tlb-hbadge"><i class="fa-solid fa-expand-arrows-alt"></i> Resize</span>
+                <span class="tlb-hbadge"><i class="fa-solid fa-compress-arrows-alt"></i> Kompres</span>
+                <span class="tlb-hbadge"><i class="fa-solid fa-arrows-rotate"></i> Konversi Format</span>
+                <span class="tlb-hbadge"><i class="fa-solid fa-lock"></i> Zero Server</span>
+            </div>
+            <h1 class="tlb-header-title">Image <span>Converter.</span></h1>
+            <p class="tlb-header-sub">Resize, kompres & konversi gambar JPG · PNG · WebP langsung di browser. Zero server, privasi 100%.</p>
+        </div>
+    </div>
+</div>
+<div class="tlb-header-curve"></div>
+
+<div class="tlb-body">
+{{-- ═══ ADS SLOT ═══ --}}
+<div class="ads-slot-header no-print" style="margin-bottom:20px;">@include('components.ads.banner-header')</div>
+
 <link rel="stylesheet" href="{{ asset('css/imageconverter.css') }}">
 <link rel="stylesheet" href="{{ asset('css/ads.css') }}">
 
 <div class="ic-page">
   {{-- ═══ SLOT 1: HEADER BANNER 728×90 ═══ --}}
-  <div class="ads-slot-header no-print">
-      @include('components.ads.banner-header')
-  </div>
+
   <div class="max-w-7xl mx-auto px-4 sm:px-6">
 
     {{-- HEADER --}}
-    <header class="ic-header">
-      <div class="ic-header-left">
-        <div class="flex items-center gap-3 mb-2">
-          <span class="ic-free-badge">100% Gratis</span>
-          <h1 class="ic-title">IMAGE <span class="ic-title-accent">CONVERTER.</span></h1>
-        </div>
-        <p class="ic-subtitle">Resize, compress & convert JPG · PNG · WebP — langsung di browser, tanpa upload ke server.</p>
-      </div>
-      <div class="ic-header-right">
-        <div class="ic-stats-pill">
-          <span class="ic-stats-dot"></span>
-          <span>3 Operasi</span>
-          <span class="ic-stats-div">·</span>
-          <span>Zero Server</span>
-          <span class="ic-stats-div">·</span>
-          <span>Privasi Terjaga</span>
-        </div>
-      </div>
-    </header>
 
     {{-- OPERATION TABS --}}
     <div class="ic-ops-row">
@@ -269,15 +280,11 @@
     </div>
   </div>
 
-  {{-- ═══ SLOT 3: RESULT BANNER 300×250 ═══ --}}
-  <div class="ads-slot-result no-print">
-      @include('components.ads.banner-result')
-  </div>
-
-  {{-- ═══ SLOT 4: NATIVE BANNER ═══ --}}
-  <div class="ads-slot-native no-print">
-      @include('components.ads.banner-content')
-  </div>
+  {{-- ═══ ADS SLOT: HEADER ═══ --}}
+  <div class="ads-slot-header no-print" style="margin-bottom:5px;">@include('components.ads.banner-header')</div>
+  <div class="ads-slot-header no-print" style="margin-bottom:5px;">@include('components.ads.banner-header')</div>
+  {{-- ═══ ADS SLOT: NATIVE BANNER ═══ --}}
+  <div class="ads-slot-native no-print">@include('components.ads.banner-content')</div>
   
 </div>
 
@@ -287,3 +294,6 @@
 <script src="{{ asset('js/imageconverter.js') }}"></script>
 @endpush
 @endsection
+
+</div>{{-- /.tlb-body --}}
+</div>{{-- /.tlb-page --}}

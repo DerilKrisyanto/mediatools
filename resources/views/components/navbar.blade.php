@@ -28,12 +28,12 @@
                 ['tools.signature',         'fa-signature',           'Email Signature',     'Tanda tangan profesional', 'amber'],
                 ['tools.bgremover',         'fa-scissors',            'Background Remover',  'Hapus bg foto otomatis',   'blue'],
                 ['tools.imageconverter',    'fa-image',               'Image Converter',     'Resize, compress & convert','blue'],
+                ['tools.fotobox',           'fa-camera-retro',        'FotoBox',             'Photo booth seru online!', 'purple'],
                 ['tools.fileconverter',     'fa-repeat',              'File Converter',      'PDF, Word, Excel & lebih', 'blue'],
                 ['tools.pdfutilities',      'fa-file-pdf',            'PDF Utilities',       'Merge, split & compress',  'blue'],
                 ['tools.mediadownloader',   'fa-cloud-arrow-down',    'Media Downloader',    'YouTube, TikTok & IG',     'purple'],
                 ['tools.passwordgenerator', 'fa-key',                 'Password Generator',  'Kata sandi kuat & aman',   'purple'],
                 ['tools.sanitizer',         'fa-shield-halved',       'File Security & Privacy Scanner',  'Hapus EXIF, GPS & data tersembunyi',   'purple'],
-                ['tools.proposal',          'fa-file-contract',       'Proposal Builder',   'Buat proposal otomatis siap pakai', 'blue'],
                 ['tools.finance',           'fa-chart-pie',           'Pencatatan Keuangan',      'Catat pemasukan & pengeluaran', 'amber'],
             ];
             @endphp
@@ -226,15 +226,14 @@
                 $searchCats = [
                     ['amber', 'fa-file-alt', 'Dokumen & Bisnis', [
                         ['tools.invoice',     'fa-file-invoice-dollar', 'amber', 'Invoice Generator',   'Buat tagihan profesional',            ['invoice','tagihan','billing']],
-                        ['tools.pdfutilities','fa-file-pdf',            'blue',  'PDF Utilities',        'Merge, split & compress PDF',         ['pdf','merge','split','compress']],
-                        ['tools.fileconverter','fa-repeat',             'blue',  'File Converter',       'Konversi PDF, Word, Excel, PPT',       ['pdf','word','excel','convert']],
-                        ['tools.proposal',    'fa-file-contract',       'amber', 'Proposal Builder',     'Buat proposal otomatis siap pakai',       ['proposal','skripsi','bisnis','event']],
+                        ['tools.pdfutilities','fa-file-pdf',            'amber',  'PDF Utilities',        'Merge, split & compress PDF',         ['pdf','merge','split','compress']],
+                        ['tools.fileconverter','fa-repeat',             'amber',  'File Converter',       'Konversi PDF, Word, Excel, PPT',       ['pdf','word','excel','convert']],
                         ['tools.finance',    'fa-chart-pie',            'amber', 'Pencatatan Keuangan',       'Catat pemasukan & pengeluaran',               ['catatan keuangan','finance','catat pemasukan','catat pengeluaran']],
                     ]],
                     ['blue', 'fa-image', 'Gambar & Media', [
-                        ['tools.pasfoto',       'fa-crop',   'blue',  'Pas Foto Online',    'Ubah ukuran, ganti background, kompres file',   ['gambar','image','foto','resize','compress','pdf','png','jpg']],
                         ['tools.imageconverter','fa-image',   'blue',  'Image Converter',    'Resize, compress & convert gambar',   ['gambar','image','foto','resize','compress','webp','png','jpg']],
                         ['tools.bgremover',    'fa-scissors', 'blue',  'Background Remover', 'Hapus background foto AI otomatis',   ['background','hapus','foto','remover','ai']],
+                        ['tools.fotobox',      'fa-camera-retro','blue', 'FotoBox',            'Photo booth seru & gratis di browser',['fotobox','photo booth','selfie','foto','kamera','camera','booth']],
                     ]],
                     ['purple','fa-share-nodes','Sosial & Link', [
                         ['tools.mediadownloader','fa-cloud-arrow-down','purple','Media Downloader',   'Download YouTube, TikTok & Instagram', ['download','youtube','tiktok','instagram','video','mp3','mp4']],

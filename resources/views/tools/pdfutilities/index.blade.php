@@ -7,29 +7,47 @@
 @include('seo.pdfutilities')
 
 @section('content')
+<link rel="stylesheet" href="{{ asset('css/tools-base.css') }}">
+<script>document.body.classList.add('tlb-active');</script>
+
+<div class="tlb-page tlb-red" id="tlbPage_pdfutilities">
+
+{{-- ════ TLB HEADER ════ --}}
+<div class="tlb-header">
+    <div class="tlb-header-inner">
+        <div>
+            <div class="tlb-header-label-row">
+                <div class="tlb-header-icon">
+                    <i class="fa-solid fa-file-pdf"></i>
+                </div>
+                <span class="tlb-header-site">MediaTools</span>
+            </div>
+            <div class="tlb-header-badges">
+                <span class="tlb-hbadge"><i class="fa-solid fa-object-group"></i> Merge PDF</span>
+                <span class="tlb-hbadge"><i class="fa-solid fa-scissors"></i> Split PDF</span>
+                <span class="tlb-hbadge"><i class="fa-solid fa-compress"></i> Compress PDF</span>
+                <span class="tlb-hbadge"><i class="fa-solid fa-infinity"></i> Gratis</span>
+            </div>
+            <h1 class="tlb-header-title">PDF <span>Utilities.</span></h1>
+            <p class="tlb-header-sub">Merge, split & compress PDF. Merge & Split: privasi 100% di browser. Compress: Ghostscript server-side.</p>
+        </div>
+    </div>
+</div>
+<div class="tlb-header-curve"></div>
+
+<div class="tlb-body">
+{{-- ═══ ADS SLOT ═══ --}}
+<div class="ads-slot-header no-print" style="margin-bottom:20px;">@include('components.ads.banner-header')</div>
+
 <link rel="stylesheet" href="{{ asset('css/pdfutilities.css') }}">
 <link rel="stylesheet" href="{{ asset('css/ads.css') }}">
 
 <div class="pdf-page">
 {{-- ═══ SLOT 1: HEADER BANNER 728×90 ═══ --}}
-<div class="ads-slot-header no-print">
-    @include('components.ads.banner-header')
-</div>
+
 <div class="pdf-wrap">
 
     {{-- ── HERO ── --}}
-    <header class="pdf-hero">
-        <div class="pdf-hero-badges">
-            <span class="pdf-chip pdf-chip--yellow"><i class="fa-solid fa-star fa-xs"></i> Pro Tool</span>
-            <span class="pdf-chip"><i class="fa-solid fa-lock fa-xs"></i> Merge/Split Privasi 100%</span>
-            <span class="pdf-chip pdf-chip--green"><i class="fa-solid fa-server fa-xs"></i> Compress via Ghostscript</span>
-        </div>
-        <h1 class="pdf-hero-title">PDF <span class="pdf-accent">Utilities.</span></h1>
-        <p class="pdf-hero-sub">
-            Merge & Split PDF — langsung di browser, zero upload.<br>
-            Compress PDF — Ghostscript server-side, file dihapus instan.
-        </p>
-    </header>
 
     {{-- ── STEPPER ── --}}
     <div class="pdf-stepper" id="pdfStepper">
@@ -476,10 +494,11 @@
     @include('components.ads.banner-result')
 </div>
 
-{{-- ═══ SLOT 4: NATIVE BANNER ═══ --}}
-<div class="ads-slot-native no-print">
-    @include('components.ads.banner-content')
-</div>
+{{-- ═══ ADS SLOT: HEADER ═══ --}}
+<div class="ads-slot-header no-print" style="margin-bottom:5px;">@include('components.ads.banner-header')</div>
+<div class="ads-slot-header no-print" style="margin-bottom:5px;">@include('components.ads.banner-header')</div>
+{{-- ═══ ADS SLOT: NATIVE BANNER ═══ --}}
+<div class="ads-slot-native no-print">@include('components.ads.banner-content')</div>
 </div>{{-- /pdf-page --}}
 
 {{-- Toast --}}
@@ -497,3 +516,6 @@
 <script src="{{ asset('js/pdfutilities.js') }}"></script>
 @endpush
 @endsection
+
+</div>{{-- /.tlb-body --}}
+</div>{{-- /.tlb-page --}}

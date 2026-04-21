@@ -1,11 +1,6 @@
-/* =====================================================
-   PDF UTILITIES — MediaTools
-   Inherits CSS variables from app.css
-   ===================================================== */
-
 /* ── Page layout ── */
 .pdf-page {
-    min-height: 100vh;
+    min-height: unset;
     /* padding: 88px 0 72px; */
 }
 .pdf-wrap  { max-width: 820px; margin: 0 auto; padding: 0 20px; }
@@ -24,9 +19,9 @@
 .pdf-chip {
     display: inline-flex; align-items: center; gap: 5px;
     padding: 4px 12px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid var(--border); border-radius: 99px;
-    color: var(--text-muted); font-size: 10px; font-weight: 600;
+    background: var(--tlb-surface2, #f7fdf9);
+    border: 1px solid var(--tlb-border2, #e2e8f0); border-radius: 99px;
+    color: var(--tlb-text-muted, #64748b); font-size: 10px; font-weight: 600;
     letter-spacing: 0.04em;
 }
 .pdf-chip--yellow {
@@ -35,19 +30,19 @@
 }
 .pdf-chip--green {
     background: rgba(163,230,53,0.08);
-    border-color: rgba(163,230,53,0.2); color: var(--accent);
+    border-color: rgba(163,230,53,0.2); color: var(--tlb-accent, #16a34a);
 }
 
 .pdf-hero-title {
     font-family: 'Space Grotesk', sans-serif;
     font-size: clamp(2.4rem, 6vw, 4rem);
     font-weight: 700; letter-spacing: -0.03em; line-height: 1;
-    margin: 0 0 14px; color: var(--text-primary);
+    margin: 0 0 14px; color: var(--tlb-text, #0f172a);
 }
-.pdf-accent { color: var(--accent); }
+.pdf-accent { color: var(--tlb-accent, #16a34a); }
 
 .pdf-hero-sub {
-    color: var(--text-muted); font-size: 0.9rem; line-height: 1.7;
+    color: var(--tlb-text-muted, #64748b); font-size: 0.9rem; line-height: 1.7;
     max-width: 480px; margin: 0 auto 8px;
 }
 
@@ -64,33 +59,33 @@
 
 .pdf-step-circle {
     width: 32px; height: 32px; border-radius: 50%;
-    background: rgba(255,255,255,0.04);
-    border: 1.5px solid var(--border);
+    background: var(--tlb-surface2, #f7fdf9);
+    border: 1.5px solid var(--tlb-border2, #e2e8f0);
     display: flex; align-items: center; justify-content: center;
-    font-size: 12px; font-weight: 700; color: var(--text-muted);
+    font-size: 12px; font-weight: 700; color: var(--tlb-text-muted, #64748b);
     transition: all 0.3s;
 }
 
 .pdf-step-label {
-    font-size: 10px; font-weight: 600; color: var(--text-muted);
+    font-size: 10px; font-weight: 600; color: var(--tlb-text-muted, #64748b);
     letter-spacing: 0.04em; transition: color 0.3s; white-space: nowrap;
 }
 
 .pdf-step-item.active .pdf-step-circle {
-    background: var(--accent-dim); border-color: var(--accent); color: var(--accent);
+    background: var(--tlb-accent-dim, rgba(34,197,94,0.12)); border-color: var(--tlb-accent, #16a34a); color: var(--tlb-accent, #16a34a);
     box-shadow: 0 0 0 4px rgba(163,230,53,0.1);
 }
-.pdf-step-item.active .pdf-step-label { color: var(--accent); }
+.pdf-step-item.active .pdf-step-label { color: var(--tlb-accent, #16a34a); }
 .pdf-step-item.done .pdf-step-circle {
-    background: var(--accent); border-color: var(--accent); color: var(--primary-bg);
+    background: var(--tlb-accent, #16a34a); border-color: var(--tlb-accent, #16a34a); color: #ffffff;
 }
-.pdf-step-item.done .pdf-step-label { color: var(--text-dim); }
+.pdf-step-item.done .pdf-step-label { color: var(--tlb-text-muted, #64748b); }
 
 .pdf-step-line {
-    flex: 1; height: 1.5px; background: var(--border);
+    flex: 1; height: 1.5px; background: var(--tlb-border2, #e2e8f0);
     margin: 0 8px 22px; max-width: 80px; transition: background 0.4s;
 }
-.pdf-step-line.done { background: var(--accent); }
+.pdf-step-line.done { background: var(--tlb-accent, #16a34a); }
 
 @media (max-width: 500px) {
     .pdf-step-line  { max-width: 36px; margin: 0 4px 22px; }
@@ -99,7 +94,7 @@
 
 /* ── Workspace card ── */
 .pdf-card {
-    background: var(--card-bg); border: 1px solid var(--border);
+    background: var(--tlb-surface, #ffffff); border: 1px solid var(--tlb-border2, #e2e8f0);
     border-radius: var(--radius-xl); position: relative;
     overflow: hidden; margin-bottom: 28px; min-height: 360px;
 }
@@ -128,14 +123,14 @@
 .pdf-panel-eyebrow {
     display: flex; align-items: center; gap: 7px;
     font-size: 11px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 8px;
+    letter-spacing: 0.1em; color: var(--tlb-text-muted, #64748b); margin-bottom: 8px;
 }
-.pdf-panel-eyebrow i { color: var(--accent); }
+.pdf-panel-eyebrow i { color: var(--tlb-accent, #16a34a); }
 
 .pdf-panel-title {
     font-family: 'Space Grotesk', sans-serif;
     font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em;
-    color: var(--text-primary); margin: 0 0 28px;
+    color: var(--tlb-text, #0f172a); margin: 0 0 28px;
 }
 
 .pdf-panel-nav {
@@ -149,7 +144,7 @@
 .pdf-feat {
     display: flex; align-items: center; gap: 16px;
     padding: 18px 20px;
-    background: rgba(255,255,255,0.025); border: 1px solid var(--border);
+    background: var(--tlb-surface2, #f7fdf9); border: 1px solid var(--tlb-border2, #e2e8f0);
     border-radius: var(--radius-lg); cursor: pointer; transition: all 0.25s;
     text-align: left; position: relative; overflow: hidden;
 }
@@ -177,11 +172,11 @@
 .pdf-feat:hover .pdf-feat-ico { transform: scale(1.1) rotate(-4deg); }
 .pdf-feat-ico--blue   { background: rgba(96,165,250,0.1);  color: #60a5fa; }
 .pdf-feat-ico--orange { background: rgba(251,146,60,0.1);  color: #fb923c; }
-.pdf-feat-ico--green  { background: rgba(163,230,53,0.1);  color: var(--accent); }
+.pdf-feat-ico--green  { background: rgba(163,230,53,0.1);  color: var(--tlb-accent, #16a34a); }
 
 .pdf-feat-body  { flex: 1; min-width: 0; }
-.pdf-feat-name  { display: block; font-size: 15px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
-.pdf-feat-desc  { display: block; font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+.pdf-feat-name  { display: block; font-size: 15px; font-weight: 700; color: var(--tlb-text, #0f172a); margin-bottom: 4px; }
+.pdf-feat-desc  { display: block; font-size: 12px; color: var(--tlb-text-muted, #64748b); line-height: 1.5; }
 
 .pdf-feat-meta {
     display: flex; align-items: center; gap: 10px;
@@ -189,51 +184,51 @@
 }
 .pdf-feat-tag {
     display: inline-flex; align-items: center; gap: 4px;
-    font-size: 10px; font-weight: 600; color: var(--text-muted);
+    font-size: 10px; font-weight: 600; color: var(--tlb-text-muted, #64748b);
 }
 .pdf-feat-tag--server { color: #fb923c; }
 .pdf-feat-tag i { font-size: 9px; }
 
-.pdf-feat-arrow { color: var(--text-muted); font-size: 13px; flex-shrink: 0; transition: all 0.25s; }
-.pdf-feat:hover .pdf-feat-arrow { color: var(--accent); transform: translateX(4px); }
+.pdf-feat-arrow { color: var(--tlb-text-muted, #64748b); font-size: 13px; flex-shrink: 0; transition: all 0.25s; }
+.pdf-feat:hover .pdf-feat-arrow { color: var(--tlb-accent, #16a34a); transform: translateX(4px); }
 
 .pdf-trust-row {
     display: flex; align-items: center; justify-content: center;
     flex-wrap: wrap; gap: 20px;
-    padding: 16px 0 0; border-top: 1px solid var(--border);
-    font-size: 11px; color: var(--text-muted); font-weight: 500;
+    padding: 16px 0 0; border-top: 1px solid var(--tlb-border2, #e2e8f0);
+    font-size: 11px; color: var(--tlb-text-muted, #64748b); font-weight: 500;
 }
-.pdf-trust-row i { color: var(--accent); margin-right: 5px; }
+.pdf-trust-row i { color: var(--tlb-accent, #16a34a); margin-right: 5px; }
 
 /* ── Nav buttons ── */
 .pdf-btn-back {
     display: inline-flex; align-items: center; gap: 6px;
     padding: 6px 12px; background: transparent;
-    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    border: 1px solid var(--tlb-border2, #e2e8f0); border-radius: var(--radius-sm);
     font-family: inherit; font-size: 12px; font-weight: 600;
-    color: var(--text-muted); cursor: pointer; transition: all 0.2s;
+    color: var(--tlb-text-muted, #64748b); cursor: pointer; transition: all 0.2s;
 }
-.pdf-btn-back:hover { border-color: var(--border-accent); color: var(--accent); }
+.pdf-btn-back:hover { border-color: var(--border-accent); color: var(--tlb-accent, #16a34a); }
 
 .pdf-selected-badge {
     display: inline-flex; align-items: center; gap: 6px;
-    padding: 5px 12px; background: var(--accent-dim);
+    padding: 5px 12px; background: var(--tlb-accent-dim, rgba(34,197,94,0.12));
     border: 1px solid var(--border-accent); border-radius: 99px;
-    font-size: 11px; font-weight: 700; color: var(--accent);
+    font-size: 11px; font-weight: 700; color: var(--tlb-accent, #16a34a);
     cursor: pointer; transition: all 0.2s;
 }
 .pdf-selected-badge:hover { background: rgba(163,230,53,0.2); }
 
 /* ── Dropzone ── */
 .pdf-dropzone {
-    position: relative; border: 1.5px dashed var(--border);
-    border-radius: var(--radius-lg); background: rgba(255,255,255,0.015);
+    position: relative; border: 1.5px dashed var(--tlb-border2, #e2e8f0);
+    border-radius: var(--radius-lg); background: var(--tlb-surface2, #f7fdf9);
     overflow: hidden; cursor: pointer;
     transition: border-color 0.25s, background 0.25s; margin-bottom: 14px;
 }
 .pdf-dropzone:hover,
 .pdf-dropzone.drag-over {
-    border-color: var(--accent); background: var(--accent-dim);
+    border-color: var(--tlb-accent, #16a34a); background: var(--tlb-accent-dim, rgba(34,197,94,0.12));
 }
 .pdf-dropzone.drag-over .pdf-dz-icon-wrap {
     transform: scale(1.15) rotate(-6deg);
@@ -249,23 +244,23 @@
 
 .pdf-dz-icon-wrap {
     width: 56px; height: 56px; border-radius: 16px;
-    background: var(--accent-dim);
+    background: var(--tlb-accent-dim, rgba(34,197,94,0.12));
     display: flex; align-items: center; justify-content: center;
-    font-size: 22px; color: var(--accent); margin: 0 auto 14px;
+    font-size: 22px; color: var(--tlb-accent, #16a34a); margin: 0 auto 14px;
     transition: transform 0.3s var(--ease-bounce), background 0.3s;
 }
 .pdf-dropzone:hover .pdf-dz-icon-wrap { transform: scale(1.12) rotate(-5deg); }
 
-.pdf-dz-title { font-size: 14px; font-weight: 700; color: var(--text-dim); margin-bottom: 5px; }
-.pdf-dz-hint  { font-size: 12px; color: var(--text-muted); margin-bottom: 12px; }
+.pdf-dz-title { font-size: 14px; font-weight: 700; color: var(--tlb-text-muted, #64748b); margin-bottom: 5px; }
+.pdf-dz-hint  { font-size: 12px; color: var(--tlb-text-muted, #64748b); margin-bottom: 12px; }
 
 .pdf-dz-formats { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
 
 .pdf-format-tag {
     display: inline-flex; align-items: center; gap: 4px;
-    padding: 3px 10px; background: rgba(255,255,255,0.04);
-    border: 1px solid var(--border); border-radius: 99px;
-    font-size: 10px; color: var(--text-muted); font-weight: 600;
+    padding: 3px 10px; background: var(--tlb-surface2, #f7fdf9);
+    border: 1px solid var(--tlb-border2, #e2e8f0); border-radius: 99px;
+    font-size: 10px; color: var(--tlb-text-muted, #64748b); font-weight: 600;
 }
 
 /* ── File list ── */
@@ -273,7 +268,7 @@
     display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;
 }
 .pdf-filelist-count {
-    font-size: 11px; font-weight: 700; color: var(--text-dim);
+    font-size: 11px; font-weight: 700; color: var(--tlb-text-muted, #64748b);
     text-transform: uppercase; letter-spacing: 0.06em;
 }
 .pdf-filelist {
@@ -282,24 +277,24 @@
 
 .pdf-file-row {
     display: flex; align-items: center; gap: 10px; padding: 10px 12px;
-    background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+    background: var(--tlb-surface2, #f7fdf9); border: 1px solid var(--tlb-border2, #e2e8f0);
     border-radius: var(--radius-sm); transition: border-color 0.2s, background 0.2s;
 }
 .pdf-file-row[draggable="true"] { cursor: grab; }
 .pdf-file-row[draggable="true"]:active { cursor: grabbing; }
 .pdf-file-row:hover   { border-color: var(--border-accent); }
 .pdf-file-row.dragging       { opacity: 0.35; background: rgba(163,230,53,0.04); }
-.pdf-file-row.drag-over-row  { border-color: var(--accent); background: var(--accent-dim); }
+.pdf-file-row.drag-over-row  { border-color: var(--tlb-accent, #16a34a); background: var(--tlb-accent-dim, rgba(34,197,94,0.12)); }
 
-.pdf-drag-handle { color: var(--text-muted); font-size: 11px; flex-shrink: 0; padding: 2px 3px; opacity: 0.5; }
-.pdf-file-row:hover .pdf-drag-handle { opacity: 1; color: var(--accent); }
+.pdf-drag-handle { color: var(--tlb-text-muted, #64748b); font-size: 11px; flex-shrink: 0; padding: 2px 3px; opacity: 0.5; }
+.pdf-file-row:hover .pdf-drag-handle { opacity: 1; color: var(--tlb-accent, #16a34a); }
 
 .pdf-file-ico  { color: #f87171; font-size: 13px; flex-shrink: 0; }
 .pdf-file-name {
-    flex: 1; font-size: 12px; font-weight: 600; color: var(--text-primary);
+    flex: 1; font-size: 12px; font-weight: 600; color: var(--tlb-text, #0f172a);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.pdf-file-size { font-size: 11px; color: var(--text-muted); flex-shrink: 0; }
+.pdf-file-size { font-size: 11px; color: var(--tlb-text-muted, #64748b); flex-shrink: 0; }
 
 .pdf-file-del {
     width: 26px; height: 26px;
@@ -314,7 +309,7 @@
 .pdf-btn-primary {
     display: flex; align-items: center; justify-content: center;
     gap: 8px; width: 100%; padding: 14px;
-    background: var(--accent); color: var(--primary-bg);
+    background: var(--tlb-accent, #16a34a); color: #ffffff;
     border: none; border-radius: var(--radius-md);
     font-family: inherit; font-size: 14px; font-weight: 800;
     cursor: pointer; transition: all 0.3s var(--ease-bounce);
@@ -325,7 +320,7 @@
     background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent 60%);
     opacity: 0; transition: opacity 0.3s;
 }
-.pdf-btn-primary:hover        { transform: translateY(-2px); box-shadow: 0 12px 32px var(--accent-glow); }
+.pdf-btn-primary:hover        { transform: translateY(-2px); box-shadow: 0 12px 32px var(--tlb-accent-glow, rgba(34,197,94,0.30)); }
 .pdf-btn-primary:hover::before{ opacity: 1; }
 .pdf-btn-primary:active       { transform: scale(0.97); }
 .pdf-btn-primary:disabled     { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
@@ -333,89 +328,89 @@
 .pdf-btn-addmore {
     display: inline-flex; align-items: center; gap: 5px;
     padding: 5px 12px; background: transparent;
-    border: 1px dashed var(--border); border-radius: 99px;
+    border: 1px dashed var(--tlb-border2, #e2e8f0); border-radius: 99px;
     font-family: inherit; font-size: 11px; font-weight: 600;
-    color: var(--text-muted); cursor: pointer; transition: all 0.2s;
+    color: var(--tlb-text-muted, #64748b); cursor: pointer; transition: all 0.2s;
 }
-.pdf-btn-addmore:hover { border-color: var(--border-accent); color: var(--accent); }
+.pdf-btn-addmore:hover { border-color: var(--border-accent); color: var(--tlb-accent, #16a34a); }
 
 .pdf-btn-ghost {
     display: inline-flex; align-items: center; justify-content: center;
     gap: 6px; padding: 10px 18px;
-    background: transparent; border: 1px solid var(--border);
+    background: transparent; border: 1px solid var(--tlb-border2, #e2e8f0);
     border-radius: var(--radius-md); font-family: inherit;
-    font-size: 12px; font-weight: 600; color: var(--text-dim);
+    font-size: 12px; font-weight: 600; color: var(--tlb-text-muted, #64748b);
     cursor: pointer; transition: all 0.2s; flex: 1;
 }
-.pdf-btn-ghost:hover { border-color: var(--border-accent); color: var(--accent); }
+.pdf-btn-ghost:hover { border-color: var(--border-accent); color: var(--tlb-accent, #16a34a); }
 
 /* ── Label ── */
 .pdf-label {
     display: block; font-size: 11px; font-weight: 700;
     text-transform: uppercase; letter-spacing: 0.08em;
-    color: var(--text-dim); margin-bottom: 10px;
+    color: var(--tlb-text-muted, #64748b); margin-bottom: 10px;
 }
 .pdf-label--mt { margin-top: 20px; }
 
 /* ── Config info bar ── */
 .pdf-config-info {
     display: flex; align-items: center; gap: 8px;
-    padding: 10px 14px; background: rgba(255,255,255,0.03);
-    border: 1px solid var(--border); border-radius: var(--radius-sm);
-    font-size: 12px; color: var(--text-dim); margin-bottom: 20px; font-weight: 600;
+    padding: 10px 14px; background: var(--tlb-surface2, #f7fdf9);
+    border: 1px solid var(--tlb-border2, #e2e8f0); border-radius: var(--radius-sm);
+    font-size: 12px; color: var(--tlb-text-muted, #64748b); margin-bottom: 20px; font-weight: 600;
     flex-wrap: wrap;
 }
 .pdf-config-info i       { color: #f87171; }
-.pdf-config-info-sep     { color: var(--text-muted); }
+.pdf-config-info-sep     { color: var(--tlb-text-muted, #64748b); }
 
 /* ── Split mode tabs ── */
 .pdf-mode-tabs { display: flex; gap: 8px; margin-bottom: 4px; }
 
 .pdf-mode-tab {
     flex: 1; display: flex; align-items: center; gap: 10px;
-    padding: 12px 14px; background: rgba(255,255,255,0.03);
-    border: 1px solid var(--border); border-radius: var(--radius-md);
+    padding: 12px 14px; background: var(--tlb-surface2, #f7fdf9);
+    border: 1px solid var(--tlb-border2, #e2e8f0); border-radius: var(--radius-md);
     font-family: inherit; cursor: pointer; transition: all 0.22s;
-    text-align: left; color: var(--text-muted);
+    text-align: left; color: var(--tlb-text-muted, #64748b);
 }
 .pdf-mode-tab i    { font-size: 14px; flex-shrink: 0; }
 .pdf-mode-tab div  { flex: 1; }
-.pdf-mode-tab span { display: block; font-size: 12px; font-weight: 700; color: var(--text-dim); }
-.pdf-mode-tab small{ display: block; font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+.pdf-mode-tab span { display: block; font-size: 12px; font-weight: 700; color: var(--tlb-text-muted, #64748b); }
+.pdf-mode-tab small{ display: block; font-size: 10px; color: var(--tlb-text-muted, #64748b); margin-top: 2px; }
 .pdf-mode-tab:hover,
-.pdf-mode-tab.active          { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
-.pdf-mode-tab.active span     { color: var(--accent); }
+.pdf-mode-tab.active          { border-color: var(--tlb-accent, #16a34a); background: var(--tlb-accent-dim, rgba(34,197,94,0.12)); color: var(--tlb-accent, #16a34a); }
+.pdf-mode-tab.active span     { color: var(--tlb-accent, #16a34a); }
 
 /* ── Range inputs ── */
 .pdf-range-row { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
 
 .pdf-range-box {
-    flex: 1; background: rgba(255,255,255,0.03);
-    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    flex: 1; background: var(--tlb-surface2, #f7fdf9);
+    border: 1px solid var(--tlb-border2, #e2e8f0); border-radius: var(--radius-sm);
     overflow: hidden; transition: border-color 0.25s, box-shadow 0.25s;
 }
 .pdf-range-box:focus-within {
-    border-color: var(--accent); box-shadow: 0 0 0 3px rgba(163,230,53,0.08);
+    border-color: var(--tlb-accent, #16a34a); box-shadow: 0 0 0 3px rgba(163,230,53,0.08);
 }
 
 .pdf-range-lbl {
     display: block; padding: 5px 12px 0;
     font-size: 9px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.06em; color: var(--text-muted);
+    letter-spacing: 0.06em; color: var(--tlb-text-muted, #64748b);
 }
 
 .pdf-range-input {
     display: block; width: 100%; background: transparent;
     border: none; outline: none;
-    padding: 4px 12px 10px; color: var(--text-primary);
+    padding: 4px 12px 10px; color: var(--tlb-text, #0f172a);
     font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700;
 }
 
-.pdf-range-sep  { color: var(--text-muted); font-size: 14px; flex-shrink: 0; }
+.pdf-range-sep  { color: var(--tlb-text-muted, #64748b); font-size: 14px; flex-shrink: 0; }
 
 .pdf-range-note {
     display: flex; align-items: center; gap: 5px;
-    font-size: 11px; color: var(--text-muted); margin-bottom: 20px;
+    font-size: 11px; color: var(--tlb-text-muted, #64748b); margin-bottom: 20px;
 }
 
 /* ── Compress levels ── */
@@ -423,17 +418,17 @@
 
 .pdf-clevel {
     display: flex; align-items: center; justify-content: space-between;
-    gap: 16px; padding: 14px 16px; background: rgba(255,255,255,0.025);
-    border: 1px solid var(--border); border-radius: var(--radius-md);
+    gap: 16px; padding: 14px 16px; background: var(--tlb-surface2, #f7fdf9);
+    border: 1px solid var(--tlb-border2, #e2e8f0); border-radius: var(--radius-md);
     cursor: pointer; transition: all 0.22s;
     font-family: inherit; position: relative; text-align: left;
 }
 .pdf-clevel:hover  { border-color: var(--border-accent); background: rgba(163,230,53,0.02); }
-.pdf-clevel.active { border-color: var(--accent); background: var(--accent-dim); }
+.pdf-clevel.active { border-color: var(--tlb-accent, #16a34a); background: var(--tlb-accent-dim, rgba(34,197,94,0.12)); }
 
 .pdf-clevel-badge {
     position: absolute; top: -1px; right: 14px;
-    background: var(--accent); color: var(--primary-bg);
+    background: var(--tlb-accent, #16a34a); color: #ffffff;
     font-size: 9px; font-weight: 800; padding: 2px 8px;
     border-radius: 0 0 6px 6px; letter-spacing: 0.05em; text-transform: uppercase;
 }
@@ -447,27 +442,27 @@
 .pdf-bar--s    { height: 8px; }
 .pdf-bar--m    { height: 14px; }
 .pdf-bar--l    { height: 20px; }
-.pdf-bar--on   { background: var(--text-muted); }
-.pdf-bar--off  { background: rgba(255,255,255,0.08); }
-.pdf-clevel.active .pdf-bar--on { background: var(--accent); }
+.pdf-bar--on   { background: var(--tlb-text-muted, #64748b); }
+.pdf-bar--off  { background: var(--tlb-surface2, #f7fdf9); }
+.pdf-clevel.active .pdf-bar--on { background: var(--tlb-accent, #16a34a); }
 
-.pdf-clevel-name { display: block; font-size: 13px; font-weight: 700; color: var(--text-dim); }
-.pdf-clevel.active .pdf-clevel-name { color: var(--accent); }
-.pdf-clevel-dpi  { display: block; font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+.pdf-clevel-name { display: block; font-size: 13px; font-weight: 700; color: var(--tlb-text-muted, #64748b); }
+.pdf-clevel.active .pdf-clevel-name { color: var(--tlb-accent, #16a34a); }
+.pdf-clevel-dpi  { display: block; font-size: 10px; color: var(--tlb-text-muted, #64748b); margin-top: 2px; }
 
-.pdf-clevel-reduction { display: block; font-size: 13px; font-weight: 700; color: var(--text-dim); }
-.pdf-clevel.active .pdf-clevel-reduction { color: var(--accent); }
-.pdf-clevel-quality   { display: block; font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+.pdf-clevel-reduction { display: block; font-size: 13px; font-weight: 700; color: var(--tlb-text-muted, #64748b); }
+.pdf-clevel.active .pdf-clevel-reduction { color: var(--tlb-accent, #16a34a); }
+.pdf-clevel-quality   { display: block; font-size: 10px; color: var(--tlb-text-muted, #64748b); margin-top: 2px; }
 
 /* ── Info box ── */
 .pdf-infobox {
     display: flex; gap: 12px; padding: 14px 16px;
-    background: rgba(255,255,255,0.02); border: 1px solid var(--border);
+    background: var(--tlb-surface2, #f7fdf9); border: 1px solid var(--tlb-border2, #e2e8f0);
     border-radius: var(--radius-md); margin-bottom: 20px;
 }
 .pdf-infobox i  { color: #fbbf24; font-size: 13px; flex-shrink: 0; margin-top: 1px; }
-.pdf-infobox p  { font-size: 11px; color: var(--text-muted); line-height: 1.65; margin: 0; }
-.pdf-infobox strong { color: var(--text-dim); }
+.pdf-infobox p  { font-size: 11px; color: var(--tlb-text-muted, #64748b); line-height: 1.65; margin: 0; }
+.pdf-infobox strong { color: var(--tlb-text-muted, #64748b); }
 
 /* ── Processing panel ── */
 .pdf-proc-body {
@@ -477,41 +472,41 @@
 
 .pdf-proc-anim {
     width: 60px; height: 60px; border-radius: 50%;
-    border: 2px solid var(--border);
+    border: 2px solid var(--tlb-border2, #e2e8f0);
     display: flex; align-items: center; justify-content: center;
     position: relative; margin-bottom: 20px;
 }
 .pdf-proc-ring {
     position: absolute; inset: -2px; border-radius: 50%;
-    border: 2px solid transparent; border-top-color: var(--accent);
+    border: 2px solid transparent; border-top-color: var(--tlb-accent, #16a34a);
     animation: pdf-spin 0.85s linear infinite;
 }
 .pdf-proc-dot {
     width: 8px; height: 8px; border-radius: 50%;
-    background: var(--accent); animation: pulse-dot 1.2s infinite;
+    background: var(--tlb-accent, #16a34a); animation: pulse-dot 1.2s infinite;
 }
 
-.pdf-proc-title { font-size: 20px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
-.pdf-proc-sub   { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; }
+.pdf-proc-title { font-size: 20px; font-weight: 700; color: var(--tlb-text, #0f172a); margin-bottom: 6px; }
+.pdf-proc-sub   { font-size: 12px; color: var(--tlb-text-muted, #64748b); margin-bottom: 20px; }
 
 .pdf-progress-wrap {
     width: 100%; max-width: 460px;
-    background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+    background: var(--tlb-surface2, #f7fdf9); border: 1px solid var(--tlb-border2, #e2e8f0);
     border-radius: var(--radius-md); padding: 14px 16px; margin-bottom: 20px;
 }
 .pdf-progress-meta {
     display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
 }
-.pdf-progress-lbl { font-size: 12px; color: var(--text-dim); font-weight: 600; }
-.pdf-progress-pct { font-size: 12px; color: var(--accent); font-weight: 700; }
+.pdf-progress-lbl { font-size: 12px; color: var(--tlb-text-muted, #64748b); font-weight: 600; }
+.pdf-progress-pct { font-size: 12px; color: var(--tlb-accent, #16a34a); font-weight: 700; }
 
 .pdf-progress-track {
-    height: 5px; background: rgba(255,255,255,0.06);
+    height: 5px; background: var(--tlb-surface2, #f7fdf9);
     border-radius: 99px; overflow: hidden;
 }
 .pdf-progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--accent), #86efac);
+    background: linear-gradient(90deg, var(--tlb-accent, #16a34a), #86efac);
     border-radius: 99px; transition: width 0.35s ease;
 }
 
@@ -521,25 +516,25 @@
 }
 .pdf-proc-step {
     display: flex; align-items: center; gap: 6px;
-    font-size: 11px; color: var(--text-muted); font-weight: 600;
+    font-size: 11px; color: var(--tlb-text-muted, #64748b); font-weight: 600;
     padding: 0 12px; position: relative;
 }
 .pdf-proc-step:not(:last-child)::after {
     content: ''; position: absolute; right: -1px;
-    width: 1px; height: 12px; background: var(--border);
+    width: 1px; height: 12px; background: var(--tlb-border2, #e2e8f0);
 }
 .pdf-ps-dot {
     width: 6px; height: 6px; border-radius: 50%;
-    background: var(--border); flex-shrink: 0; transition: all 0.3s;
+    background: var(--tlb-border2, #e2e8f0); flex-shrink: 0; transition: all 0.3s;
 }
-.pdf-proc-step.active { color: var(--accent); }
+.pdf-proc-step.active { color: var(--tlb-accent, #16a34a); }
 .pdf-proc-step.active .pdf-ps-dot {
-    background: var(--accent);
+    background: var(--tlb-accent, #16a34a);
     box-shadow: 0 0 0 3px rgba(163,230,53,0.2);
     animation: pulse-dot 1.2s infinite;
 }
-.pdf-proc-step.done             { color: var(--text-dim); }
-.pdf-proc-step.done .pdf-ps-dot { background: var(--accent); }
+.pdf-proc-step.done             { color: var(--tlb-text-muted, #64748b); }
+.pdf-proc-step.done .pdf-ps-dot { background: var(--tlb-accent, #16a34a); }
 
 /* ── Result panel ── */
 .pdf-result-body {
@@ -550,14 +545,14 @@
     width: 68px; height: 68px; border-radius: 50%;
     background: rgba(163,230,53,0.1); border: 1px solid var(--border-accent);
     display: flex; align-items: center; justify-content: center;
-    font-size: 1.5rem; color: var(--accent); margin-bottom: 16px;
+    font-size: 1.5rem; color: var(--tlb-accent, #16a34a); margin-bottom: 16px;
     animation: pdf-pop 0.5s var(--ease-bounce);
 }
 .pdf-result-title {
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 2rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px;
+    font-size: 2rem; font-weight: 700; color: var(--tlb-text, #0f172a); margin-bottom: 6px;
 }
-.pdf-result-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 22px; }
+.pdf-result-sub { font-size: 13px; color: var(--tlb-text-muted, #64748b); margin-bottom: 22px; }
 
 /* Size comparison card */
 .pdf-size-compare {
@@ -568,19 +563,19 @@
 }
 .pdf-sc-item { text-align: center; }
 .pdf-sc-lbl {
-    display: block; font-size: 10px; color: var(--text-muted); margin-bottom: 5px;
+    display: block; font-size: 10px; color: var(--tlb-text-muted, #64748b); margin-bottom: 5px;
     font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
 }
 .pdf-sc-val    { display: block; font-size: 18px; font-weight: 800; letter-spacing: -0.02em; }
 .pdf-sc-before { color: #f87171; }
-.pdf-sc-after  { color: var(--text-primary); }
-.pdf-sc-arrow  { color: var(--text-muted); font-size: 16px; }
+.pdf-sc-after  { color: var(--tlb-text, #0f172a); }
+.pdf-sc-arrow  { color: var(--tlb-text-muted, #64748b); font-size: 16px; }
 
 .pdf-sc-badge {
     display: flex; align-items: center; gap: 5px;
     padding: 6px 14px; background: rgba(163,230,53,0.1);
     border: 1px solid var(--border-accent); border-radius: 99px;
-    font-size: 13px; font-weight: 800; color: var(--accent);
+    font-size: 13px; font-weight: 800; color: var(--tlb-accent, #16a34a);
 }
 
 .pdf-result-actions         { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 360px; }
@@ -588,19 +583,19 @@
 
 .pdf-result-note {
     display: flex; align-items: center; gap: 5px;
-    margin-top: 16px; font-size: 10px; color: var(--text-muted);
+    margin-top: 16px; font-size: 10px; color: var(--tlb-text-muted, #64748b);
     text-align: center;
 }
-.pdf-result-note i { color: var(--accent); }
+.pdf-result-note i { color: var(--tlb-accent, #16a34a); }
 
 /* ── How it works ── */
 .pdf-howto { margin-bottom: 24px; }
-.pdf-howto-title { font-size: 16px; font-weight: 700; color: var(--text-dim); text-align: center; margin-bottom: 14px; }
+.pdf-howto-title { font-size: 16px; font-weight: 700; color: var(--tlb-text-muted, #64748b); text-align: center; margin-bottom: 14px; }
 
 .pdf-howto-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
 
 .pdf-hw-item {
-    background: var(--card-bg); border: 1px solid var(--border);
+    background: var(--tlb-surface, #ffffff); border: 1px solid var(--tlb-border2, #e2e8f0);
     border-radius: var(--radius-lg); padding: 16px;
     transition: border-color 0.2s, transform 0.2s;
 }
@@ -608,18 +603,18 @@
 
 .pdf-hw-num {
     width: 28px; height: 28px; border-radius: 8px;
-    background: var(--accent-dim); border: 1px solid var(--border-accent);
+    background: var(--tlb-accent-dim, rgba(34,197,94,0.12)); border: 1px solid var(--border-accent);
     display: flex; align-items: center; justify-content: center;
-    font-size: 12px; font-weight: 800; color: var(--accent); margin-bottom: 10px;
+    font-size: 12px; font-weight: 800; color: var(--tlb-accent, #16a34a); margin-bottom: 10px;
 }
 .pdf-hw-item h4 { font-size: 12px; font-weight: 700; margin-bottom: 5px; }
-.pdf-hw-item p  { font-size: 11px; color: var(--text-muted); line-height: 1.6; margin: 0; }
+.pdf-hw-item p  { font-size: 11px; color: var(--tlb-text-muted, #64748b); line-height: 1.6; margin: 0; }
 
 /* ── Toast ── */
 .pdf-toast {
     position: fixed; bottom: 24px; right: 24px;
     display: flex; align-items: center; gap: 12px;
-    background: var(--card-bg); border: 1px solid var(--border-accent);
+    background: var(--tlb-surface, #ffffff); border: 1px solid var(--border-accent);
     border-radius: var(--radius-md); padding: 13px 18px;
     box-shadow: 0 16px 40px rgba(0,0,0,0.5); z-index: 9999;
     max-width: 320px; transform: translateY(80px); opacity: 0;
@@ -630,20 +625,20 @@
 
 .pdf-toast-icon {
     width: 32px; height: 32px; border-radius: 8px;
-    background: var(--accent-dim);
+    background: var(--tlb-accent-dim, rgba(34,197,94,0.12));
     display: flex; align-items: center; justify-content: center;
-    color: var(--accent); font-size: 11px; flex-shrink: 0;
+    color: var(--tlb-accent, #16a34a); font-size: 11px; flex-shrink: 0;
 }
 .pdf-toast.toast-error .pdf-toast-icon { background: rgba(248,113,113,0.1); color: #f87171; }
 
 .pdf-toast-body { display: flex; flex-direction: column; gap: 2px; }
 .pdf-toast-type {
     font-size: 10px; font-weight: 800; text-transform: uppercase;
-    letter-spacing: 0.08em; color: var(--accent);
+    letter-spacing: 0.08em; color: var(--tlb-accent, #16a34a);
 }
 .pdf-toast.toast-error .pdf-toast-type { color: #f87171; }
 .pdf-toast-msg {
-    font-size: 12px; color: var(--text-dim);
+    font-size: 12px; color: var(--tlb-text-muted, #64748b);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 

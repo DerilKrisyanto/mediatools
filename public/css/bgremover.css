@@ -1,17 +1,3 @@
-/* ============================================================
-   BACKGROUND REMOVER — Finance-Inspired Light Theme
-   public/css/bgremover.css
-
-   Design language: matches finance.css — light green-tinted page
-   background, white cards with #d1fae5 borders, dark text, lime-
-   green brand accent (#a3e635) on action buttons, classic green
-   (#16a34a) for icon accents on light backgrounds.
-
-   Dark sections preserved only where technically required:
-     • Before/After comparison (transparent PNG checker)
-     • Brush editor canvases (transparency editing)
-   ============================================================ */
-
 /* ── Page-level variables ─────────────────────────────────── */
 .bgr-root {
   /* Brand accent (global lime) */

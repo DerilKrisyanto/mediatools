@@ -11,27 +11,47 @@
 <meta name="md-download-url" content="{{ url('media-downloader/download') }}">
 
 @section('content')
+<link rel="stylesheet" href="{{ asset('css/tools-base.css') }}">
+<script>document.body.classList.add('tlb-active');</script>
+
+<div class="tlb-page tlb-violet" id="tlbPage_mediadownloader">
+
+{{-- ════ TLB HEADER ════ --}}
+<div class="tlb-header">
+    <div class="tlb-header-inner">
+        <div>
+            <div class="tlb-header-label-row">
+                <div class="tlb-header-icon">
+                    <i class="fa-solid fa-cloud-arrow-down"></i>
+                </div>
+                <span class="tlb-header-site">MediaTools</span>
+            </div>
+            <div class="tlb-header-badges">
+                <span class="tlb-hbadge"><i class="fa-solid fa-brands fa-youtube"></i> YouTube</span>
+                <span class="tlb-hbadge"><i class="fa-solid fa-brands fa-tiktok"></i> TikTok</span>
+                <span class="tlb-hbadge"><i class="fa-solid fa-brands fa-instagram"></i> Instagram</span>
+                <span class="tlb-hbadge"><i class="fa-solid fa-star"></i> Hingga 1080p</span>
+            </div>
+            <h1 class="tlb-header-title">Media <span>Downloader.</span></h1>
+            <p class="tlb-header-sub">Download video & audio dari YouTube, TikTok, Instagram, dan 20+ platform. Cukup paste URL — selesai.</p>
+        </div>
+    </div>
+</div>
+<div class="tlb-header-curve"></div>
+
+<div class="tlb-body">
+{{-- ═══ ADS SLOT ═══ --}}
+<div class="ads-slot-header no-print" style="margin-bottom:20px;">@include('components.ads.banner-header')</div>
+
 <link rel="stylesheet" href="{{ asset('css/mediadownloader.css') }}">
 <link rel="stylesheet" href="{{ asset('css/ads.css') }}">
 
 <div class="md-page">
   {{-- ═══ SLOT 1: HEADER BANNER 728×90 ═══ --}}
-  <div class="ads-slot-header no-print">
-      @include('components.ads.banner-header')
-  </div>
+
   <div class="md-container">
 
     {{-- ── HEADER ── --}}
-    <header class="md-header">
-      <div class="md-badge-row">
-        <span class="md-badge-free">100% Gratis</span>
-        <span class="md-badge-secure"><i class="fa-solid fa-shield-halved"></i> No Watermark</span>
-        <span class="md-badge-secure"><i class="fa-solid fa-bolt"></i> Instan</span>
-        <span class="md-badge-secure"><i class="fa-solid fa-star"></i> Hingga 1080p</span>
-      </div>
-      <h1 class="md-title">Media <span class="md-title-accent">Downloader.</span></h1>
-      <p class="md-subtitle">Download video & audio dari YouTube, TikTok, Instagram, dan 20+ platform. Cukup paste URL — selesai.</p>
-    </header>
 
     {{-- ── PLATFORM TABS ── --}}
     <div class="md-platform-tabs">
@@ -273,3 +293,6 @@
 <script src="{{ asset('js/mediadownloader.js') }}"></script>
 @endpush
 @endsection
+
+</div>{{-- /.tlb-body --}}
+</div>{{-- /.tlb-page --}}

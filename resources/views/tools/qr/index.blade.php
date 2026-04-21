@@ -7,6 +7,37 @@
 @include('seo.qr')
 
 @section('content')
+<link rel="stylesheet" href="{{ asset('css/tools-base.css') }}">
+<script>document.body.classList.add('tlb-active');</script>
+
+<div class="tlb-page tlb-lime" id="tlbPage_qr">
+
+{{-- ════ TLB HEADER ════ --}}
+<div class="tlb-header">
+    <div class="tlb-header-inner">
+        <div>
+            <div class="tlb-header-label-row">
+                <div class="tlb-header-icon">
+                    <i class="fa-solid fa-qrcode"></i>
+                </div>
+                <span class="tlb-header-site">MediaTools</span>
+            </div>
+            <div class="tlb-header-badges">
+                <span class="tlb-hbadge"><i class="fa-solid fa-palette"></i> Custom Warna</span>
+                <span class="tlb-hbadge"><i class="fa-solid fa-image"></i> Logo Support</span>
+                <span class="tlb-hbadge"><i class="fa-solid fa-download"></i> PNG HD</span>
+                <span class="tlb-hbadge"><i class="fa-solid fa-infinity"></i> 100% Gratis</span>
+            </div>
+            <h1 class="tlb-header-title">QR Code <span>Generator.</span></h1>
+            <p class="tlb-header-sub">Buat QR Code custom untuk menu, pembayaran, kontak, WiFi & URL bisnis. Download PNG resolusi tinggi.</p>
+        </div>
+    </div>
+</div>
+<div class="tlb-header-curve"></div>
+
+<div class="tlb-body">
+{{-- ═══ ADS SLOT ═══ --}}
+<div class="ads-slot-header no-print" style="margin-bottom:20px;">@include('components.ads.banner-header')</div>
 
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ asset('css/qr.css') }}">
@@ -14,35 +45,8 @@
 
 <div class="min-h-screen bg-[#020d0d] text-white px-4 selection:bg-[#a3e635] selection:text-black">
     {{-- ═══ SLOT 1: HEADER BANNER 728×90 ═══ --}}
-    <div class="ads-slot-header no-print">
-        @include('components.ads.banner-header')
-    </div>
-    <div class="max-w-7xl mx-auto">
-        <!-- Header Section -->
-        <header class="mb-12 flex flex-col md:flex-row md:items-center justify-between gap-8 border-b border-white/5 pb-10">
-            <div class="space-y-2">
-                <div class="flex items-center gap-3">
-                    <span class="bg-[#a3e635] text-[#020d0d] text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-tighter">Pro Tool</span>
-                    <h1 class="text-6xl font-black text-white tracking-tighter leading-none">
-                        QR <span class="text-[#a3e635]">ARCHITECT.</span>
-                    </h1>
-                </div>
-                <p class="text-gray-500 text-sm font-medium">Transform raw data into a functional scan-ready QR experience.</p>
-            </div>
 
-            <div class="flex items-center gap-4">
-                @auth
-                    <div class="hidden sm:flex flex-col items-end mr-2">
-                        <span class="text-[9px] text-white/30 uppercase font-black tracking-[0.2em]">Validated Profile</span>
-                        <span class="text-sm font-bold text-[#a3e635]">{{ Auth::user()->name }}</span>
-                    </div>
-                @endauth
-                <a href="/linktree" class="nav-secondary-btn group px-5 py-3 glass-card rounded-xl flex items-center gap-3">
-                    <i class="fa-solid fa-link text-[10px] group-hover:rotate-45 transition-transform duration-500 text-[#a3e635]"></i>
-                    <span class="text-[10px] font-black tracking-widest uppercase">My Ecosystem</span>
-                </a>
-            </div>
-        </header>
+    <div class="max-w-7xl mx-auto">
 
         <main class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
             <!-- Left Section: Configuration -->
@@ -187,3 +191,6 @@
     <script src="{{ asset('js/qr.js') }}"></script>
 @endpush
 @endsection
+
+</div>{{-- /.tlb-body --}}
+</div>{{-- /.tlb-page --}}

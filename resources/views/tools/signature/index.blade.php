@@ -12,36 +12,44 @@
 @endpush
 
 @section('content')
+<link rel="stylesheet" href="{{ asset('css/tools-base.css') }}">
+<script>document.body.classList.add('tlb-active');</script>
+
+<div class="tlb-page tlb-pink" id="tlbPage_signature">
+
+{{-- ════ TLB HEADER ════ --}}
+<div class="tlb-header">
+    <div class="tlb-header-inner">
+        <div>
+            <div class="tlb-header-label-row">
+                <div class="tlb-header-icon">
+                    <i class="fa-solid fa-signature"></i>
+                </div>
+                <span class="tlb-header-site">MediaTools</span>
+            </div>
+            <div class="tlb-header-badges">
+                <span class="tlb-hbadge"><i class="fa-solid fa-layer-group"></i> 3 Template</span>
+                <span class="tlb-hbadge"><i class="fa-solid fa-brands fa-google"></i> Gmail Ready</span>
+                <span class="tlb-hbadge"><i class="fa-solid fa-envelope"></i> Outlook Ready</span>
+                <span class="tlb-hbadge"><i class="fa-solid fa-code"></i> HTML Export</span>
+            </div>
+            <h1 class="tlb-header-title">Signature <span>Studio.</span></h1>
+            <p class="tlb-header-sub">Bangun identitas email profesional dalam hitungan menit. 3 template, copy-paste ke Gmail & Outlook.</p>
+        </div>
+    </div>
+</div>
+<div class="tlb-header-curve"></div>
+
+<div class="tlb-body">
+{{-- ═══ ADS SLOT ═══ --}}
+<div class="ads-slot-header no-print" style="margin-bottom:20px;">@include('components.ads.banner-header')</div>
 
 <div class="sig-shell selection:bg-[#a3e635] selection:text-black">
     {{-- ═══ SLOT 1: HEADER BANNER 728×90 ═══ --}}
-    <div class="ads-slot-header no-print">
-        @include('components.ads.banner-header')
-    </div>
+
 <div class="max-w-7xl mx-auto px-4 sm:px-6">
 
     {{-- ═══ TOP BAR ═══ --}}
-    <header class="sig-topbar">
-        <div>
-            <div class="sig-topbar-badge">
-                <span style="width:6px;height:6px;border-radius:50%;background:#a3e635;animation:pulse-dot 2s infinite;"></span>
-                Pro Tool
-            </div>
-            <h1 class="sig-topbar-title">
-                Signature <span>Studio.</span>
-            </h1>
-            <p class="sig-topbar-sub">Bangun identitas email profesional Anda dalam hitungan menit.</p>
-        </div>
-
-        <div class="flex items-center gap-3">
-            @auth
-            <div class="hidden sm:flex flex-col items-end mr-2">
-                <span style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.2em;color:rgba(255,255,255,.25);">Akun Aktif</span>
-                <span style="font-size:13px;font-weight:700;color:#a3e635;">{{ Auth::user()->name }}</span>
-            </div>
-            @endauth
-        </div>
-    </header>
 
     {{-- ═══ MAIN GRID ═══ --}}
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -345,3 +353,6 @@
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script src="{{ asset('js/signature.js') }}"></script>
 @endpush
+
+</div>{{-- /.tlb-body --}}
+</div>{{-- /.tlb-page --}}

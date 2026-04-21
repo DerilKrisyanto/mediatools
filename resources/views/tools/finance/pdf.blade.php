@@ -9,10 +9,8 @@
 
 @section('content')
 <div class="page-wrap">
-    {{-- ═══ SLOT 1: HEADER BANNER 728×90 ═══ --}}
-    <div class="ads-slot-header no-print">
-        @include('components.ads.banner-header')
-    </div>
+    {{-- ═══ ADS SLOT: HEADER ═══ --}}
+    <div class="ads-slot-header no-print" style="margin-bottom:10px;">@include('components.ads.banner-header')</div>
 
     {{-- ── Print Buttons (screen only) ── --}}
     <div class="print-btn-wrap">
@@ -229,15 +227,11 @@
         Dokumen ini bersifat konfidensial dan hanya untuk penggunaan internal.
     </div>
 
-    {{-- ═══ SLOT 3: RESULT BANNER 300×250 ═══ --}}
-    <div class="ads-slot-result no-print">
-        @include('components.ads.banner-result')
-    </div>
-
-    {{-- ═══ SLOT 4: NATIVE BANNER ═══ --}}
-    <div class="ads-slot-native no-print">
-        @include('components.ads.banner-content')
-    </div>
+    {{-- ═══ ADS SLOT: HEADER ═══ --}}
+    <div class="ads-slot-header no-print" style="margin-bottom:5px;">@include('components.ads.banner-header')</div>
+    <div class="ads-slot-header no-print" style="margin-bottom:5px;">@include('components.ads.banner-header')</div>
+    {{-- ═══ ADS SLOT: NATIVE BANNER ═══ --}}
+    <div class="ads-slot-native no-print">@include('components.ads.banner-content')</div>
 
 </div><!-- /page-wrap -->
 

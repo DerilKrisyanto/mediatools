@@ -1,6 +1,11 @@
 @extends('layouts.app')
 
-@section('title', 'Pencatatan Keuangan | MediaTools')
+@section('title', 'Pencatatan Keuangan Gratis | MediaTools')
+@section('meta_description', 'Aplikasi pencatatan keuangan gratis untuk mencatat pemasukan dan pengeluaran harian secara mudah dan praktis. Kelola keuangan pribadi, bisnis kecil, atau usaha Anda dengan laporan sederhana langsung di browser tanpa ribet.')
+@section('meta_keywords', 'pencatatan keuangan, aplikasi keuangan gratis, catatan pemasukan pengeluaran, keuangan pribadi, aplikasi kas sederhana, laporan keuangan harian, manajemen keuangan usaha, pembukuan sederhana, catatan uang harian, aplikasi finansial online')
+@section('og_image', 'finance')
+
+@include('seo.finance')
 
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/finance.css') }}">
@@ -398,15 +403,11 @@
     </div>
 
 </div><!-- /max-w-7xl -->
-{{-- ═══ SLOT 3: RESULT BANNER 300×250 ═══ --}}
-<div class="ads-slot-result no-print">
-    @include('components.ads.banner-result')
-</div>
-
-{{-- ═══ SLOT 4: NATIVE BANNER ═══ --}}
-<div class="ads-slot-native no-print">
-    @include('components.ads.banner-content')
-</div>
+    {{-- ═══ ADS SLOT: HEADER ═══ --}}
+    <div class="ads-slot-header no-print" style="margin-bottom:5px;">@include('components.ads.banner-header')</div>
+    <div class="ads-slot-header no-print" style="margin-bottom:5px;">@include('components.ads.banner-header')</div>
+    {{-- ═══ ADS SLOT: NATIVE BANNER ═══ --}}
+    <div class="ads-slot-native no-print">@include('components.ads.banner-content')</div>
 </div><!-- /fi-page -->
 
 

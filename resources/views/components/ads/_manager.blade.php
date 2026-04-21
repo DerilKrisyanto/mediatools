@@ -6,23 +6,6 @@
     • Adsterra : tidak butuh script global — dimuat langsung per slot
     • AdSense  : wajib load 1x di sini
 
-    SUMBER ROUTE (routes/web.php) — update jika ada tools baru:
-    ┌─────────────────────────┬────────────────────────────┐
-    │ Route                   │ Pattern                    │
-    ├─────────────────────────┼────────────────────────────┤
-    │ /invoice                │ invoice                    │
-    │ /bg, /bg/process        │ bg, bg/*                   │
-    │ /linktree, /linktree/*  │ linktree, linktree/*       │
-    │ /signature, /sign...    │ signature, signature/*     │
-    │ /qr, /qr/*              │ qr, qr/*                   │
-    │ /pdfutilities, /pdf...  │ pdfutilities, pdfutilities*│
-    │ /imageconverter         │ imageconverter             │
-    │ /password-generator     │ password-generator         │
-    │ /media-downloader, /*   │ media-downloader*          │
-    │ /file-converter, /*     │ file-converter*            │
-    │ /sanitizer, /*          │ sanitizer, sanitizer/*     │
-    └─────────────────────────┴────────────────────────────┘
-
     CARA TAMBAH TOOLS BARU:
     Tambahkan pattern URL-nya di array $toolsRoutes di bawah.
     Gunakan wildcard * untuk prefix dengan sub-route.
@@ -32,32 +15,23 @@
     $adsEnabled = config('ads.enabled', false);
     $provider   = config('ads.provider', 'none');
 
-    /*
-    |──────────────────────────────────────────────────────────
-    | DAFTAR PATTERN HALAMAN TOOLS
-    | Sesuaikan dengan routes/web.php
-    | Gunakan '*' untuk wildcard (misal: 'bg/*' cocok dengan
-    | /bg/process, /bg/download/abc, dll)
-    |──────────────────────────────────────────────────────────
-    */
     $toolsRoutes = [
-
         // ── Invoice ───────────────────────────
         'invoice',
 
-        // ── Background Remover (prefix: /bg) ──
+        // ── Background Remover ────────────────
         'bg',
         'bg/*',
 
-        // ── LinkTree (prefix: /linktree) ──────
+        // ── LinkTree ──────────────────────────
         'linktree',
         'linktree/*',
 
-        // ── Email Signature (prefix: /signature)
+        // ── Email Signature ───────────────────
         'signature',
         'signature/*',
 
-        // ── QR Code (prefix: /qr) ─────────────
+        // ── QR Code ───────────────────────────
         'qr',
         'qr/*',
 
@@ -83,6 +57,14 @@
         'sanitizer',
         'sanitizer/*',
 
+        // ── Finance (auth-required) ───────────
+        // Iklan tetap ditampilkan di halaman finance karena user sudah login
+        'finance',
+        'finance/*',
+
+        // ── Fotobox ───────────────────────────
+        'fotobox',
+
         /*
         |────────────────────────────────────────
         | TAMBAHKAN TOOLS BARU DI SINI
@@ -93,7 +75,6 @@
         */
     ];
 
-    // Deteksi apakah request saat ini cocok dengan salah satu pattern
     $isToolsPage = false;
     foreach ($toolsRoutes as $pattern) {
         if (request()->is($pattern)) {
@@ -106,11 +87,6 @@
 @if($adsEnabled && $provider !== 'none' && $isToolsPage)
 
     @if($provider === 'adsense')
-        {{--
-            Google AdSense: wajib load script global 1x.
-            Script ini harus ada sebelum tag <ins class="adsbygoogle">
-            di semua slot. @once memastikan tidak double-load.
-        --}}
         @once
         <script async
             src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ config('ads.adsense.client_id') }}"
@@ -118,14 +94,5 @@
         </script>
         @endonce
     @endif
-
-    {{--
-        Adsterra: TIDAK butuh script global di sini.
-        Script Adsterra dimuat langsung di masing-masing slot blade:
-        - banner-header.blade.php
-        - banner-content.blade.php
-        - banner-sidebar.blade.php
-        - banner-result.blade.php
-    --}}
 
 @endif

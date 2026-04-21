@@ -26,8 +26,8 @@ Route::get('/invoice', [InvoiceController::class, 'index'])->name('tools.invoice
 
 // ========== Background Remover ========== //
 Route::prefix('bg')->group(function () {
-    Route::get('/',        [BgRemoverController::class, 'index'])  ->name('tools.bgremover');
-    Route::post('/process',[BgRemoverController::class, 'process'])->name('tools.bgremover.process');
+    Route::get('/',         [BgRemoverController::class, 'index'])  ->name('tools.bgremover');
+    Route::post('/process', [BgRemoverController::class, 'process'])->name('tools.bgremover.process');
 });
 
 // ========== LinkTree ========== //
@@ -42,13 +42,13 @@ Route::prefix('linktree')->group(function () {
     });
 });
 
-// ========== finance ========== //
+// ========== Finance (auth-only) ========== //
 Route::prefix('finance')->group(function () {
     Route::middleware('auth')->group(function () {
-        Route::get('/',               [FinanceController::class, 'index'])->name('tools.finance');
-        Route::post('/transactions', [FinanceController::class, 'store'])->name('tools.finance.transactions.store');
-        Route::delete('/transactions/{id}',      [FinanceController::class, 'destroy'])    ->name('tools.finance.transactions.destroy');
-        Route::get('/print', [FinanceController::class, 'print'])->name('tools.finance.print');
+        Route::get('/',                    [FinanceController::class, 'index'])  ->name('tools.finance');
+        Route::post('/transactions',       [FinanceController::class, 'store'])  ->name('tools.finance.transactions.store');
+        Route::delete('/transactions/{id}',[FinanceController::class, 'destroy'])->name('tools.finance.transactions.destroy');
+        Route::get('/print',               [FinanceController::class, 'print'])  ->name('tools.finance.print');
     });
 });
 
@@ -71,8 +71,8 @@ Route::prefix('qr')->group(function () {
 });
 
 // ========== PDF Utilities ========== //
-Route::get('/pdfutilities', [PDFUtilitiesController::class, 'index'])->name('tools.pdfutilities');
-Route::post('/pdfutilities/compress', [PDFUtilitiesController::class, 'compress'])->name('tools.pdfutilities.compress');
+Route::get('/pdfutilities',         [PDFUtilitiesController::class, 'index'])   ->name('tools.pdfutilities');
+Route::post('/pdfutilities/compress',[PDFUtilitiesController::class, 'compress'])->name('tools.pdfutilities.compress');
 
 // ========== Image Converter ========== //
 Route::get('/imageconverter', [ImageConverterController::class, 'index'])->name('tools.imageconverter');
@@ -81,72 +81,42 @@ Route::get('/imageconverter', [ImageConverterController::class, 'index'])->name(
 Route::get('/password-generator', [PasswordGeneratorController::class, 'index'])->name('tools.passwordgenerator');
 
 // ========== Media Downloader ========== //
-Route::get('/media-downloader',                 [MediaDownloaderController::class, 'index'])->name('tools.mediadownloader');
-Route::post('/media-downloader/process',        [MediaDownloaderController::class, 'process'])->name('tools.mediadownloader.process');
-Route::get('/media-downloader/download/{token}',[MediaDownloaderController::class, 'download'])->name('tools.mediadownloader.download');
-Route::post('/media-downloader/cleanup',        [MediaDownloaderController::class, 'cleanup'])->name('tools.mediadownloader.cleanup');
+Route::get('/media-downloader',                  [MediaDownloaderController::class, 'index'])   ->name('tools.mediadownloader');
+Route::post('/media-downloader/process',         [MediaDownloaderController::class, 'process']) ->name('tools.mediadownloader.process');
+Route::get('/media-downloader/download/{token}', [MediaDownloaderController::class, 'download'])->name('tools.mediadownloader.download');
+Route::post('/media-downloader/cleanup',         [MediaDownloaderController::class, 'cleanup']) ->name('tools.mediadownloader.cleanup');
 
 // ========== File Converter ========== //
 Route::prefix('file-converter')->group(function () {
-    Route::get('/',                    [FileConverterController::class, 'index'])
-         ->name('tools.fileconverter');
-    Route::post('/process',            [FileConverterController::class, 'process'])
-         ->name('tools.fileconverter.process');
-    Route::get('/download/{token}',    [FileConverterController::class, 'download'])
-         ->name('tools.fileconverter.download');
-    Route::post('/cleanup',            [FileConverterController::class, 'cleanup'])
-         ->name('tools.fileconverter.cleanup');
+    Route::get('/',                 [FileConverterController::class, 'index'])   ->name('tools.fileconverter');
+    Route::post('/process',         [FileConverterController::class, 'process']) ->name('tools.fileconverter.process');
+    Route::get('/download/{token}', [FileConverterController::class, 'download'])->name('tools.fileconverter.download');
+    Route::post('/cleanup',         [FileConverterController::class, 'cleanup']) ->name('tools.fileconverter.cleanup');
 });
 
 // ========== Metadata & Privacy Sanitizer ========== //
 Route::prefix('sanitizer')->group(function () {
- 
     Route::get('/', [MetadataSanitizerController::class, 'index'])
         ->name('tools.sanitizer');
- 
+
     Route::post('/scan', [MetadataSanitizerController::class, 'scan'])
         ->name('tools.sanitizer.scan')
-        ->middleware('throttle:20,1');   // ← 20 requests per minute per IP
- 
+        ->middleware('throttle:20,1');
+
     Route::post('/process', [MetadataSanitizerController::class, 'process'])
         ->name('tools.sanitizer.process')
         ->middleware('throttle:20,1');
- 
+
     Route::get('/download/{token}', [MetadataSanitizerController::class, 'download'])
         ->name('tools.sanitizer.download')
         ->where('token', '[a-zA-Z0-9]{48}')
         ->middleware('throttle:60,1');
 });
 
-Route::prefix('proposal')->group(function () {
- 
-    // Halaman utama
-    Route::get('/', [ProposalBuilderController::class, 'index'])
-        ->name('tools.proposal');
- 
-    // Generate proposal (returns HTML preview + cache_key)
-    Route::post('/generate', [ProposalBuilderController::class, 'generate'])
-        ->name('tools.proposal.generate');
- 
-    // Trigger konversi HTML → DOCX / PDF via LibreOffice (returns token)
-    Route::post('/download', [ProposalBuilderController::class, 'download'])
-        ->name('tools.proposal.download');
- 
-    // Serve file ke browser berdasarkan token (GET, streaming download)
-    Route::get('/serve/{token}', [ProposalBuilderController::class, 'serveDownload'])
-        ->name('tools.proposal.serve')
-        ->where('token', '[a-zA-Z0-9]{48}');
- 
-    // Cleanup direktori kerja lama (bisa dipanggil dari cron/scheduler)
-    Route::post('/cleanup', [ProposalBuilderController::class, 'cleanup'])
-        ->name('tools.proposal.cleanup');
- 
-});
-
-// ========== Pas Foto Online ========== //
-Route::get('/pasfoto', [PasFotoController::class, 'index'])
-    ->name('tools.pasfoto');
-
+// ========== Fotobox Online ========== //
+Route::get('/fotobox', function () {
+    return view('tools.fotobox.index');
+})->name('tools.fotobox');
 
 // ========== Auth Routes ========== //
 Route::middleware('auth')->group(function () {
@@ -162,28 +132,44 @@ Route::middleware('auth')->group(function () {
 
 
 
-
-
 // ========== SITEMAP.XML ========== //
 Route::get('/sitemap.xml', function () {
     $appUrl = rtrim(config('app.url', 'https://mediatools.cloud'), '/');
-
-    $today = now()->format('Y-m-d');
+    $today  = now()->format('Y-m-d');
 
     $urls = [
-        ['loc' => '/',                   'priority' => '1.0', 'changefreq' => 'weekly',  'lastmod' => $today, 'image' => ['loc' => '/images/og/home.png', 'title' => 'MediaTools — All-in-One Tools Digital Gratis']],
+        // ── Tier 1: Beranda ──
+        ['loc' => '/', 'priority' => '1.0', 'changefreq' => 'weekly', 'lastmod' => $today,
+         'image' => ['loc' => '/images/og/home.png', 'title' => 'MediaTools — Tools Digital Gratis: Invoice, PDF, QR Code, Background Remover']],
 
-        ['loc' => '/bg',                 'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => $today, 'image' => ['loc' => '/images/og/bg.png',      'title' => 'Background Remover Gratis — Hapus Background Foto Online']],
-        ['loc' => '/invoice',            'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => $today, 'image' => ['loc' => '/images/og/invoice.png',  'title' => 'Invoice Generator Gratis Online']],
-        ['loc' => '/pdfutilities',       'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => $today, 'image' => ['loc' => '/images/og/pdf.png',      'title' => 'PDF Utilities — Merge Split Compress PDF Gratis']],
-        ['loc' => '/file-converter',     'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => $today, 'image' => ['loc' => '/images/og/converter.png','title' => 'File Converter — PDF ke Word, Excel, JPG Gratis']],
-        ['loc' => '/imageconverter',     'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => $today, 'image' => ['loc' => '/images/og/image.png',    'title' => 'Image Converter — Resize Compress Konversi Gambar Gratis']],
-        ['loc' => '/media-downloader',   'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => $today, 'image' => ['loc' => '/images/og/media.png',    'title' => 'Media Downloader — Download YouTube TikTok Gratis']],
+        // ── Tier 2: Tools volume tinggi ──
+        ['loc' => '/bg',               'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => $today,
+         'image' => ['loc' => '/images/og/bg.png',        'title' => 'Background Remover Gratis — Hapus Background Foto Online dengan AI']],
+        ['loc' => '/invoice',          'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => $today,
+         'image' => ['loc' => '/images/og/invoice.png',   'title' => 'Invoice Generator Gratis Online — Buat Tagihan Profesional']],
+        ['loc' => '/pdfutilities',     'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => $today,
+         'image' => ['loc' => '/images/og/pdf.png',       'title' => 'PDF Utilities — Merge, Split & Compress PDF Gratis Online']],
+        ['loc' => '/file-converter',   'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => $today,
+         'image' => ['loc' => '/images/og/converter.png', 'title' => 'File Converter Online — PDF ke Word, Excel, JPG Gratis']],
+        ['loc' => '/imageconverter',   'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => $today,
+         'image' => ['loc' => '/images/og/image.png',     'title' => 'Image Converter Gratis — Resize, Compress & Konversi Gambar Online']],
+        ['loc' => '/media-downloader', 'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => $today,
+         'image' => ['loc' => '/images/og/media.png',     'title' => 'Media Downloader — Download YouTube, TikTok & Instagram Gratis']],
 
-        ['loc' => '/linktree',           'priority' => '0.8', 'changefreq' => 'monthly', 'lastmod' => $today, 'image' => ['loc' => '/images/og/linktree.png', 'title' => 'LinkTree Builder — Buat Link in Bio Gratis']],
-        ['loc' => '/qr',                 'priority' => '0.8', 'changefreq' => 'monthly', 'lastmod' => $today, 'image' => ['loc' => '/images/og/qr.png',       'title' => 'QR Code Generator — Buat QR Code Custom Gratis']],
-        ['loc' => '/password-generator', 'priority' => '0.8', 'changefreq' => 'monthly', 'lastmod' => $today, 'image' => ['loc' => '/images/og/password.png', 'title' => 'Password Generator — Buat Password Kuat Gratis']],
-        ['loc' => '/signature',          'priority' => '0.8', 'changefreq' => 'monthly', 'lastmod' => $today, 'image' => ['loc' => '/images/og/signature.png','title' => 'Email Signature Generator Profesional Gratis']],
+        // ── Tier 3: Tools branding & keamanan ──
+        ['loc' => '/linktree',           'priority' => '0.8', 'changefreq' => 'monthly', 'lastmod' => $today,
+         'image' => ['loc' => '/images/og/linktree.png',  'title' => 'LinkTree Builder Gratis — Buat Halaman Link in Bio Profesional']],
+        ['loc' => '/qr',                 'priority' => '0.8', 'changefreq' => 'monthly', 'lastmod' => $today,
+         'image' => ['loc' => '/images/og/qr.png',        'title' => 'QR Code Generator Gratis — Buat QR Code Custom & Branded']],
+        ['loc' => '/password-generator', 'priority' => '0.8', 'changefreq' => 'monthly', 'lastmod' => $today,
+         'image' => ['loc' => '/images/og/password.png',  'title' => 'Password Generator Gratis — Buat Password Kuat & Aman Instan']],
+        ['loc' => '/signature',          'priority' => '0.8', 'changefreq' => 'monthly', 'lastmod' => $today,
+         'image' => ['loc' => '/images/og/signature.png', 'title' => 'Email Signature Generator Profesional Gratis — Gmail & Outlook']],
+        ['loc' => '/sanitizer',          'priority' => '0.8', 'changefreq' => 'monthly', 'lastmod' => $today,
+         'image' => ['loc' => '/images/og/sanitizer.png', 'title' => 'File Privacy Sanitizer — Hapus Metadata & Lindungi Privasi File']],
+
+        // ── Finance: auth-required, tidak diindex Google ──
+        // (dikecualikan dari sitemap karena membutuhkan login)
     ];
 
     $lines   = [];
@@ -205,9 +191,9 @@ Route::get('/sitemap.xml', function () {
         $lines[] = '    <priority>' . $u['priority'] . '</priority>';
 
         if (!empty($u['image'])) {
-            $imgUrl = $appUrl . $u['image']['loc'];
+            $imgUrl  = $appUrl . $u['image']['loc'];
             $lines[] = '    <image:image>';
-            $lines[] = '      <image:loc>' . htmlspecialchars($imgUrl, ENT_XML1 | ENT_COMPAT, 'UTF-8') . '</image:loc>';
+            $lines[] = '      <image:loc>'   . htmlspecialchars($imgUrl,           ENT_XML1 | ENT_COMPAT, 'UTF-8') . '</image:loc>';
             $lines[] = '      <image:title>' . htmlspecialchars($u['image']['title'], ENT_XML1 | ENT_COMPAT, 'UTF-8') . '</image:title>';
             $lines[] = '    </image:image>';
         }

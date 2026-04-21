@@ -12,45 +12,39 @@
 @endpush
 
 @section('content')
+<link rel="stylesheet" href="{{ asset('css/tools-base.css') }}">
+<script>document.body.classList.add('tlb-active');</script>
+
+<div class="tlb-page tlb-rose" id="tlbPage_linktree">
+
+{{-- ════ TLB HEADER ════ --}}
+<div class="tlb-header">
+    <div class="tlb-header-inner">
+        <div>
+            <div class="tlb-header-badges">
+                <span class="tlb-hbadge"><i class="fa-solid fa-brands fa-instagram"></i> Instagram</span>
+                <span class="tlb-hbadge"><i class="fa-solid fa-brands fa-tiktok"></i> TikTok</span>
+                <span class="tlb-hbadge"><i class="fa-solid fa-brands fa-youtube"></i> YouTube</span>
+                <span class="tlb-hbadge"><i class="fa-solid fa-globe"></i> Custom Domain</span>
+            </div>
+            <h1 class="tlb-header-title">LinkTree <span>Builder.</span></h1>
+            <p class="tlb-header-sub">Satu halaman untuk semua tautan penting Anda. Buat link in bio profesional dalam hitungan menit.</p>
+        </div>
+    </div>
+</div>
+<div class="tlb-header-curve"></div>
+
+<div class="tlb-body">
+{{-- ═══ ADS SLOT ═══ --}}
+<div class="ads-slot-header no-print" style="margin-bottom:20px;">@include('components.ads.banner-header')</div>
 
 {{-- Hidden utility inputs --}}
 <input type="hidden" id="checkPlanUrl" value="{{ route('tools.linktree.checkplan') }}">
 
 <div class="lt-shell">
-    {{-- ═══ SLOT 1: HEADER BANNER 728×90 ═══ --}}
-  <div class="ads-slot-header no-print">
-      @include('components.ads.banner-header')
-  </div>
 <div class="max-w-6xl mx-auto px-4 sm:px-6">
 
     {{-- ═══ TOP BAR ═══ --}}
-    <div class="lt-topbar">
-        <div>
-            <div style="display:inline-flex;align-items:center;gap:6px;padding:3px 12px;background:rgba(163,230,53,0.1);border:1px solid rgba(163,230,53,0.2);border-radius:99px;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:#a3e635;margin-bottom:10px;">
-                <span style="width:6px;height:6px;border-radius:50%;background:#a3e635;animation:none;display:inline-block;"></span>
-                Premium Tool
-            </div>
-            <h1 class="lt-title">LinkTree <span>Builder.</span></h1>
-            <p class="lt-subtitle">Satu halaman untuk semua tautan penting Anda.</p>
-        </div>
-
-        @auth
-        <button onclick="handleCreateStep()" class="lt-btn-primary">
-            @if($userLinktree && $userLinktree->is_active)
-                <i class="fa-solid fa-pen-to-square"></i>
-                <span>Edit Linktree Saya</span>
-            @else
-                <i class="fa-solid fa-plus"></i>
-                <span>Buat Linktree</span>
-            @endif
-        </button>
-        @else
-        <a href="{{ route('login') }}" class="lt-btn-primary">
-            <i class="fa-solid fa-lock"></i>
-            <span>Masuk untuk Mulai</span>
-        </a>
-        @endauth
-    </div>
 
     {{-- ═══ STATS ═══ --}}
     <div class="lt-stats">
@@ -182,15 +176,10 @@
     </div>
 
 </div>
-    {{-- ═══ SLOT 3: RESULT BANNER 300×250 ═══ --}}
-  <div class="ads-slot-result no-print">
-      @include('components.ads.banner-result')
-  </div>
-
-  {{-- ═══ SLOT 4: NATIVE BANNER ═══ --}}
-  <div class="ads-slot-native no-print">
-      @include('components.ads.banner-content')
-  </div>
+    {{-- ═══ ADS SLOT: HEADER ═══ --}}
+    <div class="ads-slot-header no-print" style="margin-bottom:5px;">@include('components.ads.banner-header')</div>
+    {{-- ═══ ADS SLOT: NATIVE BANNER ═══ --}}
+    <div class="ads-slot-native no-print">@include('components.ads.banner-content')</div>
 </div>
 
 {{-- ════════════════════════════════════
@@ -426,3 +415,6 @@
 <script src="https://app.{{ config('services.midtrans.is_production') ? '' : 'sandbox.' }}midtrans.com/snap/snap.js"
         data-client-key="{{ config('services.midtrans.client_key') }}"></script>
 @endpush
+
+</div>{{-- /.tlb-body --}}
+</div>{{-- /.tlb-page --}}

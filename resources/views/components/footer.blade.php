@@ -87,9 +87,8 @@
                     ['tools.mediadownloader',   'Media Downloader'],
                     ['tools.invoice',           'Invoice Generator'],
                     ['tools.sanitizer',         'File Security & Privacy Scanner'],
-                    ['tools.proposal',          'Proposal Builder'],
-                    ['tools.pasfoto',           'Pas Foto Online'],
                     ['tools.finance',           'Pencatatan Keuangan'],
+                    ['tools.fotobox',           'FotoBox Photo Booth'],
                 ] as [$route, $label])
                 <a href="{{ route($route) }}" class="footer-link">{{ $label }}</a>
                 @endforeach
@@ -109,12 +108,11 @@
                     ['tools.imageconverter',    'Image Converter'],
                     ['tools.invoice',           'Invoice Generator'],
                     ['tools.sanitizer',         'File Security & Privacy Scanner'],
-                    ['tools.proposal',          'Proposal Builder'],
                     ['tools.passwordgenerator', 'Password Generator'],
                     ['tools.qr',                'QR Code Generator'],
                     ['tools.signature',         'Email Signature'],
-                    ['tools.pasfoto',           'Pas Foto Online'],
                     ['tools.finance',           'Pencatatan Keuangan'],
+                    ['tools.fotobox',           'FotoBox Photo Booth'],
                 ] as [$route, $label])
                 <a href="{{ route($route) }}" class="footer-link">{{ $label }}</a>
                 @endforeach

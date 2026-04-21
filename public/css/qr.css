@@ -1,108 +1,106 @@
-body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #020d02; }
-        
-/* Overlay halus untuk kesan kedalaman */
-.glass-card::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    padding: 1px;
-    background: linear-gradient(to bottom right, rgba(255,255,255,0.1), transparent);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
-}
+/* ── Glass Card — now a clean light card ── */
+.glass-card::before { display: none; }  /* remove glass gradient overlay */
+
 .glass-card {
-    background: linear-gradient(165deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
-    backdrop-filter: blur(24px);
-    border:1px solid var(--mt-card-border);
+    background: var(--tlb-surface, #ffffff);
+    border: 1px solid var(--tlb-border, #d1fae5);
+    border-radius: 20px;
+    box-shadow: var(--tlb-shadow, 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.06));
 }
 
+/* ── Input Field ── */
 .input-field {
     width: 100%;
     padding: 16px 20px;
     border-radius: 18px;
     font-size: 14px;
-    background: rgba(255, 255, 255, 0.03);
-    border:1px solid var(--mt-card-border);
-    color: white;
+    background: var(--tlb-surface2, #f7fdf9);
+    border: 1px solid var(--tlb-border2, #e2e8f0);
+    color: var(--tlb-text, #0f172a);
     transition: all 0.3s ease;
-}
-
-.input-field:focus {
     outline: none;
-    border-color: #a3e635;
-    background: rgba(163, 230, 53, 0.05);
+    font-family: inherit;
+}
+.input-field::placeholder { color: var(--tlb-text-light, #94a3b8); }
+.input-field:focus {
+    border-color: var(--tlb-accent, #16a34a);
+    box-shadow: 0 0 0 3px var(--tlb-accent-dim, rgba(34,197,94,0.12));
+    background: var(--tlb-surface, #ffffff);
 }
 
+/* ── Label ── */
 .label-style {
     font-size: 9px;
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 0.2em;
-    color: #64748b;
+    color: var(--tlb-text-muted, #64748b);
     margin-bottom: 10px;
     display: block;
 }
 
+/* ── Style Option Buttons ── */
 .style-opt {
     padding: 10px;
-    background: rgba(255, 255, 255, 0.05);
-    border:1px solid var(--mt-card-border);
+    background: var(--tlb-surface2, #f7fdf9);
+    border: 1px solid var(--tlb-border2, #e2e8f0);
     border-radius: 12px;
     font-size: 10px;
     font-weight: 800;
     text-transform: uppercase;
     transition: all 0.3s;
-    color: #94a3b8;
-    cursor:pointer;
+    color: var(--tlb-text-muted, #64748b);
+    cursor: pointer;
 }
-
-.style-opt:hover{
-    border-color:#a3e635;
-    color:white;
+.style-opt:hover {
+    border-color: var(--tlb-accent, #16a34a);
+    color: var(--tlb-accent, #16a34a);
+    background: var(--tlb-accent-dim, rgba(34,197,94,0.12));
 }
-
 .style-opt.active {
-    background: #a3e635;
-    color: #020d0d;
-    border-color: #a3e635;
+    background: var(--tlb-accent, #16a34a);
+    color: #ffffff;
+    border-color: var(--tlb-accent, #16a34a);
 }
 
+/* ── Save Button ── */
 .btn-save {
     width: 100%;
-    background: #a3e635;
-    color: #020d0d;
+    background: var(--tlb-accent, #16a34a);
+    color: #ffffff;
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     padding: 20px;
     border-radius: 20px;
     transition: all 0.4s;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
 }
-
 .btn-save:hover {
     transform: translateY(-4px);
-    box-shadow: 0 15px 30px rgba(163, 230, 53, 0.3);
+    box-shadow: 0 15px 30px var(--tlb-accent-glow, rgba(34,197,94,0.30));
 }
 
+/* ── Toast ── */
 .toast-style {
     position: fixed;
     bottom: 30px;
     left: 50%;
     transform: translateX(-50%) translateY(100px);
-    background: #a3e635;
-    color: #020d0d;
+    background: #0f172a;
+    color: #a3e635;
+    border: 1px solid rgba(163,230,53,0.3);
     padding: 16px 32px;
     border-radius: 20px;
     font-weight: 900;
     transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     z-index: 100;
     opacity: 0;
+    font-family: inherit;
 }
-
 .toast-style.show {
     opacity: 1;
     transform: translateX(-50%) translateY(0);

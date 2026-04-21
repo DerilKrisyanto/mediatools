@@ -7,28 +7,48 @@
 @include('seo.passwordgenerator')
 
 @section('content')
+<link rel="stylesheet" href="{{ asset('css/tools-base.css') }}">
+<script>document.body.classList.add('tlb-active');</script>
+
+<div class="tlb-page tlb-teal" id="tlbPage_passwordgenerator">
+
+{{-- ════ TLB HEADER ════ --}}
+<div class="tlb-header">
+    <div class="tlb-header-inner">
+        <div>
+            <div class="tlb-header-label-row">
+                <div class="tlb-header-icon">
+                    <i class="fa-solid fa-key"></i>
+                </div>
+                <span class="tlb-header-site">MediaTools</span>
+            </div>
+            <div class="tlb-header-badges">
+                <span class="tlb-hbadge"><i class="fa-solid fa-shield-halved"></i> Zero Server</span>
+                <span class="tlb-hbadge"><i class="fa-solid fa-microchip"></i> Kriptografi Browser</span>
+                <span class="tlb-hbadge"><i class="fa-solid fa-sliders"></i> 3 Mode</span>
+                <span class="tlb-hbadge"><i class="fa-solid fa-infinity"></i> 100% Gratis</span>
+            </div>
+            <h1 class="tlb-header-title">Password <span>Generator.</span></h1>
+            <p class="tlb-header-sub">Buat password kuat & unik secara instan. Semua proses di browser — zero server, privasi 100% terjaga.</p>
+        </div>
+    </div>
+</div>
+<div class="tlb-header-curve"></div>
+
+<div class="tlb-body">
+{{-- ═══ ADS SLOT ═══ --}}
+<div class="ads-slot-header no-print" style="margin-bottom:20px;">@include('components.ads.banner-header')</div>
+
 <link rel="stylesheet" href="{{ asset('css/passwordgenerator.css') }}">
 <link rel="stylesheet" href="{{ asset('css/ads.css') }}">
 
 <div class="pg-page">
   {{-- ═══ SLOT 1: HEADER BANNER 728×90 ═══ --}}
-  <div class="ads-slot-header no-print">
-      @include('components.ads.banner-header')
-  </div>
+
 
   <div class="pg-container">
 
     {{-- HEADER --}}
-    <header class="pg-header">
-      <div class="pg-header-inner">
-        <div class="pg-badge-row">
-          <span class="pg-badge-free">100% Gratis</span>
-          <span class="pg-badge-secure"><i class="fa-solid fa-shield-halved"></i> Zero Server</span>
-        </div>
-        <h1 class="pg-title">Password <span class="pg-title-accent">Generator.</span></h1>
-        <p class="pg-subtitle">Buat password kuat & unik secara instan. Semua proses di browser Anda — tidak ada yang dikirim ke server.</p>
-      </div>
-    </header>
 
     {{-- MAIN CARD --}}
     <div class="pg-card">
@@ -276,3 +296,6 @@
 <script src="{{ asset('js/passwordgenerator.js') }}"></script>
 @endpush
 @endsection
+
+</div>{{-- /.tlb-body --}}
+</div>{{-- /.tlb-page --}}

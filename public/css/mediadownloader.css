@@ -1,12 +1,7 @@
-/* ============================================================
-   MEDIA DOWNLOADER — mediadownloader.css  v3 PRO
-   Center-focused layout, ad-friendly sidebars, mobile-first
-   ============================================================ */
-
 /* ─── Page layout ─── */
 .md-page {
-    min-height: 100vh;
-    /* padding: 92px 0 80px; */
+    min-height: unset;
+    background: transparent;
 }
 
 .md-container {
@@ -37,7 +32,7 @@
     background: rgba(163,230,53,0.12);
     border: 1px solid rgba(163,230,53,0.28);
     border-radius: 99px;
-    color: #a3e635;
+    color: var(--tlb-accent, #16a34a);
     font-size: 10px;
     font-weight: 700;
     letter-spacing: 0.1em;
@@ -49,10 +44,10 @@
     align-items: center;
     gap: 5px;
     padding: 4px 12px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
+    background: var(--tlb-surface2, #f7fdf9);
+    border: 1px solid var(--tlb-border2, #e2e8f0);
     border-radius: 99px;
-    color: #9ca3af;
+    color: var(--tlb-text-muted, #64748b);
     font-size: 10px;
     font-weight: 600;
 }
@@ -64,12 +59,12 @@
     letter-spacing: -0.03em;
     line-height: 1;
     margin: 0 0 10px;
-    color: #f0fdf4;
+    color: var(--tlb-text, #0f172a);
 }
-.md-title-accent { color: #a3e635; }
+.md-title-accent { color: var(--tlb-accent, #16a34a); }
 
 .md-subtitle {
-    color: #6b7280;
+    color: var(--tlb-text-muted, #64748b);
     font-size: 0.88rem;
     max-width: 440px;
     margin: 0 auto;
@@ -92,10 +87,10 @@
     align-items: center;
     gap: 5px;
     padding: 14px 8px;
-    background: rgba(255,255,255,0.03);
+    background: rgba(255,255,255,0.06);
     border: 1.5px solid rgba(255,255,255,0.07);
     border-radius: 14px;
-    color: #6b7280;
+    color: var(--tlb-text-muted, #64748b);
     font-family: inherit;
     font-size: 11px;
     font-weight: 700;
@@ -110,9 +105,9 @@
 }
 
 .md-platform-btn:hover {
-    background: rgba(255,255,255,0.07);
-    color: #f0fdf4;
-    border-color: rgba(255,255,255,0.14);
+    background: var(--tlb-surface, #ffffff);
+    color: var(--tlb-text, #0f172a);
+    border-color: var(--tlb-border, #d1fae5);
 }
 
 .md-platform-btn:hover i { transform: scale(1.12); }
@@ -133,8 +128,8 @@
    MAIN CARD
    ============================================================ */
 .md-card {
-    background: #0b2323;
-    border: 1px solid rgba(255,255,255,0.07);
+    background: var(--tlb-surface, #ffffff);
+    border: 1px solid var(--tlb-border, #d1fae5);
     border-radius: 22px;
     padding: 24px;
     position: relative;
@@ -157,7 +152,7 @@
     display: block;
     font-size: 10.5px;
     font-weight: 700;
-    color: #6b7280;
+    color: var(--tlb-text-muted, #64748b);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     margin-bottom: 8px;
@@ -181,15 +176,15 @@
 
 .md-platform-hint {
     font-size: 10.5px;
-    color: #6b7280;
+    color: var(--tlb-text-muted, #64748b);
 }
 
 .md-input-wrap {
     display: flex;
     align-items: center;
     gap: 0;
-    background: rgba(255,255,255,0.04);
-    border: 1.5px solid rgba(255,255,255,0.08);
+    background: var(--tlb-surface2, #f7fdf9);
+    border: 1.5px solid var(--tlb-border2, #e2e8f0);
     border-radius: 14px;
     overflow: hidden;
     transition: border-color 0.2s, box-shadow 0.2s;
@@ -205,7 +200,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #6b7280;
+    color: var(--tlb-text-muted, #64748b);
     font-size: 16px;
     flex-shrink: 0;
 }
@@ -253,7 +248,7 @@
     background: transparent;
     border: none;
     border-left: 1px solid rgba(255,255,255,0.06);
-    color: #6b7280;
+    color: var(--tlb-text-muted, #64748b);
     cursor: pointer;
     align-self: stretch;
     transition: color 0.2s;
@@ -278,7 +273,7 @@
 .md-example {
     font-size: 10px;
     color: #4b5563;
-    background: rgba(255,255,255,0.03);
+    background: rgba(255,255,255,0.06);
     border: 1px solid rgba(255,255,255,0.05);
     border-radius: 6px;
     padding: 2px 7px;
@@ -301,7 +296,7 @@
     align-items: center;
     gap: 10px;
     padding: 13px 14px;
-    background: rgba(255,255,255,0.03);
+    background: rgba(255,255,255,0.06);
     border: 1.5px solid rgba(255,255,255,0.07);
     border-radius: 12px;
     cursor: pointer;
@@ -340,7 +335,7 @@
 .md-format-desc {
     display: block;
     font-size: 10.5px;
-    color: #6b7280;
+    color: var(--tlb-text-muted, #64748b);
     margin-top: 1px;
 }
 
@@ -365,7 +360,7 @@
 
 .md-quality-hint {
     font-size: 11px;
-    color: #6b7280;
+    color: var(--tlb-text-muted, #64748b);
     margin-bottom: 10px;
     display: flex;
     align-items: center;
@@ -397,7 +392,7 @@
     align-items: center;
     gap: 12px;
     padding: 12px 14px;
-    background: rgba(255,255,255,0.03);
+    background: rgba(255,255,255,0.06);
     border: 1.5px solid rgba(255,255,255,0.07);
     border-radius: 12px;
     cursor: pointer;
@@ -445,7 +440,7 @@
 .md-quality-size {
     display: block;
     font-size: 10.5px;
-    color: #6b7280;
+    color: var(--tlb-text-muted, #64748b);
     margin-top: 1px;
 }
 
@@ -486,7 +481,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 12px 14px;
-    background: rgba(255,255,255,0.03);
+    background: rgba(255,255,255,0.06);
     border: 1px solid rgba(255,255,255,0.07);
     border-radius: 12px;
     cursor: pointer;
@@ -505,7 +500,7 @@
 .md-toggle-hint {
     display: block;
     font-size: 10.5px;
-    color: #6b7280;
+    color: var(--tlb-text-muted, #64748b);
     margin-top: 1px;
 }
 
@@ -543,7 +538,7 @@
     border: 1px solid rgba(163,230,53,0.15);
     border-radius: 12px;
     font-size: 12px;
-    color: #9ca3af;
+    color: var(--text-2);
     line-height: 1.55;
 }
 .md-info-box i { color: #a3e635; flex-shrink: 0; margin-top: 1px; }
@@ -629,7 +624,7 @@
 }
 .md-state-sub {
     font-size: 12px;
-    color: #6b7280;
+    color: var(--tlb-text-muted, #64748b);
     margin-bottom: 14px;
 }
 
@@ -657,7 +652,7 @@
 
 .md-progress-label {
     font-size: 11px;
-    color: #6b7280;
+    color: var(--tlb-text-muted, #64748b);
     display: flex;
     justify-content: space-between;
 }
@@ -693,7 +688,7 @@
 }
 .md-result-sub {
     font-size: 12px;
-    color: #6b7280;
+    color: var(--tlb-text-muted, #64748b);
     margin-bottom: 18px;
 }
 
@@ -775,7 +770,7 @@
     align-items: center;
     gap: 12px;
     padding: 13px 14px;
-    background: rgba(255,255,255,0.03);
+    background: rgba(255,255,255,0.06);
     border: 1px solid rgba(255,255,255,0.08);
     border-radius: 12px;
     text-decoration: none;
@@ -805,7 +800,7 @@
 .md-service-desc {
     display: block;
     font-size: 10.5px;
-    color: #6b7280;
+    color: var(--tlb-text-muted, #64748b);
 }
 
 .md-btn-reset {
@@ -816,7 +811,7 @@
     background: rgba(255,255,255,0.04);
     border: 1px solid rgba(255,255,255,0.08);
     border-radius: 10px;
-    color: #9ca3af;
+    color: var(--text-2);
     font-family: inherit;
     font-size: 12px;
     font-weight: 600;
@@ -863,7 +858,7 @@
 }
 .md-tips-list li {
     font-size: 11px;
-    color: #6b7280;
+    color: var(--tlb-text-muted, #64748b);
     padding-left: 12px;
     position: relative;
 }
@@ -903,7 +898,7 @@
     margin-bottom: 10px;
 }
 .md-info-card h3 { font-size: 12px; font-weight: 700; color: #f0fdf4; margin-bottom: 5px; }
-.md-info-card p  { font-size: 11px; color: #6b7280; line-height: 1.6; }
+.md-info-card p  { font-size: 11px; color: var(--text-3); line-height: 1.6; }
 
 /* ============================================================
    TOAST

@@ -3,7 +3,7 @@
 @section('og_image', 'sanitizer')
 @section('title', 'File Security & Privacy Scanner — Deteksi Backdoor, Hapus Metadata | MediaTools')
 @section('meta_description', 'Scan file gambar & PDF untuk mendeteksi skrip berbahaya, backdoor, dan malware tersembunyi. Bersihkan ancaman sekaligus hapus metadata privasi dalam satu proses.')
-@section('meta_keywords', 'Scan file, mendeteksi skrip berbahaya, mendeteksi malware tersembunyi, mendeteksi ancaman file, hapus metadata')
+@section('meta_keywords', 'Privacy & Media Sanitizer, Alat Kebersihan Digital, Scan file, mendeteksi skrip berbahaya, mendeteksi malware tersembunyi, mendeteksi ancaman file, hapus metadata')
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/sanitizer.css') }}">
@@ -13,6 +13,38 @@
 @include('seo.sanitizer')
 
 @section('content')
+<link rel="stylesheet" href="{{ asset('css/tools-base.css') }}">
+<script>document.body.classList.add('tlb-active');</script>
+
+<div class="tlb-page tlb-orange" id="tlbPage_sanitizer">
+
+{{-- ════ TLB HEADER ════ --}}
+<div class="tlb-header">
+    <div class="tlb-header-inner">
+        <div>
+            <div class="tlb-header-label-row">
+                <div class="tlb-header-icon">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <span class="tlb-header-site">MediaTools</span>
+            </div>
+            <div class="tlb-header-badges">
+                <span class="tlb-hbadge"><i class="fa-solid fa-bug-slash"></i> Deteksi Malware</span>
+                <span class="tlb-hbadge"><i class="fa-solid fa-eraser"></i> Hapus Metadata</span>
+                <span class="tlb-hbadge"><i class="fa-solid fa-camera-slash"></i> EXIF Cleaner</span>
+                <span class="tlb-hbadge"><i class="fa-solid fa-lock"></i> Privasi Terjaga</span>
+            </div>
+            <h1 class="tlb-header-title">File Security <span>Scanner.</span></h1>
+            <p class="tlb-header-sub">Scan file untuk mendeteksi backdoor, malware & metadata tersembunyi. Bersihkan dalam satu proses.</p>
+        </div>
+    </div>
+</div>
+<div class="tlb-header-curve"></div>
+
+<div class="tlb-body">
+{{-- ═══ ADS SLOT ═══ --}}
+<div class="ads-slot-header no-print" style="margin-bottom:20px;">@include('components.ads.banner-header')</div>
+
 <script>
     window.__sanitizerScanUrl     = "{{ route('tools.sanitizer.scan') }}";
     window.__sanitizerProcessUrl  = "{{ route('tools.sanitizer.process') }}";
@@ -23,48 +55,6 @@
 {{-- ================================================================
      HERO
      ================================================================ --}}
-<section class="san-hero">
-    {{-- ═══ SLOT 1: HEADER BANNER 728×90 ═══ --}}
-    <div class="ads-slot-header no-print">
-        @include('components.ads.banner-header')
-    </div>
-    <div class="hero-grid-bg"></div>
-    <div class="blob" style="width:460px;height:460px;top:-100px;left:-140px;opacity:0.45;position:absolute;"></div>
-    <div class="blob" style="width:320px;height:320px;top:20px;right:-80px;opacity:0.3;position:absolute;"></div>
-
-    <div class="relative z-10 max-w-3xl mx-auto space-y-5">
-
-        <div class="flex justify-center">
-            <div class="section-label">
-                <i class="fa-solid fa-shield-halved"></i> Security &amp; Privacy Tool
-            </div>
-        </div>
-
-        <h1 class="text-4xl md:text-5xl font-extrabold leading-tight tracking-tight">
-            Deteksi <span class="gradient-text">Ancaman Tersembunyi</span><br>
-            &amp; Bersihkan Metadata Privasi
-        </h1>
-
-        <p class="text-gray-400 text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
-            Scan file gambar &amp; PDF untuk menemukan backdoor, skrip PHP/Python tersembunyi, dan data berbahaya.
-            Bersihkan ancaman sekaligus hapus EXIF, GPS, dan metadata privasi dalam satu proses.
-        </p>
-
-        <div class="flex flex-wrap justify-center gap-2.5 pt-1">
-            <span class="trust-badge"><i class="fa-solid fa-shield-halved"></i> Deteksi Backdoor</span>
-            <span class="trust-badge"><i class="fa-solid fa-location-dot"></i> Hapus GPS &amp; EXIF</span>
-            <span class="trust-badge"><i class="fa-solid fa-bolt"></i> Scan Instan</span>
-            <span class="trust-badge"><i class="fa-solid fa-lock"></i> Tanpa Cloud</span>
-        </div>
-
-        <div class="flex flex-wrap justify-center gap-1.5 pt-1">
-            @foreach(['PHP Backdoor','Python Script','JPEG Polyglot','PDF JavaScript','Shell Exec','Encoded Payload','GPS Location','EXIF Data'] as $tag)
-            <span class="meta-tag"><i class="fa-solid fa-xmark text-[9px]"></i> {{ $tag }}</span>
-            @endforeach
-        </div>
-
-    </div>
-</section>
 
 
 {{-- ================================================================
@@ -403,7 +393,7 @@
         </p>
     </div>
 
-    <div class="faq-list reveal reveal-d2">
+    <div class="font-bold text-sm text-gray-300 uppercase tracking-wider mb-4">
         @foreach([
             ['Bagaimana hacker menyembunyikan skrip dalam file gambar?',
              'Teknik umum adalah "polyglot file" — file yang valid sebagai dua format sekaligus. Misalnya, file JPEG yang berisi PHP script di akhirnya (setelah EOI marker). Saat server memproses upload, file diterima sebagai gambar, tapi bisa dieksekusi sebagai PHP. Tools kami mendeteksi pola ini dan menghapusnya.'],
@@ -470,3 +460,6 @@
 @push('scripts')
 <script src="{{ asset('js/sanitizer.js') }}"></script>
 @endpush
+
+</div>{{-- /.tlb-body --}}
+</div>{{-- /.tlb-page --}}

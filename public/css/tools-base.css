@@ -1,24 +1,3 @@
-/* ============================================================
-   MEDIATOOLS — TOOLS BASE DESIGN SYSTEM  v2.1
-   Inspired by finance.css pattern:
-     · Light tinted page background
-     · Dark gradient header with accent color
-     · White cards with subtle borders & shadows
-     · Gradient action buttons with colored glow shadows
-
-   FIX v2.1:
-     · .tlb-header margin-top fixed so the dark gradient merges
-       seamlessly with the fixed navbar (no more white gap).
-       The navbar is h-20 (80px). main may have padding-top ≈ 80px
-       depending on app.css. We extend the header upward by 82px
-       and compensate with extra padding-top so text stays in place.
-
-   Setup per tool page:
-     1. <link href="{{ asset('css/tools-base.css') }}">
-     2. <script>document.body.classList.add('tlb-active');</script>
-     3. Wrap in <div class="tlb-page tlb-{color}">
-   ============================================================ */
-
 /* ════════════════════════════════════════════
    CSS CUSTOM PROPERTIES — default = green
 ════════════════════════════════════════════ */
@@ -32,9 +11,11 @@
     --tlb-accent-2:    #22c55e;
     --tlb-accent-dim:  rgba(34,197,94,0.12);
     --tlb-accent-glow: rgba(34,197,94,0.30);
-    --tlb-text:        #ffffff;
-    --tlb-text-muted:  #a3e635;
+    /* ── CRITICAL FIXES: dark text on light background ── */
+    --tlb-text:        #0f172a;
+    --tlb-text-muted:  #64748b;
     --tlb-text-light:  #94a3b8;
+    /* ─────────────────────────────────────────────────── */
     --tlb-shadow:      0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.06);
     --tlb-shadow-lg:   0 8px 32px rgba(0,0,0,0.10);
     --tlb-shadow-btn:  0 4px 14px rgba(0,0,0,0.15);
@@ -43,62 +24,73 @@
 }
 
 /* ════════════════════════════════════════════
-   ACCENT COLOR PRESETS — set via class on .tlb-page
+   ACCENT COLOR PRESETS
 ════════════════════════════════════════════ */
 .tlb-purple {
     --tlb-bg: #faf5ff; --tlb-surface2: #f3e8ff; --tlb-border: #e9d5ff;
     --tlb-accent: #7c3aed; --tlb-accent-2: #8b5cf6;
     --tlb-accent-dim: rgba(124,58,237,0.10); --tlb-accent-glow: rgba(124,58,237,0.28);
+    --tlb-text: #1e1b4b; --tlb-text-muted: #6d28d9;
 }
 .tlb-amber {
     --tlb-bg: #fffbeb; --tlb-surface2: #fef9c3; --tlb-border: #fde68a;
     --tlb-accent: #d97706; --tlb-accent-2: #f59e0b;
     --tlb-accent-dim: rgba(217,119,6,0.10); --tlb-accent-glow: rgba(217,119,6,0.28);
+    --tlb-text: #0f172a; --tlb-text-muted: #64748b;
 }
 .tlb-blue {
     --tlb-bg: #eff6ff; --tlb-surface2: #dbeafe; --tlb-border: #bfdbfe;
     --tlb-accent: #2563eb; --tlb-accent-2: #3b82f6;
     --tlb-accent-dim: rgba(37,99,235,0.10); --tlb-accent-glow: rgba(37,99,235,0.28);
+    --tlb-text: #0f172a; --tlb-text-muted: #64748b;
 }
 .tlb-red {
     --tlb-bg: #fef2f2; --tlb-surface2: #fee2e2; --tlb-border: #fecaca;
     --tlb-accent: #dc2626; --tlb-accent-2: #ef4444;
     --tlb-accent-dim: rgba(220,38,38,0.10); --tlb-accent-glow: rgba(220,38,38,0.28);
+    --tlb-text: #0f172a; --tlb-text-muted: #64748b;
 }
 .tlb-teal {
     --tlb-bg: #f0fdfa; --tlb-surface2: #ccfbf1; --tlb-border: #99f6e4;
     --tlb-accent: #0d9488; --tlb-accent-2: #14b8a6;
     --tlb-accent-dim: rgba(13,148,136,0.10); --tlb-accent-glow: rgba(13,148,136,0.28);
+    --tlb-text: #0f172a; --tlb-text-muted: #64748b;
 }
 .tlb-violet {
     --tlb-bg: #f5f3ff; --tlb-surface2: #ede9fe; --tlb-border: #ddd6fe;
     --tlb-accent: #6d28d9; --tlb-accent-2: #7c3aed;
     --tlb-accent-dim: rgba(109,40,217,0.10); --tlb-accent-glow: rgba(109,40,217,0.28);
+    --tlb-text: #0f172a; --tlb-text-muted: #64748b;
 }
 .tlb-lime {
     --tlb-bg: #f7fee7; --tlb-surface2: #ecfccb; --tlb-border: #d9f99d;
     --tlb-accent: #65a30d; --tlb-accent-2: #84cc16;
     --tlb-accent-dim: rgba(101,163,13,0.10); --tlb-accent-glow: rgba(101,163,13,0.28);
+    --tlb-text: #0f172a; --tlb-text-muted: #64748b;
 }
 .tlb-pink {
     --tlb-bg: #fdf2f8; --tlb-surface2: #fce7f3; --tlb-border: #f9a8d4;
     --tlb-accent: #be185d; --tlb-accent-2: #ec4899;
     --tlb-accent-dim: rgba(190,24,93,0.10); --tlb-accent-glow: rgba(190,24,93,0.28);
+    --tlb-text: #0f172a; --tlb-text-muted: #64748b;
 }
 .tlb-orange {
     --tlb-bg: #fff7ed; --tlb-surface2: #ffedd5; --tlb-border: #fed7aa;
     --tlb-accent: #ea580c; --tlb-accent-2: #f97316;
     --tlb-accent-dim: rgba(234,88,12,0.10); --tlb-accent-glow: rgba(234,88,12,0.28);
+    --tlb-text: #0f172a; --tlb-text-muted: #64748b;
 }
 .tlb-rose {
     --tlb-bg: #fff1f2; --tlb-surface2: #ffe4e6; --tlb-border: #fecdd3;
     --tlb-accent: #e11d48; --tlb-accent-2: #f43f5e;
     --tlb-accent-dim: rgba(225,29,72,0.10); --tlb-accent-glow: rgba(225,29,72,0.28);
+    --tlb-text: #0f172a; --tlb-text-muted: #64748b;
 }
 .tlb-indigo {
     --tlb-bg: #eef2ff; --tlb-surface2: #e0e7ff; --tlb-border: #c7d2fe;
     --tlb-accent: #4338ca; --tlb-accent-2: #6366f1;
     --tlb-accent-dim: rgba(67,56,202,0.10); --tlb-accent-glow: rgba(67,56,202,0.28);
+    --tlb-text: #0f172a; --tlb-text-muted: #64748b;
 }
 
 /* ════════════════════════════════════════════
@@ -121,14 +113,9 @@ body.tlb-active {
 
 /* ════════════════════════════════════════════
    DARK GRADIENT HEADER
-   FIX: margin-top extended to cover the gap between
-   the fixed navbar (80px) and the page content.
-   padding-top compensates so inner text stays correctly
-   positioned below the navbar visually.
 ════════════════════════════════════════════ */
 .tlb-header {
     background: linear-gradient(135deg, #0f172a 0%, #0b1a2e 100%);
-    /* Pull the header up to cover gap left by fixed navbar */
     margin-top: -82px;
     padding: calc(82px + 28px) 0 40px;
     position: relative;
@@ -224,7 +211,7 @@ body.tlb-active {
 .tlb-hbadge.accent {
     background: rgba(163,230,53,0.12);
     border-color: rgba(163,230,53,0.25);
-    color: var(--tlb-accent);
+    color: #a3e635;
 }
 .tlb-header-title {
     font-size: clamp(1.6rem, 3.5vw, 2.2rem);
@@ -234,23 +221,19 @@ body.tlb-active {
     line-height: 1.1;
     margin-bottom: 6px;
 }
-.tlb-header-title span { color: var(--tlb-accent); }
+.tlb-header-title span { color: #a3e635; }
 .tlb-header-sub {
     font-size: 0.875rem;
     color: #94a3b8;
     line-height: 1.6;
     max-width: 540px;
 }
-
-/* Header right-side actions slot */
 .tlb-header-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
     flex-shrink: 0;
 }
-
-/* Curve bottom edge — seamless transition to light body */
 .tlb-header-curve {
     height: 28px;
     background: linear-gradient(135deg, #0f172a 0%, #0b1a2e 100%);
@@ -582,10 +565,10 @@ body.tlb-active {
 }
 .tlb-table tbody td {
     padding: 12px 16px; font-size: 0.875rem; color: var(--tlb-text);
-    border-bottom: 1px solid #f1f5f9; vertical-align: middle;
+    border-bottom: 1px solid var(--tlb-border2); vertical-align: middle;
 }
 .tlb-table tbody tr:last-child td { border-bottom: none; }
-.tlb-table tbody tr:hover td { background: #f8fafc; }
+.tlb-table tbody tr:hover td { background: var(--tlb-surface2); }
 
 /* ════════════════════════════════════════════
    STEPPER
@@ -618,7 +601,7 @@ body.tlb-active {
    PROGRESS TRACK
 ════════════════════════════════════════════ */
 .tlb-progress-track {
-    height: 5px; background: #f1f5f9;
+    height: 5px; background: var(--tlb-surface2);
     border-radius: 99px; overflow: hidden; margin-top: 8px;
 }
 .tlb-progress-bar {
@@ -639,8 +622,26 @@ body.tlb-active {
 }
 
 /* ════════════════════════════════════════════
+   ADS SLOTS — Light Theme Adaptation
+   Override dark-mode ad container styles
+════════════════════════════════════════════ */
+.tlb-page .ads-label {
+    color: var(--tlb-text-light);
+}
+.tlb-page .ads-slot-result .ads-container,
+.tlb-page .ads-slot-native .ads-container {
+    background: var(--tlb-surface) !important;
+    border: 1px solid var(--tlb-border2) !important;
+    border-top: 2px solid var(--tlb-accent) !important;
+}
+.tlb-page .ads-layout__sidebar .ads-container {
+    background: var(--tlb-surface) !important;
+    border: 1px solid var(--tlb-border) !important;
+}
+
+/* ════════════════════════════════════════════
    TOOL-SPECIFIC BACKGROUND & WRAPPER RESETS
-   Keep tool CSS classes but override dark backgrounds
+   Strip dark backgrounds from tool shell classes
 ════════════════════════════════════════════ */
 .tlb-page .bgr-root,
 .tlb-page .ic-page,
@@ -665,28 +666,49 @@ body.tlb-active {
 .tlb-page .san-hero {
     background: transparent !important;
     padding-top: 0 !important;
-    position: relative;
 }
 .tlb-page .blob,
 .tlb-page .hero-grid-bg,
 .tlb-page .pb-grid-bg { display: none !important; }
 
-/* QR Code — was Tailwind dark */
-.tlb-page .min-h-screen {
-    background: transparent !important;
+/* ── Universal text color resets on light bg ── */
+/* Any element using hardcoded dark/white text */
+.tlb-page .md-title,
+.tlb-page .fc-title,
+.tlb-page .lt-title,
+.tlb-page .sig-topbar-title,
+.tlb-page .pg-title,
+.tlb-page .pdf-accent,
+.tlb-page .bgr-mc-title,
+.tlb-page .bgr-mode-heading h2,
+.tlb-page [class*="-title"]:not(.tlb-header-title):not(.tlb-header-site) {
     color: var(--tlb-text) !important;
 }
+.tlb-page .md-subtitle,
+.tlb-page .fc-subtitle,
+.tlb-page .lt-subtitle,
+.tlb-page .sig-topbar-sub,
+.tlb-page .pg-subtitle,
+.tlb-page .bgr-mc-desc,
+.tlb-page [class*="-subtitle"],
+.tlb-page [class*="-sub"]:not(.tlb-stat-sub):not(.tlb-card-sub):not(.tlb-header-sub) {
+    color: var(--tlb-text-muted) !important;
+}
 
-/* Override dark text colors in tool CSS on light bg */
+/* ── Card / panel backgrounds on light bg ── */
 .tlb-page .bgr-mode-card,
 .tlb-page .bgr-view,
-.tlb-page .bgr-upload-view {
+.tlb-page .bgr-upload-view,
+.tlb-page .bgr-options-panel,
+.tlb-page .bgr-mc-card,
+.tlb-page .bgr-opt-group,
+.tlb-page .bgr-result-card {
     background: var(--tlb-surface) !important;
     border-color: var(--tlb-border2) !important;
     color: var(--tlb-text) !important;
 }
 
-/* bgremover dropzone on light bg */
+/* ── Dropzone on light bg ── */
 .tlb-page .bgr-dropzone {
     background: var(--tlb-surface) !important;
     border-color: var(--tlb-border2) !important;
@@ -697,38 +719,102 @@ body.tlb-active {
     background: var(--tlb-accent-dim) !important;
 }
 
-/* bgremover option panels */
-.tlb-page .bgr-options-panel,
-.tlb-page .bgr-mc-card,
-.tlb-page .bgr-opt-group,
-.tlb-page .bgr-result-card {
+/* ── LinkTree: override dark card bg ── */
+.tlb-page .lt-stat-card,
+.tlb-page .lt-panel,
+.tlb-page .lt-card {
     background: var(--tlb-surface) !important;
-    border-color: var(--tlb-border2) !important;
+    border-color: var(--tlb-border) !important;
+    color: var(--tlb-text) !important;
+}
+.tlb-page .lt-stat-label { color: var(--tlb-text-muted) !important; }
+.tlb-page .lt-stat-value { color: var(--tlb-accent) !important; }
+.tlb-page .lt-stat-sub   { color: var(--tlb-text-light) !important; }
+.tlb-page .lt-stats-row {
+    background: var(--tlb-surface) !important;
+    border-color: var(--tlb-border) !important;
 }
 
-/* Text color resets for dark-bg-designed tools */
-.tlb-page .bgr-mc-title,
-.tlb-page .bgr-mode-heading h2,
-.tlb-page .pdf-accent,
-.tlb-page .pg-title,
-.tlb-page .md-title,
-.tlb-page .fc-title,
-.tlb-page .lt-title,
-.tlb-page .sig-topbar-title { color: var(--tlb-text) !important; }
+/* ── Signature: override dark glass card ── */
+.tlb-page .sig-glass {
+    background: var(--tlb-surface) !important;
+    border-color: var(--tlb-border) !important;
+    color: var(--tlb-text) !important;
+}
+.tlb-page .sig-input,
+.tlb-page .sig-select,
+.tlb-page .sig-textarea {
+    background: var(--tlb-surface2) !important;
+    border-color: var(--tlb-border2) !important;
+    color: var(--tlb-text) !important;
+}
+.tlb-page .sig-input::placeholder,
+.tlb-page .sig-select option,
+.tlb-page .sig-textarea::placeholder { color: var(--tlb-text-light) !important; }
 
-.tlb-page .bgr-mc-desc,
-.tlb-page .pg-subtitle,
-.tlb-page .md-subtitle,
-.tlb-page .fc-subtitle,
-.tlb-page .lt-subtitle,
-.tlb-page .sig-topbar-sub { color: var(--tlb-text-muted) !important; }
+/* ── Password Generator: fix undefined vars ── */
+.tlb-page .pg-card,
+.tlb-page .pg-strength-row,
+.tlb-page .pg-option-grid,
+.tlb-page .pg-option-card {
+    background: var(--tlb-surface) !important;
+    border-color: var(--tlb-border2) !important;
+    color: var(--tlb-text) !important;
+}
+.tlb-page .pg-badge-secure {
+    background: var(--tlb-surface2) !important;
+    border-color: var(--tlb-border2) !important;
+    color: var(--tlb-text-muted) !important;
+}
+.tlb-page .pg-badge-free {
+    background: var(--tlb-accent-dim) !important;
+    border-color: var(--tlb-accent) !important;
+    color: var(--tlb-accent) !important;
+}
 
-/* QR page text overrides */
+/* ── Media Downloader: fix dark text/bg ── */
+.tlb-page .md-badge-secure {
+    background: var(--tlb-surface2) !important;
+    border-color: var(--tlb-border2) !important;
+    color: var(--tlb-text-muted) !important;
+}
+.tlb-page .md-badge-free {
+    background: var(--tlb-accent-dim) !important;
+    border-color: var(--tlb-accent) !important;
+    color: var(--tlb-accent) !important;
+}
+.tlb-page .md-card,
+.tlb-page .md-platform-tab,
+.tlb-page .md-panel,
+.tlb-page .md-result-card {
+    background: var(--tlb-surface) !important;
+    border-color: var(--tlb-border) !important;
+    color: var(--tlb-text) !important;
+}
+
+/* ── QR: override dark bg-base class ── */
+.tlb-page .min-h-screen { background: transparent !important; }
+.tlb-page .glass-card {
+    background: var(--tlb-surface) !important;
+    border-color: var(--tlb-border) !important;
+    backdrop-filter: none !important;
+}
+.tlb-page .input-field {
+    background: var(--tlb-surface2) !important;
+    border-color: var(--tlb-border2) !important;
+    color: var(--tlb-text) !important;
+}
+.tlb-page .input-field::placeholder { color: var(--tlb-text-light) !important; }
+.tlb-page .style-opt {
+    background: var(--tlb-surface2) !important;
+    border-color: var(--tlb-border2) !important;
+    color: var(--tlb-text-muted) !important;
+}
 .tlb-page .text-white { color: var(--tlb-text) !important; }
 .tlb-page .text-gray-500 { color: var(--tlb-text-muted) !important; }
 .tlb-page .bg-\[#020d0d\] { background: transparent !important; }
 
-/* sanitizer hero text on light bg */
+/* ── Sanitizer ── */
 .tlb-page .san-hero .text-4xl,
 .tlb-page .san-hero .text-5xl { color: var(--tlb-text) !important; }
 .tlb-page .san-hero .text-gray-400 { color: var(--tlb-text-muted) !important; }
@@ -738,37 +824,28 @@ body.tlb-active {
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
-
-/* Sanitizer trust badges and meta tags on light bg */
 .tlb-page .trust-badge {
     background: var(--tlb-accent-dim) !important;
-    border-color: rgba(0,0,0,0.08) !important;
+    border-color: var(--tlb-border) !important;
     color: var(--tlb-accent) !important;
 }
 .tlb-page .meta-tag {
-    background: #f1f5f9 !important;
-    border-color: #e2e8f0 !important;
+    background: var(--tlb-surface2) !important;
+    border-color: var(--tlb-border2) !important;
     color: var(--tlb-text-muted) !important;
 }
 
-/* Proposal on light bg */
+/* ── Invoice ── */
+.tlb-page .invoice-topbar-title { color: var(--tlb-text) !important; }
+.tlb-page .invoice-topbar-title span { color: var(--tlb-accent) !important; }
+
+/* ── Proposal/Fotobox ── */
 .tlb-page .pb-tpl-card {
     background: var(--tlb-surface) !important;
     border-color: var(--tlb-border2) !important;
 }
 .tlb-page .pb-hero-title { color: var(--tlb-text) !important; }
 .tlb-page .pb-hero-sub   { color: var(--tlb-text-muted) !important; }
-
-/* linktree stats row on light bg */
-.tlb-page .lt-stats-row {
-    background: var(--tlb-surface) !important;
-    border-color: var(--tlb-border) !important;
-}
-.tlb-page .lt-stat-label { color: var(--tlb-text-muted) !important; }
-.tlb-page .lt-stat-value { color: var(--tlb-text) !important; }
-
-/* Invoice shell on light bg */
-.tlb-page .invoice-topbar-title { color: var(--tlb-text) !important; }
 
 /* ════════════════════════════════════════════
    RESPONSIVE
