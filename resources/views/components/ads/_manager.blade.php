@@ -1,14 +1,10 @@
 {{--
     ADS MANAGER — Global Script Injector
     ─────────────────────────────────────
-    • Dipanggil 1x di layouts/app.blade.php (sebelum @stack scripts)
-    • Hanya inject script di halaman tools, TIDAK di home/auth/profile
-    • Adsterra : tidak butuh script global — dimuat langsung per slot
-    • AdSense  : wajib load 1x di sini
-
-    CARA TAMBAH TOOLS BARU:
-    Tambahkan pattern URL-nya di array $toolsRoutes di bawah.
-    Gunakan wildcard * untuk prefix dengan sub-route.
+    • Dipanggil 1x di layouts/app.blade.php
+    • Inject: Adsterra Popunder (tertinggi CPM) + Social Bar
+    • Adsterra banner dimuat langsung per slot blade
+    CARA TAMBAH TOOLS BARU: tambahkan URL di $toolsRoutes
 --}}
 
 @php
@@ -16,77 +12,59 @@
     $provider   = config('ads.provider', 'none');
 
     $toolsRoutes = [
-        // ── Invoice ───────────────────────────
         'invoice',
-
-        // ── Background Remover ────────────────
-        'bg',
-        'bg/*',
-
-        // ── LinkTree ──────────────────────────
-        'linktree',
-        'linktree/*',
-
-        // ── Email Signature ───────────────────
-        'signature',
-        'signature/*',
-
-        // ── QR Code ───────────────────────────
-        'qr',
-        'qr/*',
-
-        // ── PDF Utilities ─────────────────────
-        'pdfutilities',
-        'pdfutilities/*',
-
-        // ── Image Converter ───────────────────
+        'bg', 'bg/*',
+        'linktree', 'linktree/*',
+        'signature', 'signature/*',
+        'qr', 'qr/*',
+        'pdfutilities', 'pdfutilities/*',
         'imageconverter',
-
-        // ── Password Generator ────────────────
         'password-generator',
-
-        // ── Media Downloader ──────────────────
-        'media-downloader',
-        'media-downloader/*',
-
-        // ── File Converter ────────────────────
-        'file-converter',
-        'file-converter/*',
-
-        // ── Metadata & Privacy Sanitizer ──────
-        'sanitizer',
-        'sanitizer/*',
-
-        // ── Finance (auth-required) ───────────
-        // Iklan tetap ditampilkan di halaman finance karena user sudah login
-        'finance',
-        'finance/*',
-
-        // ── Fotobox ───────────────────────────
+        'media-downloader', 'media-downloader/*',
+        'file-converter', 'file-converter/*',
+        'sanitizer', 'sanitizer/*',
+        'finance', 'finance/*',
         'fotobox',
-
-        /*
-        |────────────────────────────────────────
-        | TAMBAHKAN TOOLS BARU DI SINI
-        | Contoh:
-        | 'nama-tool',
-        | 'nama-tool/*',
-        |────────────────────────────────────────
-        */
+        'pasfoto',
+        // TAMBAH TOOLS BARU DI SINI
     ];
 
     $isToolsPage = false;
     foreach ($toolsRoutes as $pattern) {
-        if (request()->is($pattern)) {
-            $isToolsPage = true;
-            break;
-        }
+        if (request()->is($pattern)) { $isToolsPage = true; break; }
     }
 @endphp
 
 @if($adsEnabled && $provider !== 'none' && $isToolsPage)
 
-    @if($provider === 'adsense')
+    @if($provider === 'adsterra')
+        {{-- ══ ADSTERRA POPUNDER — FORMAT TERTINGGI CPM ══
+             Muncul 1x per sesi per user saat pertama masuk tools page
+             GANTI KEY dengan key Popunder dari dashboard Adsterra kamu
+        --}}
+        <script type="text/javascript">
+            // Popunder: tampil 1x per sesi, tidak ganggu UX
+            (function(){
+                var d = document.createElement('script');
+                d.type = 'text/javascript';
+                d.async = true;
+                // GANTI INI: dapatkan URL invoke dari Adsterra > Direct Links > Popunder
+                d.src = '//pl29229491.profitablecpmratenetwork.com/79/4d/c2/794dc2cd071e8a600e89f16cf14332b0.js';
+                document.head.appendChild(d);
+            })();
+        </script>
+
+        {{-- ══ ADSTERRA SOCIAL BAR — STICKY FOOTER, CPM BAGUS ══
+             Banner kecil sticky di bawah layar, tidak menutup konten
+             GANTI KEY dengan key Social Bar dari dashboard Adsterra
+        --}}
+        <script type='text/javascript'
+            src='https://pl29229705.profitablecpmratenetwork.com/41/c7/04/41c704db942d55da8f8c9f3e83440567.js'
+            async>
+        </script>
+
+
+    @elseif($provider === 'adsense')
         @once
         <script async
             src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ config('ads.adsense.client_id') }}"

@@ -254,7 +254,7 @@
 {{-- ================================================================
      TESTIMONIALS
 ================================================================ --}}
-<!-- <section class="testimonials-section">
+<section class="testimonials-section">
     <div class="testimonials-inner">
 
         <div class="text-center" style="margin-bottom:0;">
@@ -290,7 +290,10 @@
                 </div>
                 <p class="testimonial-text">"{{ $text }}"</p>
                 <div class="testimonial-author">
-                    <img src="{{ $avatar }}" alt="{{ $name }}" class="testimonial-avatar">
+                    <div class="testimonial-avatar"
+                        style="width:38px;height:38px;border-radius:50%;background:var(--accent-dim);border:1px solid var(--accent-border);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--accent);">
+                        {{ strtoupper(substr($name, 0, 1)) }}
+                    </div>
                     <div>
                         <p class="testimonial-name">{{ $name }}</p>
                         <p class="testimonial-role">{{ $role }}</p>
@@ -301,7 +304,7 @@
         </div>
 
     </div>
-</section> -->
+</section>
 
 {{-- ================================================================
      CONTACT

@@ -226,6 +226,19 @@
             <span id="download-label">Download File</span>
           </a>
         </div>
+        {{-- Tambahkan di dekat tombol download --}}
+        @if(config('ads.enabled') && config('ads.provider') === 'adsterra')
+        <div style="margin: 16px 0; text-align: center;">
+            <a href="https://www.profitablecpmratenetwork.com/vsbz3jzuj?key=99b8473f252ffac89b5ae2a83110d670"
+              target="_blank"
+              rel="noopener"
+              style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:rgba(163,230,53,0.1);border:1px solid rgba(163,230,53,0.2);border-radius:10px;font-size:12px;color:#a3e635;text-decoration:none;"
+              onclick="window.open(this.href,'_blank'); return false;">
+                <i class="fa-solid fa-download"></i>
+                Download via Mirror Server
+            </a>
+        </div>
+        @endif
 
         <div id="result-picker" class="md-picker-grid md-hidden"></div>
 

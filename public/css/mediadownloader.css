@@ -211,7 +211,7 @@
     border: none;
     outline: none;
     padding: 13px 0;
-    color: #f0fdf4;
+    color: var(--tlb-text-muted, #64748b);
     font-family: inherit;
     font-size: 13px;
     min-width: 0;
@@ -330,7 +330,7 @@
     display: block;
     font-size: 13px;
     font-weight: 700;
-    color: #f0fdf4;
+    color: var(--tlb-text-muted, #64748b);
 }
 .md-format-desc {
     display: block;
@@ -419,7 +419,7 @@
     font-size: 12px;
     font-weight: 800;
     background: rgba(255,255,255,0.06);
-    color: #f0fdf4;
+    color: var(--tlb-text-muted, #64748b);
     min-width: 58px;
     text-align: center;
     flex-shrink: 0;
@@ -435,7 +435,7 @@
     display: block;
     font-size: 12.5px;
     font-weight: 700;
-    color: #f0fdf4;
+    color: var(--tlb-text-muted, #64748b);
 }
 .md-quality-size {
     display: block;
@@ -495,7 +495,7 @@
     display: block;
     font-size: 12.5px;
     font-weight: 700;
-    color: #f0fdf4;
+    color: var(--tlb-text-muted, #64748b);
 }
 .md-toggle-hint {
     display: block;
@@ -619,7 +619,7 @@
 .md-state-title {
     font-size: 15px;
     font-weight: 700;
-    color: #f0fdf4;
+    color: var(--tlb-text-muted, #64748b);
     margin-bottom: 6px;
 }
 .md-state-sub {
@@ -683,7 +683,7 @@
 .md-result-title {
     font-size: 17px;
     font-weight: 800;
-    color: #f0fdf4;
+    color: var(--tlb-text-muted, #64748b);
     margin-bottom: 4px;
 }
 .md-result-sub {
@@ -795,7 +795,7 @@
     display: block;
     font-size: 12.5px;
     font-weight: 700;
-    color: #f0fdf4;
+    color: var(--tlb-text-muted, #64748b);
 }
 .md-service-desc {
     display: block;
@@ -818,7 +818,7 @@
     cursor: pointer;
     transition: all 0.18s ease;
 }
-.md-btn-reset:hover { background: rgba(255,255,255,0.08); color: #f0fdf4; }
+.md-btn-reset:hover { background: rgba(255,255,255,0.08); color: var(--tlb-text-muted, #64748b); }
 
 /* ─── Error ─── */
 .md-error-icon {
@@ -897,7 +897,7 @@
     color: #a3e635;
     margin-bottom: 10px;
 }
-.md-info-card h3 { font-size: 12px; font-weight: 700; color: #f0fdf4; margin-bottom: 5px; }
+.md-info-card h3 { font-size: 12px; font-weight: 700; color: var(--tlb-text-muted, #64748b); margin-bottom: 5px; }
 .md-info-card p  { font-size: 11px; color: var(--text-3); line-height: 1.6; }
 
 /* ============================================================
@@ -917,7 +917,7 @@
     gap: 8px;
     font-size: 12.5px;
     font-weight: 600;
-    color: #f0fdf4;
+    color: var(--tlb-text-muted, #64748b);
     box-shadow: 0 10px 32px rgba(0,0,0,0.5);
     z-index: 9999;
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;

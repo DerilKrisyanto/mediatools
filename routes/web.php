@@ -21,6 +21,36 @@ use App\Http\Controllers\Tools\FinanceController;
 // ========== Halaman Utama ========== //
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+// ══ SEO URL Redirects — URL ramah kata kunci → URL asli ══
+// Redirect 301 = Google transfer "link juice" ke URL tujuan
+Route::redirect('/background-remover',       '/bg',               301)->name('tools.bgremover.seo');
+Route::redirect('/remove-background',        '/bg',               301);
+Route::redirect('/hapus-background',         '/bg',               301);
+Route::redirect('/pdf-tools',                '/pdfutilities',     301);
+Route::redirect('/pdf-utilities',            '/pdfutilities',     301);
+Route::redirect('/compress-pdf',             '/pdfutilities',     301);
+Route::redirect('/merge-pdf',                '/pdfutilities',     301);
+Route::redirect('/qr-code-generator',        '/qr',               301);
+Route::redirect('/buat-qr-code',             '/qr',               301);
+Route::redirect('/image-converter',          '/imageconverter',   301);
+Route::redirect('/compress-gambar',          '/imageconverter',   301);
+Route::redirect('/resize-gambar',            '/imageconverter',   301);
+Route::redirect('/convert-pdf',              '/file-converter',   301);
+Route::redirect('/pdf-to-word',              '/file-converter',   301);
+Route::redirect('/download-video',           '/media-downloader', 301);
+Route::redirect('/download-youtube',         '/media-downloader', 301);
+Route::redirect('/download-tiktok',          '/media-downloader', 301);
+Route::redirect('/password-generator',       '/password-generator', 301);
+Route::redirect('/email-signature',          '/signature',        301);
+Route::redirect('/buat-invoice',             '/invoice',          301);
+Route::redirect('/invoice-generator',        '/invoice',          301);
+Route::redirect('/pas-foto',                 '/pasfoto',          301);
+Route::redirect('/photo-booth',              '/fotobox',          301);
+
+
+
+// ========== Daftar Route Tools ==========
+
 // ========== Invoice ========== //
 Route::get('/invoice', [InvoiceController::class, 'index'])->name('tools.invoice');
 
@@ -113,6 +143,11 @@ Route::prefix('sanitizer')->group(function () {
         ->middleware('throttle:60,1');
 });
 
+// ========== PasFoto / Smart Photo Studio ========== //
+Route::prefix('pasfoto')->group(function () {
+    Route::get('/', [PasFotoController::class, 'index'])->name('tools.pasfoto');
+});
+
 // ========== Fotobox Online ========== //
 Route::get('/fotobox', function () {
     return view('tools.fotobox.index');
@@ -140,33 +175,37 @@ Route::get('/sitemap.xml', function () {
     $urls = [
         // ── Tier 1: Beranda ──
         ['loc' => '/', 'priority' => '1.0', 'changefreq' => 'weekly', 'lastmod' => $today,
-         'image' => ['loc' => '/images/og/home.png', 'title' => 'MediaTools — Tools Digital Gratis: Invoice, PDF, QR Code, Background Remover']],
+            'image' => ['loc' => '/images/og/home.png', 'title' => 'MediaTools — Tools Digital Gratis: Invoice, PDF, QR Code, Background Remover']],
 
         // ── Tier 2: Tools volume tinggi ──
         ['loc' => '/bg',               'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => $today,
-         'image' => ['loc' => '/images/og/bg.png',        'title' => 'Background Remover Gratis — Hapus Background Foto Online dengan AI']],
+            'image' => ['loc' => '/images/og/bgremover.png',        'title' => 'Background Remover Gratis — Hapus Background Foto Online dengan AI']],
         ['loc' => '/invoice',          'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => $today,
-         'image' => ['loc' => '/images/og/invoice.png',   'title' => 'Invoice Generator Gratis Online — Buat Tagihan Profesional']],
+            'image' => ['loc' => '/images/og/invoice.png',   'title' => 'Invoice Generator Gratis Online — Buat Tagihan Profesional']],
         ['loc' => '/pdfutilities',     'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => $today,
-         'image' => ['loc' => '/images/og/pdf.png',       'title' => 'PDF Utilities — Merge, Split & Compress PDF Gratis Online']],
+            'image' => ['loc' => '/images/og/pdfutilities.png',       'title' => 'PDF Utilities — Merge, Split & Compress PDF Gratis Online']],
         ['loc' => '/file-converter',   'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => $today,
-         'image' => ['loc' => '/images/og/converter.png', 'title' => 'File Converter Online — PDF ke Word, Excel, JPG Gratis']],
+            'image' => ['loc' => '/images/og/fileconverter.png', 'title' => 'File Converter Online — PDF ke Word, Excel, JPG Gratis']],
         ['loc' => '/imageconverter',   'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => $today,
-         'image' => ['loc' => '/images/og/image.png',     'title' => 'Image Converter Gratis — Resize, Compress & Konversi Gambar Online']],
+            'image' => ['loc' => '/images/og/imageconverter.png',     'title' => 'Image Converter Gratis — Resize, Compress & Konversi Gambar Online']],
         ['loc' => '/media-downloader', 'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => $today,
-         'image' => ['loc' => '/images/og/media.png',     'title' => 'Media Downloader — Download YouTube, TikTok & Instagram Gratis']],
+            'image' => ['loc' => '/images/og/mediadownloader.png',     'title' => 'Media Downloader — Download YouTube, TikTok & Instagram Gratis']],
 
         // ── Tier 3: Tools branding & keamanan ──
         ['loc' => '/linktree',           'priority' => '0.8', 'changefreq' => 'monthly', 'lastmod' => $today,
-         'image' => ['loc' => '/images/og/linktree.png',  'title' => 'LinkTree Builder Gratis — Buat Halaman Link in Bio Profesional']],
+            'image' => ['loc' => '/images/og/linktree.png',  'title' => 'LinkTree Builder Gratis — Buat Halaman Link in Bio Profesional']],
         ['loc' => '/qr',                 'priority' => '0.8', 'changefreq' => 'monthly', 'lastmod' => $today,
-         'image' => ['loc' => '/images/og/qr.png',        'title' => 'QR Code Generator Gratis — Buat QR Code Custom & Branded']],
+            'image' => ['loc' => '/images/og/qr.png',        'title' => 'QR Code Generator Gratis — Buat QR Code Custom & Branded']],
         ['loc' => '/password-generator', 'priority' => '0.8', 'changefreq' => 'monthly', 'lastmod' => $today,
-         'image' => ['loc' => '/images/og/password.png',  'title' => 'Password Generator Gratis — Buat Password Kuat & Aman Instan']],
+            'image' => ['loc' => '/images/og/passwordgenerator.png',  'title' => 'Password Generator Gratis — Buat Password Kuat & Aman Instan']],
         ['loc' => '/signature',          'priority' => '0.8', 'changefreq' => 'monthly', 'lastmod' => $today,
-         'image' => ['loc' => '/images/og/signature.png', 'title' => 'Email Signature Generator Profesional Gratis — Gmail & Outlook']],
+            'image' => ['loc' => '/images/og/signature.png', 'title' => 'Email Signature Generator Profesional Gratis — Gmail & Outlook']],
         ['loc' => '/sanitizer',          'priority' => '0.8', 'changefreq' => 'monthly', 'lastmod' => $today,
-         'image' => ['loc' => '/images/og/sanitizer.png', 'title' => 'File Privacy Sanitizer — Hapus Metadata & Lindungi Privasi File']],
+            'image' => ['loc' => '/images/og/home.png', 'title' => 'File Privacy Sanitizer — Hapus Metadata & Lindungi Privasi File']],
+        ['loc' => '/fotobox', 'priority' => '0.7', 'changefreq' => 'monthly', 'lastmod' => $today,
+            'image' => ['loc' => '/images/og/home.png', 'title' => 'FotoBox Online Gratis — Photo Booth 6 Foto + Template | MediaTools']],
+        ['loc' => '/pasfoto', 'priority' => '0.7', 'changefreq' => 'monthly', 'lastmod' => $today,
+            'image' => ['loc' => '/images/og/home.png', 'title' => 'Smart Photo Studio — Pas Foto Online Gratis 2x3 3x4 4x6 | MediaTools']]
 
         // ── Finance: auth-required, tidak diindex Google ──
         // (dikecualikan dari sitemap karena membutuhkan login)

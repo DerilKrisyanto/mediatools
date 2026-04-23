@@ -30,6 +30,13 @@
                 <span class="tlb-hbadge"><i class="fa-solid fa-id-card"></i> Pas Foto</span>
                 <span class="tlb-hbadge"><i class="fa-solid fa-infinity"></i> Gratis</span>
             </div>
+            <nav aria-label="Breadcrumb" class="flex justify-center mb-5">
+                <ol class="flex items-center gap-2 text-xs" style="color:var(--text-3)">
+                    <li><a href="{{ url('/') }}" style="color:var(--text-3);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-3)'">Home</a></li>
+                    <li style="margin:0 4px;font-size:9px;">›</li>
+                    <li style="color:var(--accent);font-weight:600;">Hapus Background & Buat Pas Foto Online Gratis</li>
+                </ol>
+            </nav>
             <h1 class="tlb-header-title">Photo <span>Tools Pro.</span></h1>
             <p class="tlb-header-sub">Hapus background presisi dengan AI BiRefNet atau buat pas foto 2×3, 3×4, 4×6 siap cetak.</p>
         </div>

@@ -50,4 +50,6 @@ return [
         'test_mode' => env('REMBG_TEST_MODE', false),
     ],
 
+    'google_analytics_id' => env('GOOGLE_ANALYTICS_ID', ''),
+
 ];

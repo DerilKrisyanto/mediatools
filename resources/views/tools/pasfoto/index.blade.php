@@ -3,6 +3,8 @@
 @section('title', 'Smart Photo Studio — Pas Foto & Background Remover | MediaTools')
 @section('meta_description', 'Buat pas foto online & hapus background foto dengan AI BiRefNet dalam satu tools. Ukuran 2×3, 3×4, 4×6. Background merah, biru, putih. Export JPG & PDF. Gratis, tanpa daftar.')
 
+@include('seo.pasfoto')
+
 @push('styles')
     <link rel="stylesheet" href="{{ asset('css/pasfoto.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">

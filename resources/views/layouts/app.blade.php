@@ -24,7 +24,7 @@
         $ogImageUrl = $appUrl . '/images/og/' . $ogImageKey . '.png';
 
         /* ── GA4 Measurement ID dari .env ── */
-        $gaId = env('GOOGLE_ANALYTICS_ID', '');
+        $gaId = config('services.google_analytics_id', '');
 
         /* ── Global JSON-LD ── */
         $globalSchema = [

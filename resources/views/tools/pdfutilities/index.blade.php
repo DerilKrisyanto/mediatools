@@ -28,6 +28,13 @@
                 <span class="tlb-hbadge"><i class="fa-solid fa-compress"></i> Compress PDF</span>
                 <span class="tlb-hbadge"><i class="fa-solid fa-infinity"></i> Gratis</span>
             </div>
+            <nav aria-label="Breadcrumb" class="flex justify-center mb-5">
+                <ol class="flex items-center gap-2 text-xs" style="color:var(--text-3)">
+                    <li><a href="{{ url('/') }}" style="color:var(--text-3);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-3)'">Home</a></li>
+                    <li style="margin:0 4px;font-size:9px;">›</li>
+                    <li style="color:var(--accent);font-weight:600;">PDF Tools Gratis — Merge Split Compress PDF Online</li>
+                </ol>
+            </nav>
             <h1 class="tlb-header-title">PDF <span>Utilities.</span></h1>
             <p class="tlb-header-sub">Merge, split & compress PDF. Merge & Split: privasi 100% di browser. Compress: Ghostscript server-side.</p>
         </div>
