@@ -21,25 +21,19 @@
 <div class="tlb-header">
     <div class="tlb-header-inner">
         <div>
-            <div class="tlb-header-label-row">
-                <div class="tlb-header-icon">
-                    <i class="fa-solid fa-signature"></i>
-                </div>
-                <span class="tlb-header-site">MediaTools</span>
-            </div>
+            <nav aria-label="Breadcrumb" class="flex justify-left mb-5">
+                <ol class="flex items-center gap-2 text-xs" style="color:var(--text-3)">
+                    <li><a href="{{ url('/') }}" style="color:var(--text-3);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-3)'">Home</a></li>
+                    <li style="margin:0 4px;font-size:9px;">›</li>
+                    <li style="color:var(--accent);font-weight:600;">Email Signature Generator</li>
+                </ol>
+            </nav>
             <div class="tlb-header-badges">
                 <span class="tlb-hbadge"><i class="fa-solid fa-layer-group"></i> 3 Template</span>
                 <span class="tlb-hbadge"><i class="fa-solid fa-brands fa-google"></i> Gmail Ready</span>
                 <span class="tlb-hbadge"><i class="fa-solid fa-envelope"></i> Outlook Ready</span>
                 <span class="tlb-hbadge"><i class="fa-solid fa-code"></i> HTML Export</span>
             </div>
-            <nav aria-label="Breadcrumb" class="flex justify-center mb-5">
-                <ol class="flex items-center gap-2 text-xs" style="color:var(--text-3)">
-                    <li><a href="{{ url('/') }}" style="color:var(--text-3);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-3)'">Home</a></li>
-                    <li style="margin:0 4px;font-size:9px;">›</li>
-                    <li style="color:var(--accent);font-weight:600;">Email Signature Generator Gratis — Tanda Tangan Email Profesional</li>
-                </ol>
-            </nav>
             <h1 class="tlb-header-title">Signature <span>Studio.</span></h1>
             <p class="tlb-header-sub">Bangun identitas email profesional dalam hitungan menit. 3 template, copy-paste ke Gmail & Outlook.</p>
         </div>

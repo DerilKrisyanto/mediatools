@@ -133,20 +133,23 @@
     @php
     $tools = [
         // [cat, icon, icon-bg-color, icon-text-color, name, desc, badge, route, available]
-        ['social','fa-link',              'rgba(139,92,246,0.12)',  '#a78bfa', 'LinkTree Builder',   'Satukan semua link penting di satu halaman landing yang elegan.',                  'HOT',  'linktree',          true],
-        ['doc',  'fa-qrcode',             'rgba(59,130,246,0.12)',  '#60a5fa', 'QR Code Generator',  'QR Code custom untuk menu, pembayaran, kontak, atau URL bisnis Anda.',             null, 'qr',                true],
-        ['security','fa-signature',       'rgba(163,230,53,0.10)', 'var(--accent)','Email Signature','Tanda tangan email profesional untuk Gmail, Outlook & semua email client.',       null,   'signature',         true],
-        ['image','fa-scissors',           'rgba(244,63,94,0.12)',   '#fb7185', 'Background Remover', 'Hapus background foto otomatis dengan AI BiRefNet — presisi pada rambut.',        null,   'bgremover',         true],
-        ['image','fa-camera-retro',       'rgba(244,63,94,0.12)',   '#fb7185', 'FotoBox Photo Booth', 'Sesi foto seru seperti photo booth asli! 10 foto otomatis countdown, 10 template keren & download.','BARU',  'fotobox',true],
-        ['image','fa-image',              'rgba(59,130,246,0.12)',  '#60a5fa', 'Image Converter',    'Resize, compress & convert JPG/PNG/WebP langsung di browser, tanpa upload.',      null,   'imageconverter',    true],
-        ['doc',  'fa-repeat',             'rgba(245,158,11,0.12)',  '#fbbf24', 'File Converter',     'Konversi PDF ke Word, Excel, PPT & sebaliknya. Upload 5 file sekaligus.',          'HOT',   'fileconverter',     true],
-        ['doc',  'fa-file-pdf',           'rgba(239,68,68,0.12)',   '#f87171', 'PDF Utilities',      'Merge, split & compress PDF di browser — tanpa upload ke server.',                'HOT',  'pdfutilities',      true],
         ['doc',  'fa-file-invoice-dollar', 'rgba(245,158,11,0.12)',  '#fbbf24', 'Invoice Generator',  'Buat tagihan profesional dengan template yang bisa dikustomisasi penuh.',            null,  'invoice',           true],
+        ['doc',  'fa-file-pdf',           'rgba(245,158,11,0.12)',   '#fbbf24', 'PDF Utilities',      'Merge, split & compress PDF di browser — tanpa upload ke server.',                'HOT',  'pdfutilities',      true],
+        ['doc',  'fa-repeat',             'rgba(245,158,11,0.12)',  '#fbbf24', 'File Converter',     'Konversi PDF ke Word, Excel, PPT & sebaliknya. Upload 5 file sekaligus.',          'HOT',   'fileconverter',     true],
+        ['doc',  'fa-chart-pie',           'rgba(245,158,11,0.12)',   '#fbbf24', 'Pencatatan Keuangan',      'Catat pemasukan & pengeluaran, sangat cocok untuk UMKM kecil dan menengah',                'BARU',  'finance',      true],
+        ['doc',  'fa-id-card',            'rgba(100,116,139,0.12)', '#94a3b8', 'Business Card',      'Kartu nama digital yang bisa dibagikan via link atau QR Code.',                   'SOON', '#',                 false],
+
+        ['image','fa-image',              'rgba(59,130,246,0.12)',  '#60a5fa', 'Image Converter',    'Resize, compress & convert JPG/PNG/WebP langsung di browser, tanpa upload.',      null,   'imageconverter',    true],
+        ['image','fa-scissors',           'rgba(59,130,246,0.12)',   '#60a5fa', 'Background Remover', 'Hapus background foto otomatis dengan AI BiRefNet — presisi pada rambut.',        null,   'bgremover',         true],
+        ['image','fa-camera-retro',       'rgba(59,130,246,0.12)',   '#60a5fa', 'FotoBox Photo Booth', 'Sesi foto seru seperti photo booth asli! 10 foto otomatis countdown, 10 template keren & download.','BARU',  'fotobox',true],
+
+        ['social','fa-link',              'rgba(139,92,246,0.12)',  '#a78bfa', 'LinkTree Builder',   'Satukan semua link penting di satu halaman landing yang elegan.',                  'HOT',  'linktree',          true],
         ['social','fa-cloud-arrow-down',  'rgba(139,92,246,0.12)',  '#a78bfa', 'Media Downloader',   'Download video & audio dari YouTube, TikTok, Instagram dalam hitungan detik.',     'BARU',   'mediadownloader',   true],
+        ['social','fa-qrcode',             'rgba(59,130,246,0.12)',  '#a78bfa', 'QR Code Generator',  'QR Code custom untuk menu, pembayaran, kontak, atau URL bisnis Anda.',             null, 'qr',                true],
+
         ['security','fa-shield-halved',   'rgba(163,230,53,0.10)', 'var(--accent)','File Security & Privacy Scanner','Deteksi file berbahaya, malware tersembunyi, hingga ancaman lainnya, hapus metadata.',      'BARU',   'sanitizer', true],
         ['security','fa-key',             'rgba(163,230,53,0.10)', 'var(--accent)','Password Generator','Buat password kuat & unik secara instan — semua proses di browser Anda.',      null,   'passwordgenerator', true],
-        ['doc',  'fa-chart-pie',           'rgba(239,68,68,0.12)',   '#fbbf24', 'Pencatatan Keuangan',      'Catat pemasukan & pengeluaran, sangat cocok untuk UMKM kecil dan menengah',                'BARU',  'finance',      true],
-        ['doc',  'fa-id-card',            'rgba(100,116,139,0.12)', '#94a3b8', 'Business Card',      'Kartu nama digital yang bisa dibagikan via link atau QR Code.',                   'SOON', '#',                 false],
+        ['security','fa-signature',       'rgba(163,230,53,0.10)', 'var(--accent)','Email Signature','Tanda tangan email profesional untuk Gmail, Outlook & semua email client.',       null,   'signature',         true],
     ];
     @endphp
 
@@ -272,12 +275,13 @@
         <div class="testimonials-grid">
             @php
             $reviews = [
-                ['Aditya P.', 'Freelance Designer',    'https://i.pravatar.cc/80?u=11', 5, 'Invoice Generator-nya luar biasa! Dalam 5 menit bisa kirim tagihan profesional ke klien. Template-nya bersih dan bisa dikustomisasi penuh sesuai brand saya.'],
-                ['Sinta R.',  'Content Creator',       'https://i.pravatar.cc/80?u=22', 5, 'LinkTree-nya jauh lebih keren dari aplikasi serupa. Bisa setting tampilan sesuai estetika feed Instagram saya dan semua link ada di satu halaman.'],
-                ['Budi S.',   'Pemilik UMKM',          'https://i.pravatar.cc/80?u=33', 5, 'QR Code untuk menu restoran saya terlihat sangat profesional. Pelanggan sering memuji betapa modernnya usaha saya. Bikinnya cuma hitungan menit!'],
-                ['Rina M.',   'HR Manager',            'https://i.pravatar.cc/80?u=44', 5, 'Background Remover-nya mengagumkan — bisa hapus background foto karyawan dengan hasil sangat rapi, terutama untuk bagian rambut yang biasanya sulit.'],
-                ['Deni K.',   'Digital Marketer',      'https://i.pravatar.cc/80?u=55', 5, 'PDF Utilities-nya hemat waktu banget. Merge dokumen proposal dari banyak file jadi satu PDF profesional tanpa perlu install software apapun.'],
-                ['Maya T.',   'Graphic Designer',      'https://i.pravatar.cc/80?u=66', 5, 'Image Converter-nya simpel tapi powerful. Kompres gambar besar jadi ringan tanpa kehilangan kualitas yang berarti — cocok untuk optimize web.'],
+                ['Aditya P.', 'Freelance Designer',    'https://i.pravatar.cc/80?u=11', 5, 'Awalnya coba-coba pakai invoice generator di sini, ternyata kepakai terus. Tinggal isi data, langsung jadi. Cuma kadang saya butuh lebih banyak pilihan template 😄'],
+                ['Sinta R.',  'Content Creator',       'https://i.pravatar.cc/80?u=22', 5, 'Pakai Linktreenya buat sosmed, lumayan membantu sih. Cara buatnya mudah dan cepat (nggak ribet). Tampilannya juga keren untuk skala gratis ya'],
+                ['Budi S.',   'UMKM Kuliner',          'https://i.pravatar.cc/80?u=33', 4, 'QR code untuk menu cukup membantu di warung saya. Pelanggan jadi nggak perlu tanya-tanya. Cuma sempat bingung di awal setting-nya, tapi setelah itu oke'],
+                ['Rina M.',   'HR',                     'https://i.pravatar.cc/80?u=44', 5, 'Saya pakai background remover untuk foto karyawan. Hasilnya rapi, terutama bagian rambut. Nggak nyangka bisa sebagus ini tanpa edit manual'],
+                ['Deni K.',   'Digital Marketing',      'https://i.pravatar.cc/80?u=55', 5, 'Sering merge PDF proposal di sini. Praktis banget karena nggak perlu install apa-apa. Tinggal upload, selesai.'],
+                ['Maya T.',   'Graphic Designer',      'https://i.pravatar.cc/80?u=66', 4, 'Image converter-nya simpel, cocok buat compress gambar web. Ukuran jadi lebih ringan, walau kadang kualitas sedikit turun (wajar sih)'],
+                ['Astrid',   'Freelancer MUA',         'https://i.pravatar.cc/80?u=66', 4, 'Untuk Pencatatan Keuangan lumayan bagus, meskipun hanya berfokus pada pemasukan dan pengeluaran tapi untuk freelancer sy rasa ini sudah cukup'],
             ];
             @endphp
 

@@ -21,17 +21,11 @@
     <div class="max-w-7xl mx-auto px-6">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-                <div class="flex items-center gap-3 mb-2">
-                    <div style="width:36px;height:36px;border-radius:10px;background:rgba(163,230,53,0.15);display:flex;align-items:center;justify-content:center;">
-                        <i class="fa-solid fa-chart-pie" style="color:#a3e635;font-size:0.9rem;"></i>
-                    </div>
-                    <span style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#a3e635;">MediaTools</span>
-                </div>
-                <nav aria-label="Breadcrumb" class="flex justify-center mb-5">
+                <nav aria-label="Breadcrumb" class="flex justify-left mb-5">
                     <ol class="flex items-center gap-2 text-xs" style="color:var(--text-3)">
                         <li><a href="{{ url('/') }}" style="color:var(--text-3);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-3)'">Home</a></li>
                         <li style="margin:0 4px;font-size:9px;">›</li>
-                        <li style="color:var(--accent);font-weight:600;">Pencatatan Keuangan Gratis</li>
+                        <li style="color:var(--accent);font-weight:600;">Pencatatan Keuangan</li>
                     </ol>
                 </nav>
                 <h1 style="font-size:clamp(1.4rem,3vw,1.8rem);font-weight:800;color:#fff;letter-spacing:-0.02em;margin-bottom:4px;">

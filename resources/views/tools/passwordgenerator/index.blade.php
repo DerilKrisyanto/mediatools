@@ -16,25 +16,19 @@
 <div class="tlb-header">
     <div class="tlb-header-inner">
         <div>
-            <div class="tlb-header-label-row">
-                <div class="tlb-header-icon">
-                    <i class="fa-solid fa-key"></i>
-                </div>
-                <span class="tlb-header-site">MediaTools</span>
-            </div>
+            <nav aria-label="Breadcrumb" class="flex justify-left mb-5">
+                <ol class="flex items-center gap-2 text-xs" style="color:var(--text-3)">
+                    <li><a href="{{ url('/') }}" style="color:var(--text-3);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-3)'">Home</a></li>
+                    <li style="margin:0 4px;font-size:9px;">›</li>
+                    <li style="color:var(--accent);font-weight:600;">Password Generator</li>
+                </ol>
+            </nav>
             <div class="tlb-header-badges">
                 <span class="tlb-hbadge"><i class="fa-solid fa-shield-halved"></i> Zero Server</span>
                 <span class="tlb-hbadge"><i class="fa-solid fa-microchip"></i> Kriptografi Browser</span>
                 <span class="tlb-hbadge"><i class="fa-solid fa-sliders"></i> 3 Mode</span>
                 <span class="tlb-hbadge"><i class="fa-solid fa-infinity"></i> 100% Gratis</span>
             </div>
-            <nav aria-label="Breadcrumb" class="flex justify-center mb-5">
-                <ol class="flex items-center gap-2 text-xs" style="color:var(--text-3)">
-                    <li><a href="{{ url('/') }}" style="color:var(--text-3);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-3)'">Home</a></li>
-                    <li style="margin:0 4px;font-size:9px;">›</li>
-                    <li style="color:var(--accent);font-weight:600;">Password Generator Gratis — Buat Kata Sandi Kuat & Aman Instan</li>
-                </ol>
-            </nav>
             <h1 class="tlb-header-title">Password <span>Generator.</span></h1>
             <p class="tlb-header-sub">Buat password kuat & unik secara instan. Semua proses di browser — zero server, privasi 100% terjaga.</p>
         </div>

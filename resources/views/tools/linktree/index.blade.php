@@ -21,19 +21,19 @@
 <div class="tlb-header">
     <div class="tlb-header-inner">
         <div>
+            <nav aria-label="Breadcrumb" class="flex justify-left mb-5">
+                <ol class="flex items-center gap-2 text-xs" style="color:var(--text-3)">
+                    <li><a href="{{ url('/') }}" style="color:var(--text-3);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-3)'">Home</a></li>
+                    <li style="margin:0 4px;font-size:9px;">›</li>
+                    <li style="color:var(--accent);font-weight:600;">LinkTree Builder</li>
+                </ol>
+            </nav>
             <div class="tlb-header-badges">
                 <span class="tlb-hbadge"><i class="fa-solid fa-brands fa-instagram"></i> Instagram</span>
                 <span class="tlb-hbadge"><i class="fa-solid fa-brands fa-tiktok"></i> TikTok</span>
                 <span class="tlb-hbadge"><i class="fa-solid fa-brands fa-youtube"></i> YouTube</span>
                 <span class="tlb-hbadge"><i class="fa-solid fa-globe"></i> Custom Domain</span>
             </div>
-            <nav aria-label="Breadcrumb" class="flex justify-center mb-5">
-                <ol class="flex items-center gap-2 text-xs" style="color:var(--text-3)">
-                    <li><a href="{{ url('/') }}" style="color:var(--text-3);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-3)'">Home</a></li>
-                    <li style="margin:0 4px;font-size:9px;">›</li>
-                    <li style="color:var(--accent);font-weight:600;">Free LinkTree Builder — Link in Bio Page Profesional</li>
-                </ol>
-            </nav>
             <h1 class="tlb-header-title">LinkTree <span>Builder.</span></h1>
             <p class="tlb-header-sub">Satu halaman untuk semua tautan penting Anda. Buat link in bio profesional dalam hitungan menit.</p>
         </div>

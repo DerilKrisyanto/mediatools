@@ -23,20 +23,11 @@
     <div class="max-w-7xl mx-auto px-6">
         <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
             <div>
-                <div class="flex items-center gap-3 mb-2">
-                    <div class="fb-page-hdr__icon">
-                        <i class="fa-solid fa-camera"></i>
-                    </div>
-                    <div class="fb-page-hdr__badge">
-                        <i class="fa-solid fa-circle" style="font-size:6px;animation:pulse-dot 2s infinite;"></i>
-                        MediaTools
-                    </div>
-                </div>
-                <nav aria-label="Breadcrumb" class="flex justify-center mb-5">
+                <nav aria-label="Breadcrumb" class="flex justify-left mb-5">
                     <ol class="flex items-center gap-2 text-xs" style="color:var(--text-3)">
                         <li><a href="{{ url('/') }}" style="color:var(--text-3);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-3)'">Home</a></li>
                         <li style="margin:0 4px;font-size:9px;">›</li>
-                        <li style="color:var(--accent);font-weight:600;">FotoBox Online — Photo Booth Seru 6 Foto Gratis</li>
+                        <li style="color:var(--accent);font-weight:600;">FotoBox - Photo Booth</li>
                     </ol>
                 </nav>
                 <h1>FotoBox Online 📸</h1>

@@ -22,25 +22,19 @@
 <div class="tlb-header">
     <div class="tlb-header-inner">
         <div>
-            <div class="tlb-header-label-row">
-                <div class="tlb-header-icon">
-                    <i class="fa-solid fa-shield-halved"></i>
-                </div>
-                <span class="tlb-header-site">MediaTools</span>
-            </div>
+            <nav aria-label="Breadcrumb" class="flex justify-left mb-5">
+                <ol class="flex items-center gap-2 text-xs" style="color:var(--text-3)">
+                    <li><a href="{{ url('/') }}" style="color:var(--text-3);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-3)'">Home</a></li>
+                    <li style="margin:0 4px;font-size:9px;">›</li>
+                    <li style="color:var(--accent);font-weight:600;">File Security & Privacy Scanner</li>
+                </ol>
+            </nav>
             <div class="tlb-header-badges">
                 <span class="tlb-hbadge"><i class="fa-solid fa-bug-slash"></i> Deteksi Malware</span>
                 <span class="tlb-hbadge"><i class="fa-solid fa-eraser"></i> Hapus Metadata</span>
                 <span class="tlb-hbadge"><i class="fa-solid fa-camera-slash"></i> EXIF Cleaner</span>
                 <span class="tlb-hbadge"><i class="fa-solid fa-lock"></i> Privasi Terjaga</span>
             </div>
-            <nav aria-label="Breadcrumb" class="flex justify-center mb-5">
-                <ol class="flex items-center gap-2 text-xs" style="color:var(--text-3)">
-                    <li><a href="{{ url('/') }}" style="color:var(--text-3);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-3)'">Home</a></li>
-                    <li style="margin:0 4px;font-size:9px;">›</li>
-                    <li style="color:var(--accent);font-weight:600;">File Security & Privacy Scanner — Deteksi Backdoor, Hapus Metadata</li>
-                </ol>
-            </nav>
             <h1 class="tlb-header-title">File Security <span>Scanner.</span></h1>
             <p class="tlb-header-sub">Scan file untuk mendeteksi backdoor, malware & metadata tersembunyi. Bersihkan dalam satu proses.</p>
         </div>

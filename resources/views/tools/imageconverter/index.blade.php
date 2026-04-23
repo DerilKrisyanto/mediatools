@@ -16,25 +16,19 @@
 <div class="tlb-header">
     <div class="tlb-header-inner">
         <div>
-            <div class="tlb-header-label-row">
-                <div class="tlb-header-icon">
-                    <i class="fa-solid fa-image"></i>
-                </div>
-                <span class="tlb-header-site">MediaTools</span>
-            </div>
+            <nav aria-label="Breadcrumb" class="flex justify-left mb-5">
+                  <ol class="flex items-center gap-2 text-xs" style="color:var(--text-3)">
+                      <li><a href="{{ url('/') }}" style="color:var(--text-3);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-3)'">Home</a></li>
+                      <li style="margin:0 4px;font-size:9px;">›</li>
+                      <li style="color:var(--accent);font-weight:600;">Image Converter</li>
+                  </ol>
+              </nav>
             <div class="tlb-header-badges">
                 <span class="tlb-hbadge"><i class="fa-solid fa-expand-arrows-alt"></i> Resize</span>
                 <span class="tlb-hbadge"><i class="fa-solid fa-compress-arrows-alt"></i> Kompres</span>
                 <span class="tlb-hbadge"><i class="fa-solid fa-arrows-rotate"></i> Konversi Format</span>
                 <span class="tlb-hbadge"><i class="fa-solid fa-lock"></i> Zero Server</span>
             </div>
-            <nav aria-label="Breadcrumb" class="flex justify-center mb-5">
-                <ol class="flex items-center gap-2 text-xs" style="color:var(--text-3)">
-                    <li><a href="{{ url('/') }}" style="color:var(--text-3);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-3)'">Home</a></li>
-                    <li style="margin:0 4px;font-size:9px;">›</li>
-                    <li style="color:var(--accent);font-weight:600;">Resize Kompres & Konversi Gambar Gratis — JPG PNG WebP</li>
-                </ol>
-            </nav>
             <h1 class="tlb-header-title">Image <span>Converter.</span></h1>
             <p class="tlb-header-sub">Resize, kompres & konversi gambar JPG · PNG · WebP langsung di browser. Zero server, privasi 100%.</p>
         </div>
