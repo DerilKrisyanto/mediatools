@@ -17,7 +17,7 @@
             {{-- Header dengan logo --}}
             <div class="text-center mb-10">
                 <div class="inline-flex items-center justify-center w-20 h-20 bg-[#a3e635]/10 rounded-2xl mb-4 border border-[#a3e635]/20 overflow-hidden">
-                    <img src="{{ asset('images/icons.png') }}"
+                    <img src="{{ asset('images/icons-mediatools.png') }}"
                          alt="MediaTools"
                          class="w-14 h-14 object-contain"
                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
