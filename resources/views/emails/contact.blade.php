@@ -15,7 +15,7 @@
   .logo-text span{color:#a3e635}
   .body{padding:28px 32px}
   .tag{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;background:rgba(163,230,53,0.1);border:1px solid rgba(163,230,53,0.2);border-radius:99px;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#a3e635;margin-bottom:16px}
-  h1{font-size:20px;font-weight:800;letter-spacing:-0.02em;margin-bottom:6px}
+  h1{font-size:20px;font-weight:800;letter-spacing:-0.02em;margin-bottom:6px;color:#fafafa}
   .subtitle{font-size:13px;color:#a1a1aa;margin-bottom:24px}
   .meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
   .meta-item{background:#18181b;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:12px 14px}
@@ -41,11 +41,9 @@
 
     <!-- Header -->
     <div class="header">
-      <div class="logo-mark">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#a3e635" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
+      <img src="{{ config('app.url') }}/images/icons.png"
+           alt="MediaTools"
+           style="width:25px;height:15px;border-radius:5px;display:block;">
       <span class="logo-text">MEDIA<span>TOOLS.</span></span>
     </div>
 
