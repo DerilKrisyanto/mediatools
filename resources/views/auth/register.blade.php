@@ -16,8 +16,8 @@
                         <img src="{{ asset('images/icons.png') }}" alt="Logo" class="w-8 h-8 object-contain">
                         <span class="text-lg font-bold text-white">MEDIA<span class="text-[#a3e635]">TOOLS.</span></span>
                     </a>
-                    <h1 class="text-2xl font-extrabold text-white mb-1">Buat Akun Gratis</h1>
-                    <p class="text-sm" style="color:var(--text-muted);">Daftar dalam 2 menit. Kode OTP akan dikirim ke email Anda.</p>
+                    <h1 class="text-2xl font-extrabold text-white mb-1">Buat Akun</h1>
+                    <p class="text-sm" style="color:var(--text-muted);">Bergabung bersama kami untuk membantu produktuvitas harian anda secara gratis.</p>
                 </div>
 
                 {{-- Flash messages --}}
@@ -46,7 +46,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="block text-xs font-bold mb-2 uppercase tracking-wider" style="color:var(--text-dim);">Alamat Email</label>
+                        <label class="block text-xs font-bold mb-2 uppercase tracking-wider" style="color:var(--text-dim);">Email</label>
                         <input type="email" name="email" value="{{ old('email') }}" required
                                class="form-input @error('email') border-red-500 @enderror"
                                placeholder="budi@gmail.com">
@@ -81,13 +81,13 @@
 
                     <button type="submit" class="btn-primary w-full py-4 text-sm mt-2">
                         <i class="fa-solid fa-paper-plane text-xs"></i>
-                        <span>Kirim Kode OTP</span>
+                        <span>Daftar Sekarang</span>
                     </button>
                 </form>
 
                 <p class="text-center mt-6 text-sm" style="color:var(--text-muted);">
                     Sudah punya akun?
-                    <a href="{{ route('login') }}" class="font-bold" style="color:#a3e635;">Masuk sekarang</a>
+                    <a href="{{ route('login') }}" class="font-bold" style="color:#a3e635;">Masuk disini</a>
                 </p>
 
             </div>

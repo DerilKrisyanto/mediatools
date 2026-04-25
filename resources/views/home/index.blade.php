@@ -2,8 +2,8 @@
 
 
 @section('title', 'MediaTools — Tools Digital Gratis: Invoice, PDF, QR Code & Background Remover')
-@section('meta_description', 'Platform tools produktivitas digital 100% gratis. Hapus background foto, konversi PDF, buat proposal otomatis siap pakai, buat invoice, QR Code, password generator, dan 10+ tools lainnya. Tanpa daftar, langsung pakai.')
-@section('meta_keywords', 'free media tools, tools online gratis indonesia, invoice generator gratis, hapus background foto, konversi pdf word, qr code generator, media tools, password generator, link tree, file security and privacy, scan file berbahaya, proposal builder, template proposal gratis')
+@section('meta_description', 'Platform tools produktivitas digital 100% gratis. Hapus background foto, konversi PDF, buat invoice, QR Code, password generator, dan 10+ tools lainnya. Tanpa daftar, langsung pakai.')
+@section('meta_keywords', 'tools online gratis indonesia, invoice generator gratis, hapus background foto, konversi pdf word, qr code generator, media tools, password generator, link tree')
 
 @section('content')
 
@@ -133,23 +133,18 @@
     @php
     $tools = [
         // [cat, icon, icon-bg-color, icon-text-color, name, desc, badge, route, available]
-        ['doc',  'fa-file-invoice-dollar', 'rgba(245,158,11,0.12)',  '#fbbf24', 'Invoice Generator',  'Buat tagihan profesional dengan template yang bisa dikustomisasi penuh.',            null,  'invoice',           true],
-        ['doc',  'fa-file-pdf',           'rgba(245,158,11,0.12)',   '#fbbf24', 'PDF Utilities',      'Merge, split & compress PDF di browser — tanpa upload ke server.',                'HOT',  'pdfutilities',      true],
-        ['doc',  'fa-repeat',             'rgba(245,158,11,0.12)',  '#fbbf24', 'File Converter',     'Konversi PDF ke Word, Excel, PPT & sebaliknya. Upload 5 file sekaligus.',          'HOT',   'fileconverter',     true],
-        ['doc',  'fa-chart-pie',           'rgba(245,158,11,0.12)',   '#fbbf24', 'Pencatatan Keuangan',      'Catat pemasukan & pengeluaran, sangat cocok untuk UMKM kecil dan menengah',                'BARU',  'finance',      true],
-        ['doc',  'fa-id-card',            'rgba(100,116,139,0.12)', '#94a3b8', 'Business Card',      'Kartu nama digital yang bisa dibagikan via link atau QR Code.',                   'SOON', '#',                 false],
-
-        ['image','fa-image',              'rgba(59,130,246,0.12)',  '#60a5fa', 'Image Converter',    'Resize, compress & convert JPG/PNG/WebP langsung di browser, tanpa upload.',      null,   'imageconverter',    true],
-        ['image','fa-scissors',           'rgba(59,130,246,0.12)',   '#60a5fa', 'Background Remover', 'Hapus background foto otomatis dengan AI BiRefNet — presisi pada rambut.',        null,   'bgremover',         true],
-        ['image','fa-camera-retro',       'rgba(59,130,246,0.12)',   '#60a5fa', 'FotoBox Photo Booth', 'Sesi foto seru seperti photo booth asli! 10 foto otomatis countdown, 10 template keren & download.','BARU',  'fotobox',true],
-
+        ['doc',  'fa-file-invoice-dollar', 'rgba(245,158,11,0.12)',  '#fbbf24', 'Invoice Generator',  'Buat tagihan profesional dengan template yang bisa dikustomisasi penuh.',            'BARU',  'invoice',           true],
         ['social','fa-link',              'rgba(139,92,246,0.12)',  '#a78bfa', 'LinkTree Builder',   'Satukan semua link penting di satu halaman landing yang elegan.',                  'HOT',  'linktree',          true],
+        ['doc',  'fa-qrcode',             'rgba(59,130,246,0.12)',  '#60a5fa', 'QR Code Generator',  'QR Code custom untuk menu, pembayaran, kontak, atau URL bisnis Anda.',             null, 'qr',                true],
+        ['security','fa-signature',       'rgba(163,230,53,0.10)', 'var(--accent)','Email Signature','Tanda tangan email profesional untuk Gmail, Outlook & semua email client.',       null,   'signature',         true],
+        ['image','fa-scissors',           'rgba(244,63,94,0.12)',   '#fb7185', 'Background Remover', 'Hapus background foto otomatis dengan AI BiRefNet — presisi pada rambut.',        null,   'bgremover',         true],
+        ['image','fa-image',              'rgba(59,130,246,0.12)',  '#60a5fa', 'Image Converter',    'Resize, compress & convert JPG/PNG/WebP langsung di browser, tanpa upload.',      null,   'imageconverter',    true],
+        ['doc',  'fa-repeat',             'rgba(245,158,11,0.12)',  '#fbbf24', 'File Converter',     'Konversi PDF ke Word, Excel, PPT & sebaliknya. Upload 5 file sekaligus.',          'HOT',   'fileconverter',     true],
+        ['doc',  'fa-file-pdf',           'rgba(239,68,68,0.12)',   '#f87171', 'PDF Utilities',      'Merge, split & compress PDF di browser — tanpa upload ke server.',                'HOT',  'pdfutilities',      true],
         ['social','fa-cloud-arrow-down',  'rgba(139,92,246,0.12)',  '#a78bfa', 'Media Downloader',   'Download video & audio dari YouTube, TikTok, Instagram dalam hitungan detik.',     'BARU',   'mediadownloader',   true],
-        ['social','fa-qrcode',             'rgba(59,130,246,0.12)',  '#a78bfa', 'QR Code Generator',  'QR Code custom untuk menu, pembayaran, kontak, atau URL bisnis Anda.',             null, 'qr',                true],
-
         ['security','fa-shield-halved',   'rgba(163,230,53,0.10)', 'var(--accent)','File Security & Privacy Scanner','Deteksi file berbahaya, malware tersembunyi, hingga ancaman lainnya, hapus metadata.',      'BARU',   'sanitizer', true],
         ['security','fa-key',             'rgba(163,230,53,0.10)', 'var(--accent)','Password Generator','Buat password kuat & unik secara instan — semua proses di browser Anda.',      null,   'passwordgenerator', true],
-        ['security','fa-signature',       'rgba(163,230,53,0.10)', 'var(--accent)','Email Signature','Tanda tangan email profesional untuk Gmail, Outlook & semua email client.',       null,   'signature',         true],
+        ['doc',  'fa-id-card',            'rgba(100,116,139,0.12)', '#94a3b8', 'Business Card',      'Kartu nama digital yang bisa dibagikan via link atau QR Code.',                   'SOON', '#',                 false],
     ];
     @endphp
 
@@ -338,7 +333,7 @@
 
             <div style="display:flex;flex-direction:column;gap:16px;">
                 @foreach([
-                    ['fa-envelope','Email Support','halo@mediatools.id'],
+                    ['fa-envelope','Email Support','halo@mediatools.cloud'],
                     ['fa-location-dot','Lokasi','Jakarta, Indonesia'],
                     ['fa-clock','Jam Dukungan','Senin–Jumat, 09.00–17.00 WIB'],
                 ] as [$icon, $label, $val])
@@ -357,7 +352,9 @@
                 <p style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-4);margin-bottom:10px;font-weight:700;">Ikuti Kami</p>
                 <div style="display:flex;gap:8px;">
                     @foreach([
-                        ['fa-instagram','https://www.instagram.com/halo.mediatools/'],
+                        ['fa-instagram','#'],
+                        ['fa-x-twitter','#'],
+                        ['fa-linkedin-in','#'],
                         ['fa-tiktok','#'],
                     ] as [$icon, $href])
                     <a href="{{ $href }}"
@@ -373,21 +370,34 @@
 
         {{-- Form side --}}
         <div class="contact-form-side">
-            <form action="#" method="POST" style="display:flex;flex-direction:column;gap:20px;">
+
+            @auth
+            {{-- ── Authenticated: full form ── --}}
+            <form id="contactForm" style="display:flex;flex-direction:column;gap:20px;">
                 @csrf
+
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
                     <div>
                         <label class="form-label" for="contact-name">Nama Lengkap</label>
-                        <input id="contact-name" type="text" name="name" class="form-input" placeholder="Budi Santoso">
+                        <input id="contact-name" type="text" name="name"
+                               class="form-input"
+                               placeholder="Budi Santoso"
+                               value="{{ Auth::user()->name }}"
+                               required>
                     </div>
                     <div>
-                        <label class="form-label" for="contact-email">Email</label>
-                        <input id="contact-email" type="email" name="email" class="form-input" placeholder="budi@email.com">
+                        <label class="form-label" for="contact-email">Email Balasan</label>
+                        <input id="contact-email" type="email" name="email"
+                               class="form-input"
+                               placeholder="budi@email.com"
+                               value="{{ Auth::user()->email }}"
+                               required>
                     </div>
                 </div>
+
                 <div>
                     <label class="form-label" for="contact-subject">Topik</label>
-                    <select id="contact-subject" name="subject" class="form-input">
+                    <select id="contact-subject" name="subject" class="form-input" required>
                         <option value="">Pilih topik...</option>
                         <option>Pertanyaan Umum</option>
                         <option>Masalah Teknis</option>
@@ -395,21 +405,64 @@
                         <option>Saran & Masukan</option>
                     </select>
                 </div>
+
                 <div>
                     <label class="form-label" for="contact-message">Pesan</label>
                     <textarea id="contact-message" name="message" rows="4"
                               class="form-input" style="resize:none;"
-                              placeholder="Ceritakan apa yang ingin Anda sampaikan..."></textarea>
+                              placeholder="Ceritakan apa yang ingin Anda sampaikan..."
+                              required minlength="10"></textarea>
                 </div>
-                <a href="#" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;background:var(--accent);color:#0a0a0b;font-size:14px;font-weight:700;border-radius:var(--r-md);border:none;cursor:pointer;transition:all 0.2s;width:100%;"
-                        onmouseover="this.style.background='var(--accent-hover)'"
-                        onmouseout="this.style.background='var(--accent)'">
-                    <i class="fa-solid fa-paper-plane" style="font-size:12px;"></i>
-                    Kirim Pesan
-                </a>
-            </form>
-        </div>
 
+                {{-- Alert area --}}
+                <div id="contactAlert" style="display:none;padding:12px 16px;border-radius:var(--r-md);font-size:13px;font-weight:500;line-height:1.5;"></div>
+
+                <button type="submit" id="contactSubmitBtn"
+                        style="display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;background:var(--accent);color:#0a0a0b;font-size:14px;font-weight:700;border-radius:var(--r-md);border:none;cursor:pointer;transition:all 0.2s;width:100%;"
+                        onmouseover="if(!this.disabled)this.style.background='var(--accent-hover)'"
+                        onmouseout="if(!this.disabled)this.style.background='var(--accent)'">
+                    <i class="fa-solid fa-paper-plane" style="font-size:12px;" id="contactBtnIcon"></i>
+                    <span id="contactBtnText">Kirim Pesan</span>
+                </button>
+            </form>
+
+            @else
+            {{-- ── Guest: login gate ── --}}
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;padding:20px 0;gap:20px;">
+
+                <div style="width:64px;height:64px;border-radius:16px;background:var(--accent-dim);border:1px solid var(--accent-border);display:flex;align-items:center;justify-content:center;">
+                    <i class="fa-solid fa-lock" style="font-size:24px;color:var(--accent);"></i>
+                </div>
+
+                <div>
+                    <h3 style="font-size:17px;font-weight:700;margin-bottom:8px;">Login untuk Mengirim Pesan</h3>
+                    <p style="font-size:13px;color:var(--text-2);line-height:1.65;max-width:320px;">
+                        Kami membutuhkan identitas akun Anda agar pesan dapat kami balas ke email yang benar dan terverifikasi.
+                    </p>
+                </div>
+
+                <div style="display:flex;flex-direction:column;gap:10px;width:100%;max-width:280px;">
+                    <a href="{{ route('login') }}?redirect=%23contact"
+                       class="btn-hero-primary"
+                       style="justify-content:center;width:100%;padding:11px 20px;font-size:14px;">
+                        <i class="fa-solid fa-right-to-bracket" style="font-size:12px;"></i>
+                        Masuk ke Akun
+                    </a>
+                    <a href="{{ route('register') }}"
+                       class="btn-hero-secondary"
+                       style="justify-content:center;width:100%;padding:11px 20px;font-size:14px;">
+                        Daftar Gratis — Mudah & Cepat
+                    </a>
+                </div>
+
+                <p style="font-size:12px;color:var(--text-4);">
+                    <i class="fa-solid fa-shield-halved" style="color:var(--accent);margin-right:4px;font-size:10px;"></i>
+                    Data Anda aman. Tidak ada spam.
+                </p>
+            </div>
+            @endauth
+
+        </div>
     </div>
 </section>
 
@@ -487,23 +540,7 @@
     </div>
 </section>
 
-@endsection
-
 @push('scripts')
-<script>
-/* ── Category filter ── */
-function filterTools(cat) {
-    /* Update tabs */
-    document.querySelectorAll('.cat-tab').forEach(function(tab) {
-        tab.classList.toggle('active', tab.dataset.cat === cat);
-        tab.setAttribute('aria-selected', tab.dataset.cat === cat ? 'true' : 'false');
-    });
-
-    /* Show/hide cards */
-    document.querySelectorAll('#toolsGrid .tool-card').forEach(function(card) {
-        var match = cat === 'all' || card.dataset.cat === cat;
-        card.style.display = match ? '' : 'none';
-    });
-}
-</script>
+<script src="{{ asset('js/app.js') }}"></script>
 @endpush
+@endsection

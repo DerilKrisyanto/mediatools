@@ -17,9 +17,17 @@ use App\Http\Controllers\Tools\MetadataSanitizerController;
 use App\Http\Controllers\Tools\ProposalBuilderController;
 use App\Http\Controllers\Tools\PasFotoController;
 use App\Http\Controllers\Tools\FinanceController;
-
+use App\Http\Controllers\ContactController;
+ 
 // ========== Halaman Utama ========== //
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+/* ── Contact form (POST, rate-limited 5 req/menit per IP) ── */
+Route::post('/contact/send', [ContactController::class, 'send'])->middleware(['throttle:5,1'])->name('contact.send');
+ 
+/* ── Newsletter subscribe (POST) ── */
+Route::post('/newsletter/subscribe', [ContactController::class, 'newsletter'])->middleware(['throttle:3,1'])->name('newsletter.subscribe');
+
 
 // ══ SEO URL Redirects — URL ramah kata kunci → URL asli ══
 // Redirect 301 = Google transfer "link juice" ke URL tujuan

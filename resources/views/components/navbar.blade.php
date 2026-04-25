@@ -9,7 +9,7 @@
         {{-- ── LOGO ── --}}
         <a href="{{ route('home') }}" class="flex items-center gap-2 group flex-shrink-0" aria-label="MediaTools Beranda">
             <div class="w-8 h-8 sm:w-9 sm:h-9 transition-transform duration-300 group-hover:scale-110 flex-shrink-0">
-                <img src="{{ asset('images/icons-mediatools.png') }}" alt="MediaTools Logo" class="w-full h-full object-contain" loading="eager" width="36" height="36">
+                <img src="{{ asset('images/icons.png') }}" alt="MediaTools Logo" class="w-full h-full object-contain" loading="eager" width="35" height="25">
             </div>
             <span class="text-[15px] sm:text-[17px] font-extrabold tracking-tight text-white leading-none">
                 MEDIA<span style="color:var(--accent)">TOOLS.</span>
@@ -104,7 +104,7 @@
             @guest
                 <a href="{{ route('login') }}" class="btn-ghost">Masuk</a>
                 <a href="{{ route('register') }}" class="btn-primary">
-                    Mulai Gratis
+                    Daftar
                     <i class="fa-solid fa-arrow-right" style="font-size:10px;"></i>
                 </a>
             @endguest
@@ -145,12 +145,12 @@
         <span class="icon"><i class="fa-solid fa-house" style="font-size:12px;color:var(--text-3)"></i></span>
         Beranda
     </a>
-    <button onclick="closeMobileMenu(); openSearch();"
+    <!-- <button onclick="closeMobileMenu(); openSearch();"
             class="mobile-nav-link"
             style="background:none;border:none;cursor:pointer;width:100%;text-align:left;">
         <span class="icon"><i class="fa-solid fa-magnifying-glass" style="font-size:12px;color:var(--text-3)"></i></span>
         Cari Tools...
-    </button>
+    </button> -->
 
     <p class="mobile-section-title" style="margin-top:8px;">Tools</p>
     @foreach($navTools as [$route, $icon, $name, $desc, $color])
@@ -160,21 +160,11 @@
     </a>
     @endforeach
 
-    <p class="mobile-section-title" style="margin-top:8px;">Umum</p>
-    <a href="{{ route('home') }}#about"   class="mobile-nav-link">
-        <span class="icon"><i class="fa-solid fa-users" style="font-size:11px;color:var(--text-3)"></i></span>
-        Tentang Kami
-    </a>
-    <a href="{{ route('home') }}#contact" class="mobile-nav-link">
-        <span class="icon"><i class="fa-solid fa-envelope" style="font-size:11px;color:var(--text-3)"></i></span>
-        Kontak
-    </a>
-
     <div class="mobile-auth-row">
         @guest
             <a href="{{ route('login') }}"    class="btn-outline" style="text-align:center;justify-content:center;">Masuk</a>
             <a href="{{ route('register') }}" class="btn-primary">
-                    Mulai Gratis
+                    Daftar Sekarang
                     <i class="fa-solid fa-arrow-right" style="font-size:10px;"></i>
                 </a>
         @endguest

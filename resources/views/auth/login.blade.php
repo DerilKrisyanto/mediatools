@@ -16,7 +16,7 @@
                         <span class="text-lg font-bold text-white">MEDIA<span class="text-[#a3e635]">TOOLS.</span></span>
                     </a>
                     <h1 class="text-2xl font-extrabold text-white mb-1">Masuk ke Akun</h1>
-                    <p class="text-sm" style="color:var(--text-muted);">OTP akan dikirim ke email Anda setelah login.</p>
+                    <p class="text-sm" style="color:var(--text-muted);">Kami akan mengirimkan kode OTP. Pastikan email yang terdaftar masih aktif</p>
                 </div>
 
                 @if(session('success'))
@@ -35,7 +35,7 @@
                     @csrf
 
                     <div class="form-group">
-                        <label class="block text-xs font-bold mb-2 uppercase tracking-wider" style="color:var(--text-dim);">Alamat Email</label>
+                        <label class="block text-xs font-bold mb-2 uppercase tracking-wider" style="color:var(--text-dim);">Email</label>
                         <input type="email" name="email" value="{{ old('email') }}" required
                                class="form-input @error('email') border-red-500 @enderror"
                                placeholder="email@gmail.com" autofocus>
@@ -65,13 +65,13 @@
 
                     <button type="submit" class="btn-primary w-full py-4 text-sm mt-2">
                         <i class="fa-solid fa-arrow-right-to-bracket text-xs"></i>
-                        <span>Kirim Kode OTP</span>
+                        <span>Masuk</span>
                     </button>
                 </form>
 
                 <p class="text-center mt-6 text-sm" style="color:var(--text-muted);">
                     Belum punya akun?
-                    <a href="{{ route('register') }}" class="font-bold" style="color:#a3e635;">Daftar gratis</a>
+                    <a href="{{ route('register') }}" class="font-bold" style="color:#a3e635;">Daftar disini</a>
                 </p>
 
             </div>
