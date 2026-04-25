@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Services\OtpService;
 use Illuminate\Support\ServiceProvider;
 use App\Http\Controllers\Tools\LinkTreeController;
 use Illuminate\Support\Facades\View;
@@ -13,7 +14,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(OtpService::class);
     }
 
     /**

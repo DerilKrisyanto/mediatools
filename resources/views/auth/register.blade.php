@@ -1,144 +1,95 @@
 @extends('layouts.app')
-
-@section('title', 'MediaTools — Daftar Akun Gratis')
+@section('title', 'Daftar Akun — MediaTools')
 
 @section('content')
-<div class="min-h-screen bg-[#020d0d] text-white flex items-center justify-center px-4 pt-28 pb-12">
+<div class="min-h-screen flex items-center justify-center px-4 pt-24 pb-16">
+    <div class="w-full max-w-md">
 
-    {{-- Background blobs --}}
-    <div class="fixed inset-0 overflow-hidden pointer-events-none">
-        <div class="absolute top-[10%] right-[10%] w-72 h-72 bg-blue-500/10 rounded-full blur-[120px]"></div>
-        <div class="absolute bottom-[10%] left-[10%] w-72 h-72 bg-[#a3e635]/10 rounded-full blur-[120px]"></div>
-    </div>
+        {{-- Card --}}
+        <div class="relative overflow-hidden rounded-3xl border" style="background:var(--card-bg);border-color:var(--border-accent);">
+            <div class="absolute inset-0 bg-gradient-to-br from-[#a3e635]/4 to-transparent pointer-events-none"></div>
+            <div class="relative z-10 p-8 sm:p-10">
 
-    <div class="w-full max-w-md relative">
-        <div class="bg-[#0a2525]/40 border border-white/10 backdrop-blur-xl rounded-[2.5rem] p-8 md:p-10 shadow-2xl">
-
-            {{-- Header dengan logo --}}
-            <div class="text-center mb-8">
-                <div class="inline-flex items-center justify-center w-20 h-20 bg-[#a3e635]/10 rounded-2xl mb-4 border border-[#a3e635]/20 overflow-hidden">
-                    <img src="{{ asset('images/icons-mediatools.png') }}"
-                         alt="MediaTools"
-                         class="w-14 h-14 object-contain"
-                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                    <i class="fa-solid fa-bolt text-[#a3e635] text-3xl hidden" style="display:none;"></i>
+                {{-- Header --}}
+                <div class="text-center mb-8">
+                    <a href="{{ route('home') }}" class="inline-flex items-center gap-2 mb-6">
+                        <img src="{{ asset('images/icons.png') }}" alt="Logo" class="w-8 h-8 object-contain">
+                        <span class="text-lg font-bold text-white">MEDIA<span class="text-[#a3e635]">TOOLS.</span></span>
+                    </a>
+                    <h1 class="text-2xl font-extrabold text-white mb-1">Buat Akun Gratis</h1>
+                    <p class="text-sm" style="color:var(--text-muted);">Daftar dalam 2 menit. Kode OTP akan dikirim ke email Anda.</p>
                 </div>
-                <h1 class="text-3xl font-bold tracking-tight">Get Started</h1>
-                <p class="text-gray-400 mt-2 text-sm">Bergabung dengan ekosistem digital MediaTools</p>
-            </div>
 
-            {{-- Error / info global --}}
-            @if ($errors->has('email') && str_contains($errors->first('email'), 'sudah terdaftar'))
-                <div class="mb-5 p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl text-blue-300 text-sm text-center">
-                    <i class="fa-solid fa-circle-info mr-1"></i>
-                    {{ $errors->first('email') }}
-                </div>
-            @endif
-
-            <form method="POST" action="{{ route('register') }}" class="space-y-5">
-                @csrf
-
-                {{-- Nama --}}
-                <div class="space-y-2">
-                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest ml-1">Nama Lengkap</label>
-                    <div class="relative group">
-                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-500 group-focus-within:text-[#a3e635] transition-colors">
-                            <i class="fa-solid fa-user"></i>
-                        </div>
-                        <input type="text" name="name" id="name"
-                               value="{{ old('name') }}"
-                               required autofocus autocomplete="name"
-                               class="w-full bg-white/5 border {{ $errors->has('name') ? 'border-red-500' : 'border-white/10' }} rounded-2xl py-3.5 pl-11 pr-4 outline-none focus:border-[#a3e635] focus:ring-1 focus:ring-[#a3e635]/20 transition-all text-sm"
-                               placeholder="John Doe">
+                {{-- Flash messages --}}
+                @if(session('success'))
+                    <div class="mb-4 p-4 rounded-xl text-sm font-semibold" style="background:rgba(163,230,53,0.1);border:1px solid rgba(163,230,53,0.2);color:#a3e635;">
+                        <i class="fa-solid fa-circle-check mr-2"></i>{{ session('success') }}
                     </div>
-                    @error('name')
-                        <p class="text-red-400 text-xs mt-1 ml-1">{{ $message }}</p>
-                    @enderror
-                </div>
+                @endif
 
-                {{-- Email --}}
-                <div class="space-y-2">
-                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest ml-1">Email Address</label>
-                    <div class="relative group">
-                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-500 group-focus-within:text-[#a3e635] transition-colors">
-                            <i class="fa-solid fa-envelope"></i>
-                        </div>
-                        <input type="email" name="email" id="email"
-                               value="{{ old('email') }}"
-                               required autocomplete="email"
-                               class="w-full bg-white/5 border {{ $errors->has('email') ? 'border-red-500' : 'border-white/10' }} rounded-2xl py-3.5 pl-11 pr-4 outline-none focus:border-[#a3e635] focus:ring-1 focus:ring-[#a3e635]/20 transition-all text-sm"
-                               placeholder="name@email.com">
+                @if($errors->has('email') || $errors->has('name') || $errors->has('password'))
+                    <div class="mb-4 p-4 rounded-xl text-sm font-semibold" style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);color:#fca5a5;">
+                        <i class="fa-solid fa-triangle-exclamation mr-2"></i>
+                        {{ $errors->first() }}
                     </div>
-                    @error('email')
-                        @if (!str_contains($message, 'sudah terdaftar'))
-                            <p class="text-red-400 text-xs mt-1 ml-1">{{ $message }}</p>
-                        @endif
-                    @enderror
-                </div>
+                @endif
 
-                {{-- Password --}}
-                <div class="space-y-2">
-                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest ml-1">Password</label>
-                    <div class="relative group">
-                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-500 group-focus-within:text-[#a3e635] transition-colors">
-                            <i class="fa-solid fa-lock"></i>
-                        </div>
-                        <input type="password" name="password" id="regPassword"
-                               required autocomplete="new-password"
-                               class="w-full bg-white/5 border {{ $errors->has('password') ? 'border-red-500' : 'border-white/10' }} rounded-2xl py-3.5 pl-11 pr-12 outline-none focus:border-[#a3e635] focus:ring-1 focus:ring-[#a3e635]/20 transition-all text-sm"
-                               placeholder="Min. 8 karakter">
-                        <button type="button"
-                                onclick="togglePassword('regPassword', this)"
-                                class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500 hover:text-[#a3e635] transition-colors"
-                                tabindex="-1" aria-label="Tampilkan password">
-                            <i class="fa-solid fa-eye text-sm"></i>
-                        </button>
+                {{-- Form --}}
+                <form method="POST" action="{{ route('auth.register') }}" class="space-y-5">
+                    @csrf
+
+                    <div class="form-group">
+                        <label class="block text-xs font-bold mb-2 uppercase tracking-wider" style="color:var(--text-dim);">Nama Lengkap</label>
+                        <input type="text" name="name" value="{{ old('name') }}" required
+                               class="form-input @error('name') border-red-500 @enderror"
+                               placeholder="Budi Santoso">
                     </div>
-                    @error('password')
-                        <p class="text-red-400 text-xs mt-1 ml-1">{{ $message }}</p>
-                    @enderror
-                </div>
 
-                {{-- Confirm Password --}}
-                <div class="space-y-2">
-                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest ml-1">Konfirmasi Password</label>
-                    <div class="relative group">
-                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-500 group-focus-within:text-[#a3e635] transition-colors">
-                            <i class="fa-solid fa-circle-check"></i>
-                        </div>
-                        <input type="password" name="password_confirmation" id="regPasswordConfirm"
-                               required autocomplete="new-password"
-                               class="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 pl-11 pr-12 outline-none focus:border-[#a3e635] focus:ring-1 focus:ring-[#a3e635]/20 transition-all text-sm"
-                               placeholder="Ulangi password">
-                        <button type="button"
-                                onclick="togglePassword('regPasswordConfirm', this)"
-                                class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500 hover:text-[#a3e635] transition-colors"
-                                tabindex="-1" aria-label="Tampilkan konfirmasi password">
-                            <i class="fa-solid fa-eye text-sm"></i>
-                        </button>
+                    <div class="form-group">
+                        <label class="block text-xs font-bold mb-2 uppercase tracking-wider" style="color:var(--text-dim);">Alamat Email</label>
+                        <input type="email" name="email" value="{{ old('email') }}" required
+                               class="form-input @error('email') border-red-500 @enderror"
+                               placeholder="budi@gmail.com">
+                        <p class="mt-1.5 text-xs" style="color:var(--text-muted);">Gunakan email aktif — OTP akan dikirim ke sini.</p>
                     </div>
-                </div>
 
-                {{-- Info OTP --}}
-                <div class="flex items-start gap-3 p-3 bg-[#a3e635]/5 border border-[#a3e635]/15 rounded-xl">
-                    <i class="fa-solid fa-envelope-circle-check text-[#a3e635] text-sm mt-0.5 flex-shrink-0"></i>
-                    <p class="text-gray-400 text-xs leading-relaxed">
-                        Kami akan mengirimkan <strong class="text-white">kode verifikasi (OTP)</strong> ke email Anda untuk memastikan keamanan akun.
-                    </p>
-                </div>
+                    <div class="form-group">
+                        <label class="block text-xs font-bold mb-2 uppercase tracking-wider" style="color:var(--text-dim);">Password</label>
+                        <div class="relative">
+                            <input type="password" name="password" id="password" required
+                                   class="form-input pr-12 @error('password') border-red-500 @enderror"
+                                   placeholder="Minimal 8 karakter">
+                            <button type="button" onclick="togglePwd('password','eye1')"
+                                    class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 transition-colors">
+                                <i class="fa-solid fa-eye text-sm" id="eye1"></i>
+                            </button>
+                        </div>
+                    </div>
 
-                <div class="pt-1">
-                    <button type="submit"
-                            class="w-full bg-[#a3e635] text-[#020d0d] font-bold py-4 rounded-2xl hover:scale-[1.02] hover:shadow-lg hover:shadow-[#a3e635]/20 active:scale-95 transition-all">
-                        Buat Akun & Verifikasi Email
+                    <div class="form-group">
+                        <label class="block text-xs font-bold mb-2 uppercase tracking-wider" style="color:var(--text-dim);">Konfirmasi Password</label>
+                        <div class="relative">
+                            <input type="password" name="password_confirmation" id="password2" required
+                                   class="form-input pr-12"
+                                   placeholder="Ulangi password">
+                            <button type="button" onclick="togglePwd('password2','eye2')"
+                                    class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 transition-colors">
+                                <i class="fa-solid fa-eye text-sm" id="eye2"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary w-full py-4 text-sm mt-2">
+                        <i class="fa-solid fa-paper-plane text-xs"></i>
+                        <span>Kirim Kode OTP</span>
                     </button>
-                </div>
-            </form>
+                </form>
 
-            <div class="mt-8 pt-8 border-t border-white/5 text-center">
-                <p class="text-gray-500 text-sm">Sudah punya akun?
-                    <a href="{{ route('login') }}" class="text-[#a3e635] font-bold hover:underline">Masuk</a>
+                <p class="text-center mt-6 text-sm" style="color:var(--text-muted);">
+                    Sudah punya akun?
+                    <a href="{{ route('login') }}" class="font-bold" style="color:#a3e635;">Masuk sekarang</a>
                 </p>
+
             </div>
         </div>
     </div>
@@ -146,13 +97,11 @@
 
 @push('scripts')
 <script>
-function togglePassword(inputId, btn) {
+function togglePwd(inputId, iconId) {
     const input = document.getElementById(inputId);
-    const icon  = btn.querySelector('i');
-    const isHidden = input.type === 'password';
-    input.type = isHidden ? 'text' : 'password';
-    icon.className = isHidden ? 'fa-solid fa-eye-slash text-sm' : 'fa-solid fa-eye text-sm';
-    btn.setAttribute('aria-label', isHidden ? 'Sembunyikan password' : 'Tampilkan password');
+    const icon  = document.getElementById(iconId);
+    input.type = input.type === 'password' ? 'text' : 'password';
+    icon.className = input.type === 'text' ? 'fa-solid fa-eye-slash text-sm' : 'fa-solid fa-eye text-sm';
 }
 </script>
 @endpush
