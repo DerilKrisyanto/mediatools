@@ -63,9 +63,7 @@
 
             <div class="footer-socials">
                 @foreach([
-                    ['fa-instagram','#','Instagram'],
-                    ['fa-x-twitter','#','Twitter/X'],
-                    ['fa-linkedin-in','#','LinkedIn'],
+                    ['fa-instagram','https://www.instagram.com/halo.mediatools/','Instagram'],
                     ['fa-tiktok','#','TikTok'],
                     ['fa-github','#','GitHub'],
                 ] as [$icon, $href, $label])

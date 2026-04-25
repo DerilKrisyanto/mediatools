@@ -357,9 +357,7 @@
                 <p style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-4);margin-bottom:10px;font-weight:700;">Ikuti Kami</p>
                 <div style="display:flex;gap:8px;">
                     @foreach([
-                        ['fa-instagram','#'],
-                        ['fa-x-twitter','#'],
-                        ['fa-linkedin-in','#'],
+                        ['fa-instagram','https://www.instagram.com/halo.mediatools/'],
                         ['fa-tiktok','#'],
                     ] as [$icon, $href])
                     <a href="{{ $href }}"
