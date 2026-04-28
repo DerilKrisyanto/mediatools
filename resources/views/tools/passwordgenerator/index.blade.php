@@ -296,7 +296,10 @@
 @push('scripts')
 <script src="{{ asset('js/passwordgenerator.js') }}"></script>
 @endpush
-@endsection
 
 </div>{{-- /.tlb-body --}}
 </div>{{-- /.tlb-page --}}
+
+@include('components.tools.seo-section', ['tool' => 'passwordgenerator'])
+
+@endsection

@@ -322,7 +322,6 @@
 
         {{-- ═══ ADS SLOT: HEADER ═══ --}}
         <div class="ads-slot-header no-print" style="margin-bottom:5px;">@include('components.ads.banner-header')</div>
-        <div class="ads-slot-header no-print" style="margin-bottom:5px;">@include('components.ads.banner-header')</div>
         {{-- ═══ ADS SLOT: NATIVE BANNER ═══ --}}
         <div class="ads-slot-native no-print">@include('components.ads.banner-content')</div>
  
@@ -332,7 +331,7 @@
 </div>
 {{-- /SHELL --}}
 
-@endsection
+
 
 @push('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -379,3 +378,7 @@
 
 </div>{{-- /.tlb-body --}}
 </div>{{-- /.tlb-page --}}
+
+@include('components.tools.seo-section', ['tool' => 'invoice'])
+
+@endsection

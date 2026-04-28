@@ -415,8 +415,6 @@
     <span id="lt-toast-msg"></span>
 </div>
 
-@endsection
-
 @push('scripts')
 <script src="{{ asset('js/linktree.js') }}"></script>
 <script src="https://app.{{ config('services.midtrans.is_production') ? '' : 'sandbox.' }}midtrans.com/snap/snap.js"
@@ -425,3 +423,7 @@
 
 </div>{{-- /.tlb-body --}}
 </div>{{-- /.tlb-page --}}
+
+@include('components.tools.seo-section', ['tool' => 'linktree'])
+
+@endsection

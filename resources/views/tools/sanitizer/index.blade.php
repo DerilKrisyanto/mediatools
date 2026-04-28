@@ -456,7 +456,6 @@
     </div>
 </section>
 
-@endsection
 
 @push('scripts')
 <script src="{{ asset('js/sanitizer.js') }}"></script>
@@ -464,3 +463,7 @@
 
 </div>{{-- /.tlb-body --}}
 </div>{{-- /.tlb-page --}}
+
+@include('components.tools.seo-section', ['tool' => 'sanitizer'])
+
+@endsection

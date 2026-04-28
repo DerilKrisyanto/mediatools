@@ -306,6 +306,9 @@
 @push('scripts')
 <script src="{{ asset('js/mediadownloader.js') }}"></script>
 @endpush
+
+@include('components.tools.seo-section', ['tool' => 'mediadownloader'])
+
 @endsection
 
 </div>{{-- /.tlb-body --}}

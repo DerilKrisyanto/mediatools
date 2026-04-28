@@ -348,8 +348,6 @@
     <span id="toast-message">Notifikasi</span>
 </div>
 
-@endsection
-
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script src="{{ asset('js/signature.js') }}"></script>
@@ -357,3 +355,7 @@
 
 </div>{{-- /.tlb-body --}}
 </div>{{-- /.tlb-page --}}
+
+@include('components.tools.seo-section', ['tool' => 'signature'])
+
+@endsection

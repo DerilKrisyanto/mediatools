@@ -294,7 +294,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="{{ asset('js/imageconverter.js') }}"></script>
 @endpush
-@endsection
 
 </div>{{-- /.tlb-body --}}
 </div>{{-- /.tlb-page --}}
+
+@include('components.tools.seo-section', ['tool' => 'imageconverter'])
+
+@endsection

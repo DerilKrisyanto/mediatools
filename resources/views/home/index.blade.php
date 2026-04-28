@@ -41,7 +41,7 @@
             <span class="hero-trust-item"><i class="fa-solid fa-check"></i> Gratis selamanya</span>
             <span class="hero-trust-item"><i class="fa-solid fa-check"></i> Tanpa instalasi</span>
             <span class="hero-trust-item"><i class="fa-solid fa-check"></i> Privasi terjaga</span>
-            <span class="hero-trust-item"><i class="fa-solid fa-check"></i> Dipercaya 10.000+ pengguna</span>
+            <span class="hero-trust-item"><i class="fa-solid fa-check"></i> Gratis untuk UMKM &amp; Freelancer</span>
         </div>
     </div>
 </section>
@@ -56,7 +56,7 @@
             <div class="stat-label">Tools Aktif</div>
         </div>
         <div class="stat-cell reveal reveal-d1">
-            <div class="stat-num" data-target="100" data-suffix="Rb+">0</div>
+            <div class="stat-num" data-target="50" data-suffix="Rb+">0</div>
             <div class="stat-label">File Diproses</div>
         </div>
         <div class="stat-cell reveal reveal-d2">
@@ -455,7 +455,7 @@
             <i class="fa-solid fa-rocket"></i> Mulai Sekarang
         </div>
         <h2 class="cta-title">Siap Mengubah Cara<br><span class="gradient-text">Anda Bekerja?</span></h2>
-        <p class="cta-sub">Bergabung dengan 10.000+ pengguna yang telah merasakan manfaat MediaTools. Gratis, tanpa kartu kredit, mulai dalam 30 detik.</p>
+        <p class="cta-sub">Bergabung bersama freelancer dan UMKM Indonesia yang sudah merasakan manfaat MediaTools. Gratis selamanya, mulai dalam 30 detik.</p>
         <div class="cta-actions">
             <a href="{{ route('register') }}" class="btn-hero-primary" style="font-size:15px;padding:13px 28px;">
                 <i class="fa-solid fa-bolt" style="font-size:12px;"></i> Daftar Sekarang

@@ -726,6 +726,8 @@
 </div>{{-- /.tlb-body --}}
 </div>{{-- /.tlb-page --}}
 
+@include('components.tools.seo-section', ['tool' => 'bgremover'])
+
 @endsection
 
 @push('scripts')

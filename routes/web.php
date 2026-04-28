@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BlogController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Tools\InvoiceController;
 use App\Http\Controllers\Tools\BgRemoverController;
 use App\Http\Controllers\Tools\LinkTreeController;
@@ -17,7 +19,6 @@ use App\Http\Controllers\Tools\MetadataSanitizerController;
 use App\Http\Controllers\Tools\ProposalBuilderController;
 use App\Http\Controllers\Tools\PasFotoController;
 use App\Http\Controllers\Tools\FinanceController;
-use App\Http\Controllers\ContactController;
  
 // ========== Halaman Utama ========== //
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -213,7 +214,22 @@ Route::get('/sitemap.xml', function () {
         ['loc' => '/fotobox', 'priority' => '0.7', 'changefreq' => 'monthly', 'lastmod' => $today,
             'image' => ['loc' => '/images/og/home.png', 'title' => 'FotoBox Online Gratis — Photo Booth 6 Foto + Template | MediaTools']],
         ['loc' => '/pasfoto', 'priority' => '0.7', 'changefreq' => 'monthly', 'lastmod' => $today,
-            'image' => ['loc' => '/images/og/home.png', 'title' => 'Smart Photo Studio — Pas Foto Online Gratis 2x3 3x4 4x6 | MediaTools']]
+            'image' => ['loc' => '/images/og/home.png', 'title' => 'Smart Photo Studio — Pas Foto Online Gratis 2x3 3x4 4x6 | MediaTools']],
+
+        // ── Blog ──
+        ['loc' => '/blog', 'priority' => '0.8', 'changefreq' => 'weekly', 'lastmod' => $today,
+            'image' => ['loc' => '/images/og/home.png', 'title' => 'Blog MediaTools — Tutorial Tools Digital Gratis']],
+        ['loc' => '/blog/cara-hapus-background-foto-online-gratis', 'priority' => '0.8', 'changefreq' => 'monthly', 'lastmod' => $today,
+            'image' => ['loc' => '/images/og/bgremover.png', 'title' => 'Cara Hapus Background Foto Online Gratis']],
+        ['loc' => '/blog/cara-buat-invoice-freelancer-profesional', 'priority' => '0.8', 'changefreq' => 'monthly', 'lastmod' => $today,
+            'image' => ['loc' => '/images/og/invoice.png', 'title' => 'Cara Buat Invoice Freelancer Profesional']],
+        ['loc' => '/blog/cara-download-video-tiktok-tanpa-watermark', 'priority' => '0.8', 'changefreq' => 'monthly', 'lastmod' => $today,
+            'image' => ['loc' => '/images/og/mediadownloader.png', 'title' => 'Cara Download Video TikTok Tanpa Watermark']],
+        ['loc' => '/blog/cara-compress-pdf-agar-lebih-kecil', 'priority' => '0.8', 'changefreq' => 'monthly', 'lastmod' => $today,
+            'image' => ['loc' => '/images/og/pdfutilities.png', 'title' => 'Cara Kompres PDF Agar Lebih Kecil']],
+        ['loc' => '/blog/cara-convert-pdf-ke-word-yang-bisa-diedit', 'priority' => '0.8', 'changefreq' => 'monthly', 'lastmod' => $today,
+            'image' => ['loc' => '/images/og/fileconverter.png', 'title' => 'Cara Convert PDF ke Word']],
+
 
         // ── Finance: auth-required, tidak diindex Google ──
         // (dikecualikan dari sitemap karena membutuhkan login)
@@ -255,5 +271,10 @@ Route::get('/sitemap.xml', function () {
         'X-Robots-Tag'  => 'noindex',
     ]);
 })->name('sitemap');
+
+
+// Blog SEO — artikel tutorial untuk traffic organik
+Route::get('/blog',        [BlogController::class, 'index'])->name('blog.index');
+Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 
 require __DIR__ . '/auth.php';

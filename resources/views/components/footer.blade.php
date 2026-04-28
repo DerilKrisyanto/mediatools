@@ -13,7 +13,7 @@
                     <span style="width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse-dot 2.5s infinite;display:inline-block;"></span>
                     <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--accent);">Newsletter</span>
                 </div>
-                <h3>Tips & update terbaru <span class="gradient-text">langsung ke inbox.</span></h3>
+                <h3 style="color:white">Tips & update terbaru <span class="gradient-text">langsung ke inbox.</span></h3>
                 <p>Bergabung dengan <strong style="color:var(--text-2)">5.000+</strong> subscriber · Tidak ada spam · Berhenti kapan saja.</p>
             </div>
 

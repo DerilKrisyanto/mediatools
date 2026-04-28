@@ -309,4 +309,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="{{ asset('js/fileconverter.js') }}"></script>
 @endpush
+
+@include('components.tools.seo-section', ['tool' => 'fileconverter'])
+
 @endsection

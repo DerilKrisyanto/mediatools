@@ -47,11 +47,13 @@
 {{-- ═══════════════════════════════════════════
      MAIN LAYOUT
 ═══════════════════════════════════════════ --}}
-<div class="max-w-7xl mx-auto px-6 pb-16" style="padding-top:24px;">
+<div class="max-w-7xl mx-auto px-6 pb-16" style="padding-top:10px;">
     <div class="ads-layout">
 
         {{-- ── Main Content ── --}}
         <div class="ads-layout__main">
+            {{-- ═══ ADS SLOT ═══ --}}
+            <div class="ads-slot-header no-print" style="margin-bottom:20px;">@include('components.ads.banner-header')</div>
 
             {{-- ════════════════════════════════
                  SCREEN 1 — LANDING
@@ -232,6 +234,11 @@
                     </p>
                 </div>
             </div>
+
+            {{-- ═══ ADS SLOT: HEADER ═══ --}}
+            <div class="ads-slot-header no-print" style="margin-bottom:5px;">@include('components.ads.banner-header')</div>
+            {{-- ═══ ADS SLOT: NATIVE BANNER ═══ --}}
+            <div class="ads-slot-native no-print">@include('components.ads.banner-content')</div>
 
         </div>{{-- /ads-layout__main --}}
 

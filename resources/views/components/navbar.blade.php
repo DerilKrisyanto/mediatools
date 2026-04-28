@@ -87,6 +87,7 @@
             </div>
 
             <a href="{{ route('home') }}#tools"   class="nav-link">Semua Tools</a>
+            <a href="{{ route('blog.index') }}"    class="nav-link">Blog</a>
             <a href="{{ route('home') }}#about"   class="nav-link">Tentang Kami</a>
             <a href="{{ route('home') }}#contact"  class="nav-link">Kontak</a>
 

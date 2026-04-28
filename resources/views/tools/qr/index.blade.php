@@ -191,7 +191,10 @@
     <script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
     <script src="{{ asset('js/qr.js') }}"></script>
 @endpush
-@endsection
 
 </div>{{-- /.tlb-body --}}
 </div>{{-- /.tlb-page --}}
+
+@include('components.tools.seo-section', ['tool' => 'qr'])
+
+@endsection
