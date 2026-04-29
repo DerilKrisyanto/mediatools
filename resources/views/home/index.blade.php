@@ -112,18 +112,23 @@
 
     @php
     $tools = [
-        ['doc',     'fa-file-invoice-dollar', 'rgba(245,158,11,0.12)',  '#fbbf24',       'Invoice Generator',              'Buat tagihan profesional dengan template yang bisa dikustomisasi penuh.',             'BARU', 'invoice',           true],
-        ['social',  'fa-link',                'rgba(139,92,246,0.12)',  '#a78bfa',       'LinkTree Builder',               'Satukan semua link penting di satu halaman landing yang elegan.',                   'HOT',  'linktree',          true],
-        ['doc',     'fa-qrcode',              'rgba(59,130,246,0.12)',  '#60a5fa',       'QR Code Generator',              'QR Code custom untuk menu, pembayaran, kontak, atau URL bisnis Anda.',              null,   'qr',                true],
-        ['security','fa-signature',           'rgba(163,230,53,0.10)', 'var(--accent)', 'Email Signature',                'Tanda tangan email profesional untuk Gmail, Outlook & semua email client.',          null,   'signature',         true],
-        ['image',   'fa-scissors',            'rgba(244,63,94,0.12)',   '#fb7185',       'Background Remover',             'Hapus background foto otomatis dengan AI BiRefNet — presisi pada rambut.',           null,   'bgremover',         true],
-        ['image',   'fa-image',               'rgba(59,130,246,0.12)',  '#60a5fa',       'Image Converter',                'Resize, compress & convert JPG/PNG/WebP langsung di browser, tanpa upload.',         null,   'imageconverter',    true],
-        ['doc',     'fa-repeat',              'rgba(245,158,11,0.12)',  '#fbbf24',       'File Converter',                 'Konversi PDF ke Word, Excel, PPT & sebaliknya. Upload 5 file sekaligus.',            'HOT',  'fileconverter',     true],
-        ['doc',     'fa-file-pdf',            'rgba(239,68,68,0.12)',   '#f87171',       'PDF Utilities',                  'Merge, split & compress PDF di browser — tanpa upload ke server.',                   'HOT',  'pdfutilities',      true],
-        ['social',  'fa-cloud-arrow-down',    'rgba(139,92,246,0.12)',  '#a78bfa',       'Media Downloader',               'Download video & audio dari YouTube, TikTok, Instagram dalam hitungan detik.',       'BARU', 'mediadownloader',   true],
-        ['security','fa-shield-halved',       'rgba(163,230,53,0.10)', 'var(--accent)', 'File Security & Privacy Scanner','Deteksi file berbahaya, malware tersembunyi, hingga ancaman lainnya, hapus metadata.','BARU', 'sanitizer',         true],
-        ['security','fa-key',                 'rgba(163,230,53,0.10)', 'var(--accent)', 'Password Generator',             'Buat password kuat & unik secara instan — semua proses di browser Anda.',             null,   'passwordgenerator', true],
-        ['doc',     'fa-id-card',             'rgba(100,116,139,0.12)', '#94a3b8',       'Business Card',                  'Kartu nama digital yang bisa dibagikan via link atau QR Code.',                      'SOON', '#',                 false],
+        ['doc',     'fa-file-invoice-dollar',   'rgba(245,158,11,0.12)',    '#fbbf24',      'Invoice Generator',                'Buat tagihan profesional dengan template yang bisa dikustomisasi penuh.',              null,     'invoice',              true],
+        ['doc',     'fa-file-pdf',              'rgba(245,158,11,0.12)',    '#fbbf24',      'PDF Utilities',                    'Merge, split & compress PDF di browser — tanpa upload ke server.',                     'HOT',      'pdfutilities',         true],
+        ['doc',     'fa-repeat',                'rgba(245,158,11,0.12)',    '#fbbf24',      'File Converter',                   'Konversi PDF ke Word, Excel, PPT & sebaliknya. Upload 5 file sekaligus.',              'HOT',      'fileconverter',        true],
+        ['doc',     'fa-chart-pie',             'rgba(245,158,11,0.12)',    '#fbbf24',      'Pencatatan Keuangan',              'Catat pemasukan & pengeluaran, sangat cocok untuk UMKM kecil dan menengah',            'BARU',     'finance',              true],
+        ['doc',     'fa-id-card',               'rgba(245,158,11,0.12)',    '#94a3b8',      'Business Card',                    'Kartu nama digital yang bisa dibagikan via link atau QR Code.',                        'SOON',     '#',                    false],
+
+        ['image',   'fa-image',                 'rgba(59,130,246,0.12)',    '#60a5fa',      'Image Converter',                  'Resize, compress & convert JPG/PNG/WebP langsung di browser, tanpa upload.',           null,       'imageconverter',       true],
+        ['image',   'fa-scissors',              'rgba(59,130,246,0.12)',    '#60a5fa',      'Background Remover',               'Hapus background foto otomatis dengan AI BiRefNet — presisi pada rambut.',             null,       'bgremover',            true],
+        ['image',   'fa-camera-retro',          'rgba(59,130,246,0.12)',    '#60a5fa',      'FotoBox Photo Booth',              'Sesi foto seru seperti photo booth asli! 10 foto otomatis countdown, 10 template keren & download.','BARU',  'fotobox',    true],
+
+        ['social',  'fa-cloud-arrow-down',      'rgba(139,92,246,0.12)',    '#a78bfa',      'Media Downloader',                 'Download video & audio dari YouTube, TikTok, Instagram dalam hitungan detik.',         null,     'mediadownloader',        true],
+        ['social',  'fa-link',                  'rgba(139,92,246,0.12)',    '#a78bfa',      'LinkTree Builder',                 'Satukan semua link penting di satu halaman landing yang elegan.',                      'HOT',      'linktree',             true],
+        ['social',  'fa-qrcode',                'rgba(139,92,246,0.12)',    '#a78bfa',      'QR Code Generator',                'QR Code custom untuk menu, pembayaran, kontak, atau URL bisnis Anda.',                 null,       'qr',                   true],
+
+        ['security','fa-shield-halved',         'rgba(163,230,53,0.10)',    'var(--accent)',  'File Security & Privacy Scanner',  'Deteksi file berbahaya, malware tersembunyi, hingga ancaman lainnya, hapus metadata.', 'BARU',     'sanitizer',            true],
+        ['security','fa-key',                   'rgba(163,230,53,0.10)',    'var(--accent)',  'Password Generator',               'Buat password kuat & unik secara instan — semua proses di browser Anda.',              null,       'passwordgenerator',    true],
+        ['security','fa-signature',             'rgba(163,230,53,0.10)',    'var(--accent)',  'Email Signature',                  'Tanda tangan email profesional untuk Gmail, Outlook & semua email client.',            null,       'signature',            true],
     ];
     @endphp
 
