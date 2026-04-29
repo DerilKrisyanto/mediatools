@@ -167,6 +167,9 @@
         });
     </script>
     @endif
+
+    {{-- Kadam - advertising network --}}
+    <meta name="kadam-verification" content="kadamd45bc0dc01f344e67d5e955648051fa5" />
 </head>
 <body class="antialiased">
 
