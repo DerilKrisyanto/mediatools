@@ -49,7 +49,7 @@ Route::redirect('/pdf-to-word',              '/file-converter',   301);
 Route::redirect('/download-video',           '/media-downloader', 301);
 Route::redirect('/download-youtube',         '/media-downloader', 301);
 Route::redirect('/download-tiktok',          '/media-downloader', 301);
-Route::redirect('/password-generator',       '/password-generator', 301);
+Route::redirect('/create-password',          '/password-generator', 301);
 Route::redirect('/email-signature',          '/signature',        301);
 Route::redirect('/buat-invoice',             '/invoice',          301);
 Route::redirect('/invoice-generator',        '/invoice',          301);
