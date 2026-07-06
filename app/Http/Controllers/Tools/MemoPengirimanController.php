@@ -311,11 +311,16 @@ class MemoPengirimanController extends Controller
 
     private function generateNomorMemo(): string
     {
-        $prefix = 'MEMO/' . now()->format('Ymd') . '/';
+        $userId = Auth::id();
 
-        $urutanHariIni = MemoPengiriman::whereDate('created_at', now()->toDateString())->count() + 1;
+        $prefix = 'MEMO' . str_pad($userId, 3, '0', STR_PAD_LEFT)
+                . '/' . now()->format('Ymd') . '/';
 
-        return $prefix . str_pad((string) $urutanHariIni, 4, '0', STR_PAD_LEFT);
+        $urutan = MemoPengiriman::where('user_id', $userId)
+            ->whereDate('created_at', now()->toDateString())
+            ->count() + 1;
+
+        return $prefix . str_pad($urutan, 4, '0', STR_PAD_LEFT);
     }
 
     private function sanitizeFilename(string $value): string
