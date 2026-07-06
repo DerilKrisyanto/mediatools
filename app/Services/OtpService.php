@@ -49,7 +49,7 @@ class OtpService
             EmailOtp::create([
                 'email'      => $email,
                 'purpose'    => $purpose,
-                'code'       => $code,
+                'otp'       => $code,
                 'expires_at' => now()->addMinutes(self::EXPIRES_MINUTES),
                 'attempts'   => 0,
                 'used'       => false,
@@ -106,7 +106,7 @@ class OtpService
         }
 
         // Kode tidak cocok → tambah counter attempts
-        if ($record->code !== $code) {
+        if ($record->otp !== $code) {
             $record->increment('attempts');
             return false;
         }

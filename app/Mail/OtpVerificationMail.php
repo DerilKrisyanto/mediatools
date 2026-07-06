@@ -12,15 +12,29 @@ class OtpVerificationMail extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public string $otp;
+    public string $recipientName;
+    public string $purpose;
+    public int $expiryMinutes;
+
     public function __construct(
-        public readonly string $otp,
-        public readonly string $name
-    ) {}
+        string $otp,
+        string $recipientName = '',
+        string $purpose = 'register',
+        int $expiryMinutes = 10
+    ) {
+        $this->otp = $otp;
+        $this->recipientName = $recipientName;
+        $this->purpose = $purpose;
+        $this->expiryMinutes = $expiryMinutes;
+    }
 
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '[' . $this->otp . '] Kode Verifikasi MediaTools Anda',
+            subject: $this->purpose === 'login'
+                ? 'Kode OTP Login — MediaTools'
+                : 'Verifikasi Email — MediaTools',
         );
     }
 
@@ -28,6 +42,12 @@ class OtpVerificationMail extends Mailable
     {
         return new Content(
             view: 'emails.otp',
+            with: [
+                'otp'            => $this->otp,
+                'recipientName'  => $this->recipientName,
+                'purpose'        => $this->purpose,
+                'expiryMinutes'  => $this->expiryMinutes,
+            ],
         );
     }
 }

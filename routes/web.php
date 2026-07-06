@@ -19,6 +19,8 @@ use App\Http\Controllers\Tools\MetadataSanitizerController;
 use App\Http\Controllers\Tools\ProposalBuilderController;
 use App\Http\Controllers\Tools\PasFotoController;
 use App\Http\Controllers\Tools\FinanceController;
+use App\Http\Controllers\Tools\MemoPengirimanController;
+use App\Http\Controllers\UserLogoController;
  
 // ========== Halaman Utama ========== //
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -32,29 +34,67 @@ Route::post('/newsletter/subscribe', [ContactController::class, 'newsletter'])->
 
 // ══ SEO URL Redirects — URL ramah kata kunci → URL asli ══
 // Redirect 301 = Google transfer "link juice" ke URL tujuan
-Route::redirect('/background-remover',       '/bg',               301)->name('tools.bgremover.seo');
-Route::redirect('/remove-background',        '/bg',               301);
-Route::redirect('/hapus-background',         '/bg',               301);
-Route::redirect('/pdf-tools',                '/pdfutilities',     301);
-Route::redirect('/pdf-utilities',            '/pdfutilities',     301);
-Route::redirect('/compress-pdf',             '/pdfutilities',     301);
-Route::redirect('/merge-pdf',                '/pdfutilities',     301);
-Route::redirect('/qr-code-generator',        '/qr',               301);
-Route::redirect('/buat-qr-code',             '/qr',               301);
-Route::redirect('/image-converter',          '/imageconverter',   301);
-Route::redirect('/compress-gambar',          '/imageconverter',   301);
-Route::redirect('/resize-gambar',            '/imageconverter',   301);
-Route::redirect('/convert-pdf',              '/file-converter',   301);
-Route::redirect('/pdf-to-word',              '/file-converter',   301);
-Route::redirect('/download-video',           '/media-downloader', 301);
-Route::redirect('/download-youtube',         '/media-downloader', 301);
-Route::redirect('/download-tiktok',          '/media-downloader', 301);
-Route::redirect('/create-password',          '/password-generator', 301);
-Route::redirect('/email-signature',          '/signature',        301);
-Route::redirect('/buat-invoice',             '/invoice',          301);
-Route::redirect('/invoice-generator',        '/invoice',          301);
-Route::redirect('/pas-foto',                 '/pasfoto',          301);
-Route::redirect('/photo-booth',              '/fotobox',          301);
+Route::redirect('/invoice-generator',           '/invoice',          301);
+Route::redirect('/buat-invoice',                '/invoice',          301);
+Route::redirect('/buat-tagihan-online',         '/invoice',          301);
+Route::redirect('/invoice-maker',               '/invoice',          301);
+Route::redirect('/buat-faktur-online',          '/invoice',          301);
+Route::redirect('/template-invoice-gratis',     '/invoice',          301);
+
+Route::redirect('/hapus-background',            '/bg',               301);
+Route::redirect('/remove-background-gratis',    '/bg',               301);
+Route::redirect('/hapus-latar-foto',            '/bg',               301);
+Route::redirect('/foto-tanpa-background',       '/bg',               301);
+Route::redirect('/background-remover-ai',       '/bg',               301);
+Route::redirect('/pas-foto',                    '/bg',               301);
+
+Route::redirect('/qr-code-generator',           '/qr',               301);
+Route::redirect('/buat-qr-code',                '/qr',               301);
+Route::redirect('/qr-code-gratis',              '/qr',               301);
+Route::redirect('/qr-code-bisnis',              '/qr',               301);
+Route::redirect('/buat-barcode',                '/qr',               301);
+
+Route::redirect('/compress-gambar',             '/imageconverter',   301);
+Route::redirect('/resize-foto',                 '/imageconverter',   301);
+Route::redirect('/konversi-gambar',             '/imageconverter',   301);
+Route::redirect('/image-compressor',            '/imageconverter',   301);
+Route::redirect('/kompres-foto-gratis',         '/imageconverter',   301);
+
+Route::redirect('/pdf-to-word',                 '/file-converter',   301);
+Route::redirect('/convert-pdf-ke-word',         '/file-converter',   301);
+Route::redirect('/pdf-ke-excel',                '/file-converter',   301);
+Route::redirect('/word-ke-pdf',                 '/file-converter',   301);
+Route::redirect('/konversi-file',               '/file-converter',   301);
+
+Route::redirect('/merge-pdf',                   '/pdfutilities',     301);
+Route::redirect('/gabung-pdf',                  '/pdfutilities',     301);
+Route::redirect('/compress-pdf',                '/pdfutilities',     301);
+Route::redirect('/kompres-pdf-gratis',          '/pdfutilities',     301);
+Route::redirect('/split-pdf',                   '/pdfutilities',     301);
+
+Route::redirect('/download-video-youtube',      '/media-downloader', 301);
+Route::redirect('/download-tiktok-gratis',      '/media-downloader', 301);
+Route::redirect('/youtube-downloader',          '/media-downloader', 301);
+Route::redirect('/download-instagram-reels',    '/media-downloader', 301);
+Route::redirect('/youtube-to-mp3',              '/media-downloader', 301);
+
+Route::redirect('/buat-password-kuat',          '/password-generator', 301);
+Route::redirect('/random-password',             '/password-generator', 301);
+Route::redirect('/kata-sandi-aman',             '/password-generator', 301);
+
+Route::redirect('/buat-email-signature',        '/signature',        301);
+Route::redirect('/tanda-tangan-email',          '/signature',        301);
+Route::redirect('/signature-gmail',             '/signature',        301);
+
+Route::redirect('/bio-link',                    '/linktree',         301);
+Route::redirect('/link-in-bio',                 '/linktree',         301);
+Route::redirect('/link-tree-gratis',            '/linktree',         301);
+Route::redirect('/satu-link-semua-sosmed',      '/linktree',         301);
+
+Route::redirect('/photo-booth',                 '/fotobox',          301);
+Route::redirect('/photo-booth-online',          '/fotobox',          301);
+Route::redirect('/foto-booth-gratis',           '/fotobox',          301);
+Route::redirect('/foto-box-online',             '/fotobox',          301);
 
 
 
@@ -88,6 +128,25 @@ Route::prefix('finance')->group(function () {
         Route::post('/transactions',       [FinanceController::class, 'store'])  ->name('tools.finance.transactions.store');
         Route::delete('/transactions/{id}',[FinanceController::class, 'destroy'])->name('tools.finance.transactions.destroy');
         Route::get('/print',               [FinanceController::class, 'print'])  ->name('tools.finance.print');
+    });
+});
+
+// ========== Memo Pengiriman (auth-only) ========== //
+Route::prefix('memopengiriman')->group(function () {
+    Route::middleware('auth')->group(function () {
+        Route::get('/', [MemoPengirimanController::class, 'index'])->name('tools.memopengiriman');
+        Route::post('/', [MemoPengirimanController::class, 'store'])->name('tools.memopengiriman.store');
+
+        Route::post('/cetak-terpilih', [MemoPengirimanController::class, 'bulkPdf'])->name('tools.memopengiriman.bulk-pdf');
+        Route::delete('/hapus-terpilih', [MemoPengirimanController::class, 'bulkDestroy'])->name('tools.memopengiriman.bulk-destroy');
+
+        Route::get('/{memoPengiriman}/edit', [MemoPengirimanController::class, 'edit'])->name('tools.memopengiriman.edit');
+        Route::put('/{memoPengiriman}', [MemoPengirimanController::class, 'update'])->name('tools.memopengiriman.update');
+        Route::delete('/{memoPengiriman}', [MemoPengirimanController::class, 'destroy'])->name('tools.memopengiriman.destroy');
+        Route::get('/{memoPengiriman}/cetak', [MemoPengirimanController::class, 'pdf'])->name('tools.memopengiriman.pdf');
+
+        Route::post('/profile/logo',   [UserLogoController::class, 'store'])->name('tools.memopengiriman.profile.logo.store');
+        Route::delete('/profile/logo', [UserLogoController::class, 'destroy'])->name('tools.memopengiriman.profile.logo.destroy');
     });
 });
 

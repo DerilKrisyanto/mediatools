@@ -1,0 +1,159 @@
+/* ============================================
+   MEMO PENGIRIMAN — TOOL PAGE STYLES
+   Tema light/bersih, independen dari tema dark landing page
+   ============================================ */
+
+.memo-page {
+    --memo-bg:         #f4f6f8;
+    --memo-card:       #ffffff;
+    --memo-border:     #e5e7eb;
+    --memo-text:       #111827;
+    --memo-muted:      #6b7280;
+    --memo-accent:     #16a34a;
+    --memo-accent-dim: rgba(22,163,74,0.1);
+    --memo-danger:     #dc2626;
+    --memo-radius:     16px;
+    background: var(--memo-bg);
+    min-height: 100vh;
+    color: var(--memo-text);
+    padding-bottom: 60px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* ---- Header banner ---- */
+.memo-header {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    padding: 44px 24px 60px;
+    color: #fff;
+}
+.memo-header .breadcrumb { font-size: 13px; color: #94a3b8; margin-bottom: 10px; }
+.memo-header .breadcrumb a { color: #94a3b8; text-decoration: none; }
+.memo-header .breadcrumb a:hover { color: #fff; }
+.memo-header h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 6px; color:#fff; }
+.memo-header p { color: #94a3b8; font-size: 14px; max-width: 640px; }
+
+/* ---- Content wrapper ---- */
+.memo-wrap { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+/* ---- Card ---- */
+.memo-card {
+    background: var(--memo-card);
+    border: 1px solid var(--memo-border);
+    border-radius: var(--memo-radius);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    padding: 28px;
+    margin-top: -36px;
+    position: relative;
+    z-index: 1;
+}
+.memo-card + .memo-card { margin-top: 24px; }
+.memo-card h2 { font-size: 18px; font-weight: 700; margin-bottom: 20px; color: var(--memo-text); }
+
+.memo-section-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--memo-accent); margin: 20px 0 10px;
+}
+.memo-section-label:first-of-type { margin-top: 0; }
+
+/* ---- Form ---- */
+.memo-form-group { margin-bottom: 16px; }
+.memo-form-group label { display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 6px; }
+.memo-input {
+    width: 100%; padding: 10px 14px; border: 1px solid var(--memo-border); border-radius: 10px;
+    font-size: 14px; color: var(--memo-text); background: #fff; outline: none;
+    transition: border-color .2s, box-shadow .2s;
+}
+.memo-input:focus { border-color: var(--memo-accent); box-shadow: 0 0 0 3px var(--memo-accent-dim); }
+textarea.memo-input { resize: vertical; min-height: 68px; }
+
+.memo-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.memo-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+@media (max-width: 768px) {
+    .memo-grid-2, .memo-grid-3 { grid-template-columns: 1fr; }
+}
+
+.memo-error { color: var(--memo-danger); font-size: 12px; margin-top: 4px; }
+
+/* ---- Buttons ---- */
+.memo-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 11px 22px; border-radius: 10px; font-weight: 700; font-size: 14px;
+    border: none; cursor: pointer; transition: all .2s; text-decoration: none;
+}
+.memo-btn-primary { background: var(--memo-accent); color: #fff; }
+.memo-btn-primary:hover { background: #15803d; }
+.memo-btn-outline { background: #fff; color: var(--memo-text); border: 1px solid var(--memo-border); }
+.memo-btn-outline:hover { background: #f9fafb; }
+.memo-btn-danger { background: #fff; color: var(--memo-danger); border: 1px solid #fecaca; }
+.memo-btn-danger:hover { background: #fef2f2; }
+.memo-btn:disabled { opacity: .45; cursor: not-allowed; }
+
+/* ---- Table ---- */
+.memo-table-wrap { overflow-x: auto; }
+.memo-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.memo-table th {
+    text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.05em; color: var(--memo-muted); padding: 10px 12px;
+    border-bottom: 1px solid var(--memo-border); white-space: nowrap;
+}
+.memo-table td { padding: 12px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+.memo-table tr:hover td { background: #fafafa; }
+
+.memo-badge { display: inline-block; padding: 3px 10px; border-radius: 99px; font-size: 11px; font-weight: 700; }
+.memo-badge-yes { background: #dcfce7; color: #166534; }
+.memo-badge-no  { background: #f1f5f9; color: #64748b; }
+
+.memo-action-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: #64748b; border: 1px solid var(--memo-border); background: #fff;
+    transition: all .2s; margin-right: 4px; text-decoration: none;
+}
+.memo-action-icon:hover { background: #f3f4f6; color: var(--memo-text); }
+.memo-action-icon.danger:hover { background: #fef2f2; color: var(--memo-danger); border-color: #fecaca; }
+
+/* ---- Bulk toolbar ---- */
+.memo-bulk-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--memo-accent-dim); border: 1px solid rgba(22,163,74,0.25);
+    border-radius: 10px; padding: 10px 16px; margin-bottom: 16px;
+    font-size: 13.5px; font-weight: 600; color: #166534;
+}
+
+/* ---- Alerts ---- */
+.memo-alert {
+    padding: 14px 18px; border-radius: 12px; font-size: 13.5px; font-weight: 600;
+    margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+}
+.memo-alert-success { background: #dcfce7; color: #166534; }
+.memo-alert-error   { background: #fee2e2; color: #991b1b; }
+
+/* ---- Checkbox ---- */
+.memo-checkbox { width: 16px; height: 16px; accent-color: var(--memo-accent); cursor: pointer; }
+
+/* ---- Empty state ---- */
+.memo-empty { text-align: center; padding: 40px 20px; color: var(--memo-muted); font-size: 14px; }
+
+/* ---- Pagination (rapikan default Laravel/Tailwind pagination) ---- */
+.memo-wrap nav[role="navigation"] { font-size: 13px; }
+
+/* ---- Logo card ---- */
+.memo-logo-card { margin-bottom: 24px; }
+.memo-logo-desc { font-size: 13.5px; color: var(--memo-muted); margin-bottom: 20px; }
+.memo-logo-row { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+
+.memo-logo-preview {
+    width: 96px; height: 96px; border-radius: 14px; border: 1px dashed var(--memo-border);
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+    background: #f9fafb; flex-shrink: 0;
+}
+.memo-logo-preview img { width: 100%; height: 100%; object-fit: contain; padding: 8px; }
+.memo-logo-placeholder {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    color: #9ca3af; font-size: 11px; text-align: center;
+}
+.memo-logo-placeholder i { font-size: 20px; }
+
+/* .memo-logo-actions { display: flex; flex-direction: column; gap: 8px; } */
+.memo-logo-actions form { display: inline-block; }
+.memo-logo-hint { font-size: 12px; color: var(--memo-muted); margin: 2px 0 0; }
