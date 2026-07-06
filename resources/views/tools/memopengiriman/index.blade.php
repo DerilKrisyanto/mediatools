@@ -98,6 +98,7 @@
                             value="{{ old('diterima_dari', $editMemo->diterima_dari ?? '') }}" required>
                     @error('diterima_dari') <div class="memo-error">{{ $message }}</div> @enderror
                 </div>
+
                 <div class="memo-grid-2">
                     <div class="memo-form-group">
                         <label>No Struk</label>
@@ -158,17 +159,25 @@
                     @error('tujuan_alamat') <div class="memo-error">{{ $message }}</div> @enderror
                 </div>
 
-                <div class="memo-form-group">
-                    <label>Nama Customer Service</label>
-                    <input type="text" name="customer_service" class="memo-input"
-                        placeholder="Nama CS yang menangani pengiriman ini"
-                        value="{{ old('customer_service', $editMemo->customer_service ?? '') }}" required>
-                    @error('customer_service') <div class="memo-error">{{ $message }}</div> @enderror
+                <div class="memo-grid-2">
+                    <div class="memo-form-group">
+                        <label>Nama Customer Service</label>
+                        <input type="text" name="customer_service" class="memo-input"
+                            placeholder="Nama CS yang menangani pengiriman ini"
+                            value="{{ old('customer_service', $editMemo->customer_service ?? '') }}" required>
+                        @error('customer_service') <div class="memo-error">{{ $message }}</div> @enderror
+                    </div>
+                    <div class="memo-form-group">
+                        <label>Tanggal Memo</label>
+                        <input type="date" name="tanggal_memo" class="memo-input"
+                            value="{{ old('tanggal_memo', isset($editMemo) ? \Carbon\Carbon::parse($editMemo->tanggal_memo)->format('Y-m-d') : now()->format('Y-m-d')) }}" required>
+                        @error('tanggal_memo') <div class="memo-error">{{ $message }}</div> @enderror
+                    </div>
                 </div>
 
                 <div class="memo-grid-2">
                     <div class="memo-form-group">
-                        <label>Hari / Jam / Tgl Pengiriman</label>
+                        <label>Tanggal Pengiriman</label>
                         <input type="datetime-local" id="pengiriman_picker" class="memo-input">
                         <input type="hidden" name="pengiriman_hari_tanggal" id="pengiriman_hari_tanggal">
                         @error('pengiriman_hari_tanggal') <div class="memo-error">{{ $message }}</div> @enderror
@@ -193,7 +202,7 @@
                 <div id="instalasi_extra_fields">
                     <div class="memo-grid-2">
                         <div class="memo-form-group">
-                            <label>Hari / Jam / Tgl Instalasi</label>
+                            <label>Tanggal Instalasi</label>
                             <input type="datetime-local" id="instalasi_picker" class="memo-input">
                             <input type="hidden" name="instalasi_hari_tanggal" id="instalasi_hari_tanggal">
                             @error('instalasi_hari_tanggal') <div class="memo-error">{{ $message }}</div> @enderror
@@ -214,13 +223,6 @@
                         <input type="hidden" name="biaya_instalasi" id="biaya_instalasi">
                         @error('biaya_instalasi') <div class="memo-error">{{ $message }}</div> @enderror
                     </div>
-                </div>
-
-                <div class="memo-form-group" style="max-width:280px; margin-top:16px;">
-                    <label>Tanggal Memo</label>
-                    <input type="date" name="tanggal_memo" class="memo-input"
-                           value="{{ old('tanggal_memo', isset($editMemo) ? \Carbon\Carbon::parse($editMemo->tanggal_memo)->format('Y-m-d') : now()->format('Y-m-d')) }}" required>
-                    @error('tanggal_memo') <div class="memo-error">{{ $message }}</div> @enderror
                 </div>
 
                 <div style="display:flex; gap:10px; margin-top:8px;">
