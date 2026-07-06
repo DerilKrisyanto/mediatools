@@ -127,7 +127,7 @@
             <li>Pengantaran mulai dari jam 10.00–16.00 WITA.</li>
             <li>Pengangkatan barang hanya sampai di Lantai Dasar.</li>
             <li>Produk dikirim dalam bentuk original packing.</li>
-            <li>Jika ada kendala dapat menghubungi pihak store dengan nomor {{ $memo->telepon_dari ?: '-' }}.</li>
+            <li>Jika ada kendala dapat menghubungi pihak store dengan nomor 0817-582-292.</li>
         </ol>
 
         <div style="font-size:7pt; margin-top:1px;">
