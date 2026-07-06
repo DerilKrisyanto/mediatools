@@ -33,7 +33,7 @@
 
     table.info { width: 100%; border-collapse: collapse; font-size: 8pt; }
     table.info td { padding: 1px 3px; vertical-align: top; line-height: 1; }
-    td.label { width: 33%; }
+    td.label { width: 25%; }
     td.colon { width: 3%; }
 
     .section-label {
