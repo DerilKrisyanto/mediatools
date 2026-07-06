@@ -16,10 +16,6 @@ use Illuminate\View\View;
 
 class MemoPengirimanController extends Controller
 {
-    /**
-     * Tampilkan form input + rekap memo milik user yang sedang login.
-     * Rekap difilter berdasarkan rentang tanggal_memo (default: hari ini).
-     */
     public function index(Request $request): View
     {
         [$dateFrom, $dateTo] = $this->resolveDateRange($request);
@@ -34,9 +30,6 @@ class MemoPengirimanController extends Controller
         return view('tools.memopengiriman.index', compact('memos', 'dateFrom', 'dateTo'));
     }
 
-    /**
-     * Tampilkan form edit (memakai view yang sama dengan index).
-     */
     public function edit(Request $request, MemoPengiriman $memoPengiriman): View
     {
         $this->authorizeOwner($memoPengiriman);
@@ -60,13 +53,54 @@ class MemoPengirimanController extends Controller
 
     /**
      * Simpan memo baru untuk user yang sedang login.
+     * No. Struk & No. Struk Instalasi dikirim sebagai array (items),
+     * lalu digabung jadi 1 string dipisah koma sebelum disimpan
+     * ke kolom no_struk / no_struk_instalasi yang sudah ada.
      */
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate($this->rules());
-        $validated['instalasi']  = $request->boolean('instalasi');
-        $validated['user_id']    = Auth::id();
-        $validated['nomor_memo'] = $this->generateNomorMemo();
+
+        $instalasi = $request->boolean('instalasi');
+        $noStruk   = $this->joinList($request->input('no_struk_items', []));
+
+        if ($noStruk === '') {
+            return back()
+                ->withErrors(['no_struk_items.0' => 'No. Struk wajib diisi minimal 1.'])
+                ->withInput();
+        }
+
+        $noStrukInstalasi = $instalasi
+            ? $this->joinList($request->input('no_struk_instalasi_items', []))
+            : '';
+
+        if ($instalasi && $noStrukInstalasi === '') {
+            return back()
+                ->withErrors(['no_struk_instalasi_items.0' => 'No. Struk Instalasi wajib diisi minimal 1 jika Instalasi dipilih Ya.'])
+                ->withInput();
+        }
+
+        $barangItems = $this->buildBarangItems($request);
+
+        if (empty($barangItems)) {
+            return back()
+                ->withErrors(['barang_nama.0' => 'Minimal isi 1 nama barang.'])
+                ->withInput();
+        }
+
+        unset(
+            $validated['no_struk_items'],
+            $validated['no_struk_instalasi_items'],
+            $validated['barang_nama'],
+            $validated['barang_qty']
+        );
+
+        $validated['instalasi']          = $instalasi;
+        $validated['no_struk']           = $noStruk;
+        $validated['no_struk_instalasi'] = $noStrukInstalasi ?: null;
+        $validated['berupa']             = $barangItems;
+        $validated['user_id']            = Auth::id();
+        $validated['nomor_memo']         = $this->generateNomorMemo();
 
         MemoPengiriman::create($validated);
 
@@ -77,13 +111,52 @@ class MemoPengirimanController extends Controller
 
     /**
      * Update memo — hanya boleh oleh pemilik data.
+     * Logic penggabungan No. Struk sama seperti store().
      */
     public function update(Request $request, MemoPengiriman $memoPengiriman): RedirectResponse
     {
         $this->authorizeOwner($memoPengiriman);
 
         $validated = $request->validate($this->rules());
-        $validated['instalasi'] = $request->boolean('instalasi');
+
+        $instalasi = $request->boolean('instalasi');
+        $noStruk   = $this->joinList($request->input('no_struk_items', []));
+
+        if ($noStruk === '') {
+            return back()
+                ->withErrors(['no_struk_items.0' => 'No. Struk wajib diisi minimal 1.'])
+                ->withInput();
+        }
+
+        $noStrukInstalasi = $instalasi
+            ? $this->joinList($request->input('no_struk_instalasi_items', []))
+            : '';
+
+        if ($instalasi && $noStrukInstalasi === '') {
+            return back()
+                ->withErrors(['no_struk_instalasi_items.0' => 'No. Struk Instalasi wajib diisi minimal 1 jika Instalasi dipilih Ya.'])
+                ->withInput();
+        }
+
+        $barangItems = $this->buildBarangItems($request);
+
+        if (empty($barangItems)) {
+            return back()
+                ->withErrors(['barang_nama.0' => 'Minimal isi 1 nama barang.'])
+                ->withInput();
+        }
+
+        unset(
+            $validated['no_struk_items'],
+            $validated['no_struk_instalasi_items'],
+            $validated['barang_nama'],
+            $validated['barang_qty']
+        );
+
+        $validated['instalasi']          = $instalasi;
+        $validated['no_struk']           = $noStruk;
+        $validated['no_struk_instalasi'] = $noStrukInstalasi ?: null;
+        $validated['berupa']             = $barangItems;
 
         $memoPengiriman->update($validated);
 
@@ -92,9 +165,6 @@ class MemoPengirimanController extends Controller
             ->with('success', 'Memo pengiriman berhasil diperbarui.');
     }
 
-    /**
-     * Hapus 1 memo — hanya boleh oleh pemilik data.
-     */
     public function destroy(MemoPengiriman $memoPengiriman): RedirectResponse
     {
         $this->authorizeOwner($memoPengiriman);
@@ -105,10 +175,6 @@ class MemoPengirimanController extends Controller
             ->with('success', 'Memo pengiriman berhasil dihapus.');
     }
 
-    /**
-     * Cetak 1 memo menjadi PDF (setengah halaman A4).
-     * Nama Customer Service diambil dari kolom customer_service milik memo itu sendiri (isian form).
-     */
     public function pdf(MemoPengiriman $memoPengiriman)
     {
         $this->authorizeOwner($memoPengiriman);
@@ -123,9 +189,6 @@ class MemoPengirimanController extends Controller
         return $pdf->stream($namaFile);
     }
 
-    /**
-     * Cetak beberapa memo TERPILIH sekaligus dalam 1 file PDF.
-     */
     public function bulkPdf(Request $request)
     {
         $request->validate([
@@ -151,9 +214,6 @@ class MemoPengirimanController extends Controller
         return $pdf->stream($namaFile);
     }
 
-    /**
-     * Hapus beberapa memo TERPILIH sekaligus.
-     */
     public function bulkDestroy(Request $request): RedirectResponse
     {
         $request->validate([
@@ -170,12 +230,6 @@ class MemoPengirimanController extends Controller
             ->with('success', "{$jumlah} memo pengiriman berhasil dihapus.");
     }
 
-    /**
-     * Export ke Excel (.xlsx asli, dibangun langsung via PhpSpreadsheet).
-     * - Kalau ada "ids" terpilih (checkbox dicentang) → export HANYA data yang dipilih itu.
-     * - Kalau tidak ada yang dipilih → export SEMUA data sesuai filter periode yang sedang aktif.
-     * Query selalu dibatasi milik user login lewat scope milikSaya().
-     */
     public function exportExcel(Request $request): StreamedResponse
     {
         $request->validate([
@@ -209,20 +263,11 @@ class MemoPengirimanController extends Controller
         return $this->buildExcelResponse($memos);
     }
 
-    /**
-     * Pastikan memo yang diakses benar-benar milik user yang sedang login.
-     */
     private function authorizeOwner(MemoPengiriman $memo): void
     {
         abort_if($memo->user_id !== Auth::id(), 403, 'Anda tidak memiliki akses ke memo ini.');
     }
 
-    /**
-     * Ambil & validasi rentang tanggal filter dari query string.
-     * Default: hari ini - hari ini (kalau belum pernah difilter user).
-     * Kalau date_from > date_to (misal user salah input), otomatis ditukar
-     * supaya query tetap valid dan tidak mengembalikan hasil kosong.
-     */
     private function resolveDateRange(Request $request): array
     {
         $today = now()->toDateString();
@@ -237,11 +282,6 @@ class MemoPengirimanController extends Controller
         return [$dateFrom, $dateTo];
     }
 
-    /**
-     * Bangun & stream file Excel (.xlsx asli) dari koleksi memo,
-     * menggunakan PhpSpreadsheet langsung (tanpa dependency maatwebsite/excel) —
-     * dibuka normal oleh Microsoft Excel maupun Google Sheets.
-     */
     private function buildExcelResponse($memos): StreamedResponse
     {
         $filename = 'rekap-memo-pengiriman-' . now()->format('Ymd-His') . '.xlsx';
@@ -257,9 +297,6 @@ class MemoPengirimanController extends Controller
         ]);
     }
 
-    /**
-     * Tentukan path fisik logo yang dipakai di PDF.
-     */
     private function resolveLogoPath(User $user): string
     {
         if ($user->logo_path) {
@@ -272,9 +309,6 @@ class MemoPengirimanController extends Controller
         return public_path('images/logo-ahi.jpg');
     }
 
-    /**
-     * Buat nomor memo otomatis, format: MEMO/YYYYMMDD/0001
-     */
     private function generateNomorMemo(): string
     {
         $prefix = 'MEMO/' . now()->format('Ymd') . '/';
@@ -284,35 +318,82 @@ class MemoPengirimanController extends Controller
         return $prefix . str_pad((string) $urutanHariIni, 4, '0', STR_PAD_LEFT);
     }
 
-    /**
-     * Bersihkan string agar aman dipakai sebagai nama file (menghapus "/" dan "\").
-     */
     private function sanitizeFilename(string $value): string
     {
         return str_replace(['/', '\\'], '-', $value);
     }
 
     /**
+     * Gabungkan array item (no. struk / no. struk instalasi) jadi 1 string,
+     * membuang item kosong/whitespace-only. Hasilnya disimpan ke kolom
+     * no_struk / no_struk_instalasi yang sudah ada (tanpa field baru).
+     */
+    private function joinList(array $items): string
+    {
+        $clean = array_values(array_filter(
+            array_map('trim', $items),
+            fn ($v) => $v !== ''
+        ));
+
+        return implode(', ', $clean);
+    }
+
+    /**
+     * Gabungkan barang_nama[] & barang_qty[] jadi array [{nama, qty}, ...],
+     * membuang baris yang nama-nya kosong. Qty default 1 kalau kosong/invalid.
+     * Hasilnya disimpan ke kolom `berupa` (cast array -> otomatis jadi JSON).
+     */
+    private function buildBarangItems(Request $request): array
+    {
+        $namaList = $request->input('barang_nama', []);
+        $qtyList  = $request->input('barang_qty', []);
+
+        $items = [];
+
+        foreach ($namaList as $index => $nama) {
+            $nama = trim((string) $nama);
+            if ($nama === '') {
+                continue;
+            }
+
+            $qty = (int) ($qtyList[$index] ?? 1);
+            $items[] = [
+                'nama' => $nama,
+                'qty'  => $qty > 0 ? $qty : 1,
+            ];
+        }
+
+        return $items;
+    }
+
+    /**
      * Rules validasi untuk store & update.
+     * no_struk & no_struk_instalasi sekarang divalidasi sebagai array item,
+     * baru digabung jadi string di dalam method store()/update().
      */
     private function rules(): array
     {
         return [
-            'tanggal_memo'             => ['required', 'date'],
-            'diterima_dari'            => ['required', 'string', 'max:150'],
-            'no_struk'                 => ['required', 'string', 'max:100'],
-            'telepon_dari'             => ['nullable', 'regex:/^[0-9+\-\s]{0,30}$/'],
-            'berupa'                   => ['required', 'string'],
-            'tujuan_contact_person'    => ['required', 'string', 'max:150'],
-            'tujuan_alamat'            => ['required', 'string'],
-            'tujuan_telepon'           => ['nullable', 'regex:/^[0-9+\-\s]{0,30}$/'],
-            'customer_service'         => ['required', 'string', 'max:150'],
-            'pengiriman_hari_tanggal'  => ['nullable', 'string', 'max:100'],
-            'biaya_kirim'              => ['nullable', 'numeric', 'min:0'],
-            'instalasi'                => ['nullable', 'boolean'],
-            'no_struk_instalasi'       => ['nullable', 'required_if:instalasi,1', 'string', 'max:100'],
-            'instalasi_hari_tanggal'   => ['nullable', 'required_if:instalasi,1', 'string', 'max:100'],
-            'biaya_instalasi'          => ['nullable', 'numeric', 'min:0'],
+            'tanggal_memo'                => ['required', 'date'],
+            'diterima_dari'               => ['required', 'string', 'max:150'],
+            'no_struk_items'              => ['required', 'array', 'min:1'],
+            'no_struk_items.*'            => ['required', 'string', 'max:100'],
+            'telepon_dari'                => ['nullable', 'regex:/^[0-9+\-\s]{0,30}$/'],
+            'barang_nama'                 => ['required', 'array', 'min:1'],
+            'barang_nama.*'               => ['required', 'string', 'max:150'],
+            'barang_qty'                  => ['nullable', 'array'],
+            'barang_qty.*'                => ['nullable', 'integer', 'min:1'],
+            'tujuan_contact_person'       => ['required', 'string', 'max:150'],
+            'tujuan_alamat'               => ['required', 'string'],
+            'tujuan_telepon'              => ['nullable', 'regex:/^[0-9+\-\s]{0,30}$/'],
+            'customer_service'            => ['required', 'string', 'max:150'],
+            'pengiriman_hari_tanggal'     => ['nullable', 'string', 'max:100'],
+            'biaya_kirim'                 => ['nullable', 'numeric', 'min:0'],
+            'instalasi'                   => ['nullable', 'boolean'],
+            'no_struk_instalasi_items'    => ['nullable', 'array'],
+            'no_struk_instalasi_items.*'  => ['nullable', 'string', 'max:100'],
+            'instalasi_hari_tanggal'      => ['nullable', 'required_if:instalasi,1', 'string', 'max:100'],
+            'biaya_instalasi'             => ['nullable', 'numeric', 'min:0'],
         ];
     }
 }

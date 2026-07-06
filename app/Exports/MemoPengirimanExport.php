@@ -107,7 +107,7 @@ class MemoPengirimanExport
             $m->diterima_dari,
             $m->no_struk ?: '-',
             $m->telepon_dari ?: '-',
-            $m->berupa,
+            $m->berupa_text ?: '-',
             $m->tujuan_contact_person,
             $m->tujuan_alamat,
             $m->tujuan_telepon ?: '-',

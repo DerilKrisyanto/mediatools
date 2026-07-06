@@ -94,7 +94,7 @@
             <tr><td class="label">Telah Terima Dari</td><td class="colon">:</td><td>{{ $memo->diterima_dari }}</td></tr>
             <tr><td class="label">No Telepon</td><td class="colon">:</td><td>{{ $memo->telepon_dari ?: '-' }}</td></tr>
             <tr><td class="label">No. Struk</td><td class="colon">:</td><td>{{ $memo->no_struk ?: '-' }}</td></tr>
-            <tr><td class="label">Berupa</td><td class="colon">:</td><td>{{ $memo->berupa }}</td></tr>
+            <tr><td class="label">Berupa</td><td class="colon">:</td><td>{{ $memo->berupa_text ?: '-' }}</td></tr>
         </table>
 
         <div class="section-label">Untuk Dikirimkan Ke</div>

@@ -101,23 +101,37 @@
                 <div class="memo-grid-2">
                     <div class="memo-form-group">
                         <label>No Struk</label>
-                        <input type="text" name="no_struk" class="memo-input"
-                               value="{{ old('no_struk', $editMemo->no_struk ?? '') }}" required>
-                        @error('no_struk') <div class="memo-error">{{ $message }}</div> @enderror
+                        <div id="noStrukRepeater" class="memo-repeater"></div>
+                        <button type="button" class="memo-btn memo-btn-outline memo-btn-sm" id="btnAddNoStruk" style="margin-top:6px;">
+                            <i class="fa-solid fa-plus"></i> Tambah No. Struk
+                        </button>
+                        @error('no_struk_items') <div class="memo-error">{{ $message }}</div> @enderror
+                        @error('no_struk_items.*') <div class="memo-error">{{ $message }}</div> @enderror
                     </div>
                     <div class="memo-form-group">
                         <label>No Telepon</label>
                         <input type="tel" inputmode="numeric" name="telepon_dari" class="memo-input only-phone"
-                               placeholder="08xx-xxxx-xxxx"
-                               value="{{ old('telepon_dari', $editMemo->telepon_dari ?? '') }}">
+                            placeholder="08xx-xxxx-xxxx"
+                            value="{{ old('telepon_dari', $editMemo->telepon_dari ?? '') }}">
                         @error('telepon_dari') <div class="memo-error">{{ $message }}</div> @enderror
                     </div>
                 </div>
+                @php
+                    $barangInitial = old('barang_nama')
+                        ? collect(old('barang_nama'))->map(function ($nama, $i) {
+                            return ['nama' => $nama, 'qty' => old('barang_qty')[$i] ?? 1];
+                        })->values()->all()
+                        : (isset($editMemo) ? array_values($editMemo->berupa ?? []) : []);
+                @endphp
+
                 <div class="memo-form-group">
                     <label>Berupa (Deskripsi Barang)</label>
-                    <textarea name="berupa" class="memo-input" rows="2"
-                              placeholder="Contoh: 1 unit AC Split 1PK" required>{{ old('berupa', $editMemo->berupa ?? '') }}</textarea>
-                    @error('berupa') <div class="memo-error">{{ $message }}</div> @enderror
+                    <div id="barangRepeater" class="memo-repeater"></div>
+                    <button type="button" class="memo-btn memo-btn-outline memo-btn-sm" id="btnAddBarang" style="margin-top:6px;">
+                        <i class="fa-solid fa-plus"></i> Tambah Barang
+                    </button>
+                    @error('barang_nama') <div class="memo-error">{{ $message }}</div> @enderror
+                    @error('barang_nama.*') <div class="memo-error">{{ $message }}</div> @enderror
                 </div>
 
                 <div class="memo-section-label">Untuk Dikirimkan Ke</div>
@@ -186,9 +200,12 @@
                         </div>
                         <div class="memo-form-group">
                             <label>No Struk Instalasi</label>
-                            <input type="text" name="no_struk_instalasi" class="memo-input"
-                                   value="{{ old('no_struk_instalasi', $editMemo->no_struk_instalasi ?? '') }}">
-                            @error('no_struk_instalasi') <div class="memo-error">{{ $message }}</div> @enderror
+                            <div id="noStrukInstalasiRepeater" class="memo-repeater"></div>
+                            <button type="button" class="memo-btn memo-btn-outline memo-btn-sm" id="btnAddNoStrukInstalasi" style="margin-top:6px;">
+                                <i class="fa-solid fa-plus"></i> Tambah No. Struk Instalasi
+                            </button>
+                            @error('no_struk_instalasi_items') <div class="memo-error">{{ $message }}</div> @enderror
+                            @error('no_struk_instalasi_items.*') <div class="memo-error">{{ $message }}</div> @enderror
                         </div>
                     </div>
                     <div class="memo-form-group" style="max-width:280px;">
@@ -363,6 +380,120 @@
             reader.readAsDataURL(file);
         });
     }
+
+    /* ================= Repeater No Struk & No Struk Instalasi ================= */
+    function bindRepeater(containerId, addBtnId, inputName, initialValues) {
+        var container = document.getElementById(containerId);
+        var addBtn = document.getElementById(addBtnId);
+
+        function addRow(value) {
+            var row = document.createElement('div');
+            row.className = 'memo-repeater-row';
+            row.style.display = 'flex';
+            row.style.gap = '6px';
+            row.style.marginBottom = '6px';
+
+            var input = document.createElement('input');
+            input.type = 'text';
+            input.name = inputName + '[]';
+            input.className = 'memo-input';
+            input.value = value || '';
+            input.style.flex = '1';
+
+            var removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'memo-btn memo-btn-outline memo-btn-sm';
+            removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+            removeBtn.addEventListener('click', function () {
+                var rows = container.querySelectorAll('.memo-repeater-row');
+                if (rows.length > 1) {
+                    row.remove();
+                } else {
+                    input.value = '';
+                }
+            });
+
+            row.appendChild(input);
+            row.appendChild(removeBtn);
+            container.appendChild(row);
+        }
+
+        var values = (initialValues && initialValues.length) ? initialValues : [''];
+        values.forEach(function (v) { addRow(v); });
+
+        addBtn.addEventListener('click', function () { addRow(''); });
+    }
+
+    bindRepeater(
+        'noStrukRepeater',
+        'btnAddNoStruk',
+        'no_struk_items',
+        @json(old('no_struk_items', isset($editMemo) ? $editMemo->no_struk_array : []))
+    );
+
+    bindRepeater(
+        'noStrukInstalasiRepeater',
+        'btnAddNoStrukInstalasi',
+        'no_struk_instalasi_items',
+        @json(old('no_struk_instalasi_items', isset($editMemo) ? $editMemo->no_struk_instalasi_array : []))
+    );
+
+    /* ================= Repeater Barang (Nama + Qty) ================= */
+    function bindBarangRepeater(containerId, addBtnId, initialItems) {
+        var container = document.getElementById(containerId);
+        var addBtn = document.getElementById(addBtnId);
+
+        function addRow(nama, qty) {
+            var row = document.createElement('div');
+            row.className = 'memo-repeater-row';
+            row.style.display = 'flex';
+            row.style.gap = '6px';
+            row.style.marginBottom = '6px';
+
+            var namaInput = document.createElement('input');
+            namaInput.type = 'text';
+            namaInput.name = 'barang_nama[]';
+            namaInput.className = 'memo-input';
+            namaInput.placeholder = 'Nama barang, contoh: AC Split 1PK';
+            namaInput.value = nama || '';
+            namaInput.style.flex = '2';
+
+            var qtyInput = document.createElement('input');
+            qtyInput.type = 'number';
+            qtyInput.name = 'barang_qty[]';
+            qtyInput.className = 'memo-input';
+            qtyInput.placeholder = 'Qty';
+            qtyInput.min = '1';
+            qtyInput.value = qty || '1';
+            qtyInput.style.flex = '0 0 90px';
+
+            var removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'memo-btn memo-btn-outline memo-btn-sm';
+            removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+            removeBtn.addEventListener('click', function () {
+                var rows = container.querySelectorAll('.memo-repeater-row');
+                if (rows.length > 1) {
+                    row.remove();
+                } else {
+                    namaInput.value = '';
+                    qtyInput.value = '1';
+                }
+            });
+
+            row.appendChild(namaInput);
+            row.appendChild(qtyInput);
+            row.appendChild(removeBtn);
+            container.appendChild(row);
+        }
+
+        var items = (initialItems && initialItems.length) ? initialItems : [{ nama: '', qty: 1 }];
+        items.forEach(function (item) { addRow(item.nama, item.qty); });
+
+        addBtn.addEventListener('click', function () { addRow('', 1); });
+    }
+
+    bindBarangRepeater('barangRepeater', 'btnAddBarang', @json($barangInitial));
 
     /* ================= Batasi input No Telepon hanya angka/+/-/spasi ================= */
     document.querySelectorAll('.only-phone').forEach(function (el) {

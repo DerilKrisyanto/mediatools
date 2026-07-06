@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -37,22 +38,61 @@ class MemoPengiriman extends Model
         'instalasi'       => 'boolean',
         'biaya_kirim'     => 'decimal:2',
         'biaya_instalasi' => 'decimal:2',
+        'berupa'          => 'array', // disimpan sebagai JSON: [{"nama":"...","qty":2}, ...]
     ];
 
-    /**
-     * User yang menginput memo ini.
-     */
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Scope: hanya ambil memo milik user yang sedang login.
-     * Contoh pakai: MemoPengiriman::milikSaya()->get();
-     */
     public function scopeMilikSaya(Builder $query): Builder
     {
         return $query->where('user_id', auth()->id());
+    }
+
+    protected function noStrukArray(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->splitList($this->no_struk),
+        );
+    }
+
+    protected function noStrukInstalasiArray(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->splitList($this->no_struk_instalasi),
+        );
+    }
+
+    /**
+     * Format daftar barang (array berupa) jadi teks siap tampil:
+     * "AC Split 1PK (Qty: 2), Kabel Roll (Qty: 1)"
+     * Dipakai di PDF & Excel.
+     */
+    protected function berupaText(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $items = is_array($this->berupa) ? $this->berupa : [];
+
+                return collect($items)
+                    ->filter(fn ($item) => !empty($item['nama'] ?? null))
+                    ->map(fn ($item) => trim($item['nama']) . ' (Qty: ' . ((int) ($item['qty'] ?? 1)) . ')')
+                    ->implode(', ');
+            },
+        );
+    }
+
+    private function splitList(?string $value): array
+    {
+        if (!$value) {
+            return [];
+        }
+
+        return array_values(array_filter(
+            array_map('trim', explode(',', $value)),
+            fn ($v) => $v !== ''
+        ));
     }
 }
