@@ -227,10 +227,10 @@
                 <span><span id="selectedCount">0</span> memo dipilih</span>
                 <div style="display:flex; gap:8px;">
                     <button type="button" id="btnCetakTerpilih" class="memo-btn memo-btn-outline" disabled>
-                        <i class="fa-solid fa-print"></i> Cetak Terpilih
+                        <i class="fa-solid fa-print"></i> Cetak Memo
                     </button>
                     <button type="button" id="btnHapusTerpilih" class="memo-btn memo-btn-danger" disabled>
-                        <i class="fa-solid fa-trash"></i> Hapus Terpilih
+                        <i class="fa-solid fa-trash"></i> Hapus Memo
                     </button>
                     <button type="button" id="btnBatalPilih" class="memo-btn memo-btn-outline">
                         <i class="fa-solid fa-xmark"></i> Batal
@@ -244,7 +244,8 @@
                         <tr>
                             <th style="width:36px;"><input type="checkbox" class="memo-checkbox" id="checkAll"></th>
                             <th>No. Memo</th>
-                            <th>Tanggal</th>
+                            <th>No. Struk</th>
+                            <th>Tgl Memo</th>
                             <th>Diterima Dari</th>
                             <th>Dikirim Ke</th>
                             <th>Instalasi</th>
@@ -256,6 +257,7 @@
                         <tr>
                             <td><input type="checkbox" class="memo-checkbox row-check" value="{{ $m->id }}"></td>
                             <td>{{ $m->nomor_memo }}</td>
+                            <td>{{ $m->no_struk ?: '-'}}</td>
                             <td>{{ \Carbon\Carbon::parse($m->tanggal_memo)->format('d-m-Y') }}</td>
                             <td>{{ $m->diterima_dari }}</td>
                             <td>{{ $m->tujuan_contact_person }}</td>
