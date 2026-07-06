@@ -144,6 +144,14 @@
                     @error('tujuan_alamat') <div class="memo-error">{{ $message }}</div> @enderror
                 </div>
 
+                <div class="memo-form-group">
+                    <label>Nama Customer Service</label>
+                    <input type="text" name="customer_service" class="memo-input"
+                        placeholder="Nama CS yang menangani pengiriman ini"
+                        value="{{ old('customer_service', $editMemo->customer_service ?? '') }}" required>
+                    @error('customer_service') <div class="memo-error">{{ $message }}</div> @enderror
+                </div>
+
                 <div class="memo-grid-2">
                     <div class="memo-form-group">
                         <label>Hari / Jam / Tgl Pengiriman</label>
@@ -168,9 +176,8 @@
                     </select>
                 </div>
 
-                {{-- Wrapper ini disembunyikan total (display:none) kalau Instalasi = Tidak --}}
                 <div id="instalasi_extra_fields">
-                    <div class="memo-grid-3">
+                    <div class="memo-grid-2">
                         <div class="memo-form-group">
                             <label>Hari / Jam / Tgl Instalasi</label>
                             <input type="datetime-local" id="instalasi_picker" class="memo-input">
@@ -183,12 +190,12 @@
                                    value="{{ old('no_struk_instalasi', $editMemo->no_struk_instalasi ?? '') }}">
                             @error('no_struk_instalasi') <div class="memo-error">{{ $message }}</div> @enderror
                         </div>
-                         <div class="memo-form-group">
-                            <label>Biaya Instalasi</label>
-                            <input type="text" inputmode="numeric" id="biaya_instalasi_display" class="memo-input" placeholder="Rp 0">
-                            <input type="hidden" name="biaya_instalasi" id="biaya_instalasi">
-                            @error('biaya_instalasi') <div class="memo-error">{{ $message }}</div> @enderror
-                        </div>
+                    </div>
+                    <div class="memo-form-group" style="max-width:280px;">
+                        <label>Biaya Instalasi (Rp)</label>
+                        <input type="text" inputmode="numeric" id="biaya_instalasi_display" class="memo-input" placeholder="Rp 0">
+                        <input type="hidden" name="biaya_instalasi" id="biaya_instalasi">
+                        @error('biaya_instalasi') <div class="memo-error">{{ $message }}</div> @enderror
                     </div>
                 </div>
 
@@ -213,7 +220,32 @@
 
         {{-- ====================== REKAP / TABEL ====================== --}}
         <div class="memo-card">
-            <h2>Rekap Memo Pengiriman Saya</h2>
+            <h2>Laporan Memo Pengiriman</h2>
+
+            {{-- ---------- Filter Periode Tanggal ---------- --}}
+            <div class="memo-filter-row">
+                <form method="GET" action="{{ route('tools.memopengiriman') }}" class="memo-filter-form">
+                    <div class="memo-filter-field">
+                        <label>Dari Tanggal</label>
+                        <input type="date" name="date_from" value="{{ $dateFrom }}" class="memo-input">
+                    </div>
+                    <div class="memo-filter-field">
+                        <label>Sampai Tanggal</label>
+                        <input type="date" name="date_to" value="{{ $dateTo }}" class="memo-input">
+                    </div>
+                    <button type="submit" class="memo-btn memo-btn-primary">
+                        <i class="fa-solid fa-search"></i> Cari
+                    </button>
+                </form>
+
+                <button type="button" id="btnExportExcel" class="memo-btn memo-btn-outline">
+                    <i class="fa-solid fa-file-excel"></i> Export ke Excel
+                </button>
+            </div>
+            <p class="memo-filter-hint">
+                Export akan mengambil data <strong>yang dicentang</strong> pada tabel di bawah.
+                Kalau tidak ada yang dicentang, export akan mengambil <strong>semua data sesuai periode filter</strong> di atas.
+            </p>
 
             <form id="bulkPrintForm" method="POST" action="{{ route('tools.memopengiriman.bulk-pdf') }}" target="_blank">
                 @csrf
@@ -221,6 +253,11 @@
             <form id="bulkDeleteForm" method="POST" action="{{ route('tools.memopengiriman.bulk-destroy') }}">
                 @csrf
                 @method('DELETE')
+            </form>
+            <form id="exportExcelForm" method="POST" action="{{ route('tools.memopengiriman.export-excel') }}">
+                @csrf
+                <input type="hidden" name="date_from" value="{{ $dateFrom }}">
+                <input type="hidden" name="date_to" value="{{ $dateTo }}">
             </form>
 
             <div class="memo-bulk-bar" id="bulkBar" style="display:none;">
@@ -230,7 +267,7 @@
                         <i class="fa-solid fa-print"></i> Cetak Memo
                     </button>
                     <button type="button" id="btnHapusTerpilih" class="memo-btn memo-btn-danger" disabled>
-                        <i class="fa-solid fa-trash"></i> Hapus Memo
+                        <i class="fa-solid fa-trash"></i> Hapus Hapus
                     </button>
                     <button type="button" id="btnBatalPilih" class="memo-btn memo-btn-outline">
                         <i class="fa-solid fa-xmark"></i> Batal
@@ -257,7 +294,7 @@
                         <tr>
                             <td><input type="checkbox" class="memo-checkbox row-check" value="{{ $m->id }}"></td>
                             <td>{{ $m->nomor_memo }}</td>
-                            <td>{{ $m->no_struk ?: '-'}}</td>
+                            <td>{{ $m->no_struk ?: '-' }}</td>
                             <td>{{ \Carbon\Carbon::parse($m->tanggal_memo)->format('d-m-Y') }}</td>
                             <td>{{ $m->diterima_dari }}</td>
                             <td>{{ $m->tujuan_contact_person }}</td>
@@ -289,7 +326,7 @@
                         @empty
                         <tr>
                             <td colspan="7">
-                                <div class="memo-empty">Belum ada memo pengiriman yang tersimpan.</div>
+                                <div class="memo-empty">Tidak ada memo pengiriman pada periode yang dipilih.</div>
                             </td>
                         </tr>
                         @endforelse
@@ -396,13 +433,15 @@
         instalasiFields.style.display = ya ? 'block' : 'none';
     }
     instalasiSelect.addEventListener('change', toggleInstalasi);
-    toggleInstalasi(); // set kondisi awal saat halaman dimuat (termasuk saat mode edit)
+    toggleInstalasi();
 
-    /* ================= Checkbox bulk select (cetak/hapus terpilih) ================= */
+    /* ================= Checkbox bulk select (cetak/hapus/export/batal) ================= */
     var checkAll   = document.getElementById('checkAll');
     var countEl    = document.getElementById('selectedCount');
     var btnCetak   = document.getElementById('btnCetakTerpilih');
     var btnHapus   = document.getElementById('btnHapusTerpilih');
+    var btnBatal   = document.getElementById('btnBatalPilih');
+    var btnExport  = document.getElementById('btnExportExcel');
     var bulkBar    = document.getElementById('bulkBar');
 
     function rowChecks() { return document.querySelectorAll('.row-check'); }
@@ -458,13 +497,17 @@
         form.submit();
     });
 
-    var btnBatal = document.getElementById('btnBatalPilih');
     btnBatal.addEventListener('click', function () {
         rowChecks().forEach(function (cb) { cb.checked = false; });
         refresh();
     });
 
-    refresh();
+    /* Export selalu bisa diklik (baik ada seleksi maupun tidak) */
+    btnExport.addEventListener('click', function () {
+        var form = document.getElementById('exportExcelForm');
+        buildHiddenIds(form); // kalau ada yang dicentang, ids[] ikut terkirim; kalau tidak, kosong -> fallback ke filter tanggal
+        form.submit();
+    });
 
     refresh();
 })();

@@ -84,7 +84,7 @@
                     <span class="memo-title">MEMO PENGIRIMAN</span>
                 </td>
                 <td style="width:100px; text-align:right;">
-                    <img src="{{ $logoPath }}" style="width:100px;">
+                    <img src="{{ $logoPath }}" style="width:120px;">
                 </td>
             </tr>
         </table>
@@ -138,12 +138,12 @@
             <tr>
                 <td>
                     Yang Menyerahkan,<br><br>
-                    ( .......................... )<br>
+                    ( {{ $memo->tujuan_contact_person }} )<br>
                     Customer
                 </td>
                 <td>
                     Penerima,<br><br>
-                    ( {{ $memo->tujuan_contact_person }} )<br>
+                    ( {{ $memo->customer_service ?: '..........................' }} )<br>
                     Customer Service
                 </td>
             </tr>

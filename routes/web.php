@@ -139,6 +139,7 @@ Route::prefix('memopengiriman')->group(function () {
 
         Route::post('/cetak-terpilih', [MemoPengirimanController::class, 'bulkPdf'])->name('tools.memopengiriman.bulk-pdf');
         Route::delete('/hapus-terpilih', [MemoPengirimanController::class, 'bulkDestroy'])->name('tools.memopengiriman.bulk-destroy');
+        Route::post('/export-excel', [MemoPengirimanController::class, 'exportExcel'])->name('tools.memopengiriman.export-excel');
 
         Route::get('/{memoPengiriman}/edit', [MemoPengirimanController::class, 'edit'])->name('tools.memopengiriman.edit');
         Route::put('/{memoPengiriman}', [MemoPengirimanController::class, 'update'])->name('tools.memopengiriman.update');
