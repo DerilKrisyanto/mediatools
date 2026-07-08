@@ -163,7 +163,7 @@
                     <div class="memo-form-group">
                         <label>Keterangan Lainnya</label>
                         <textarea name="keterangan_lainnya" class="memo-input" rows="2"
-                                placeholder="Tambah Keterangan lainnya">{{ old('keterangan_lainnya', $editMemo->keterangan_lainnya ?? '') }}</textarea>
+                                placeholder="Tulis Keterangan lainnya (jika ada)">{{ old('keterangan_lainnya', $editMemo->keterangan_lainnya ?? '') }}</textarea>
                         @error('keterangan_lainnya') <div class="memo-error">{{ $message }}</div> @enderror
                     </div>
                 </div>
