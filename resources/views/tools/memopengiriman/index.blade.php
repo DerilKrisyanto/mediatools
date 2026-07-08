@@ -101,20 +101,20 @@
 
                 <div class="memo-grid-2">
                     <div class="memo-form-group">
-                        <label>No Struk</label>
-                        <div id="noStrukRepeater" class="memo-repeater"></div>
-                        <button type="button" class="memo-btn memo-btn-outline memo-btn-sm" id="btnAddNoStruk" style="margin-top:6px;">
-                            <i class="fa-solid fa-plus"></i> Tambah No. Struk
-                        </button>
-                        @error('no_struk_items') <div class="memo-error">{{ $message }}</div> @enderror
-                        @error('no_struk_items.*') <div class="memo-error">{{ $message }}</div> @enderror
-                    </div>
-                    <div class="memo-form-group">
                         <label>No Telepon</label>
                         <input type="tel" inputmode="numeric" name="telepon_dari" class="memo-input only-phone"
                             placeholder="08xx-xxxx-xxxx"
                             value="{{ old('telepon_dari', $editMemo->telepon_dari ?? '') }}">
                         @error('telepon_dari') <div class="memo-error">{{ $message }}</div> @enderror
+                    </div>
+                    <div class="memo-form-group">
+                        <label>No Struk</label>
+                        <div id="noStrukRepeater" class="memo-repeater"></div>
+                        <button type="button" class="memo-btn memo-btn-outline memo-btn-sm" id="btnAddNoStruk" style="margin-top:6px;">
+                            <i class="fa-solid fa-plus"></i> Tambah Struk
+                        </button>
+                        @error('no_struk_items') <div class="memo-error">{{ $message }}</div> @enderror
+                        @error('no_struk_items.*') <div class="memo-error">{{ $message }}</div> @enderror
                     </div>
                 </div>
                 @php
@@ -152,30 +152,30 @@
                         @error('tujuan_telepon') <div class="memo-error">{{ $message }}</div> @enderror
                     </div>
                 </div>
-                <div class="memo-form-group">
-                    <label>Alamat</label>
-                    <textarea name="tujuan_alamat" class="memo-input" rows="2"
-                              placeholder="Alamat lengkap tujuan pengiriman" required>{{ old('tujuan_alamat', $editMemo->tujuan_alamat ?? '') }}</textarea>
-                    @error('tujuan_alamat') <div class="memo-error">{{ $message }}</div> @enderror
-                </div>
 
                 <div class="memo-grid-2">
+                    <div class="memo-form-group">
+                        <label>Alamat</label>
+                        <textarea name="tujuan_alamat" class="memo-input" rows="2"
+                                placeholder="Alamat lengkap tujuan pengiriman" required>{{ old('tujuan_alamat', $editMemo->tujuan_alamat ?? '') }}</textarea>
+                        @error('tujuan_alamat') <div class="memo-error">{{ $message }}</div> @enderror
+                    </div>
+                    <div class="memo-form-group">
+                        <label>Keterangan Lainnya</label>
+                        <textarea name="keterangan_lainnya" class="memo-input" rows="2"
+                                placeholder="Tambah Keterangan lainnya">{{ old('keterangan_lainnya', $editMemo->keterangan_lainnya ?? '') }}</textarea>
+                        @error('keterangan_lainnya') <div class="memo-error">{{ $message }}</div> @enderror
+                    </div>
+                </div>
+
+                <div class="memo-grid-3">
                     <div class="memo-form-group">
                         <label>Nama Customer Service</label>
                         <input type="text" name="customer_service" class="memo-input"
-                            placeholder="Nama CS yang menangani pengiriman ini"
+                            placeholder="Nama yang menangani pengiriman"
                             value="{{ old('customer_service', $editMemo->customer_service ?? '') }}" required>
                         @error('customer_service') <div class="memo-error">{{ $message }}</div> @enderror
                     </div>
-                    <div class="memo-form-group">
-                        <label>Tanggal Memo</label>
-                        <input type="date" name="tanggal_memo" class="memo-input"
-                            value="{{ old('tanggal_memo', isset($editMemo) ? \Carbon\Carbon::parse($editMemo->tanggal_memo)->format('Y-m-d') : now()->format('Y-m-d')) }}" required>
-                        @error('tanggal_memo') <div class="memo-error">{{ $message }}</div> @enderror
-                    </div>
-                </div>
-
-                <div class="memo-grid-2">
                     <div class="memo-form-group">
                         <label>Tanggal Pengiriman</label>
                         <input type="datetime-local" id="pengiriman_picker" class="memo-input">
@@ -191,16 +191,18 @@
                 </div>
 
                 <div class="memo-section-label">Instalasi</div>
-                <div class="memo-form-group" style="max-width:280px;">
-                    <label>Instalasi</label>
-                    <select name="instalasi" id="instalasi_select" class="memo-input">
-                        <option value="0" {{ !old('instalasi', $editMemo->instalasi ?? false) ? 'selected' : '' }}>Tidak</option>
-                        <option value="1" {{ old('instalasi', $editMemo->instalasi ?? false) ? 'selected' : '' }}>Ya</option>
-                    </select>
+                <div class="memo-grid-3">
+                    <div class="memo-form-group">
+                        <label>Instalasi</label>
+                        <select name="instalasi" id="instalasi_select" class="memo-input">
+                            <option value="0" {{ !old('instalasi', $editMemo->instalasi ?? false) ? 'selected' : '' }}>Tidak</option>
+                            <option value="1" {{ old('instalasi', $editMemo->instalasi ?? false) ? 'selected' : '' }}>Ya</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div id="instalasi_extra_fields">
-                    <div class="memo-grid-2">
+                    <div class="memo-grid-3">
                         <div class="memo-form-group">
                             <label>Tanggal Instalasi</label>
                             <input type="datetime-local" id="instalasi_picker" class="memo-input">
@@ -208,20 +210,29 @@
                             @error('instalasi_hari_tanggal') <div class="memo-error">{{ $message }}</div> @enderror
                         </div>
                         <div class="memo-form-group">
+                            <label>Biaya Instalasi (Rp)</label>
+                            <input type="text" inputmode="numeric" id="biaya_instalasi_display" class="memo-input" placeholder="Rp 0">
+                            <input type="hidden" name="biaya_instalasi" id="biaya_instalasi">
+                            @error('biaya_instalasi') <div class="memo-error">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="memo-form-group">
                             <label>No Struk Instalasi</label>
                             <div id="noStrukInstalasiRepeater" class="memo-repeater"></div>
                             <button type="button" class="memo-btn memo-btn-outline memo-btn-sm" id="btnAddNoStrukInstalasi" style="margin-top:6px;">
-                                <i class="fa-solid fa-plus"></i> Tambah No. Struk Instalasi
+                                <i class="fa-solid fa-plus"></i> Tambah Struk
                             </button>
                             @error('no_struk_instalasi_items') <div class="memo-error">{{ $message }}</div> @enderror
                             @error('no_struk_instalasi_items.*') <div class="memo-error">{{ $message }}</div> @enderror
                         </div>
                     </div>
-                    <div class="memo-form-group" style="max-width:280px;">
-                        <label>Biaya Instalasi (Rp)</label>
-                        <input type="text" inputmode="numeric" id="biaya_instalasi_display" class="memo-input" placeholder="Rp 0">
-                        <input type="hidden" name="biaya_instalasi" id="biaya_instalasi">
-                        @error('biaya_instalasi') <div class="memo-error">{{ $message }}</div> @enderror
+                </div>
+
+                <div class="memo-grid-3">
+                    <div class="memo-form-group">
+                        <label>Tanggal Memo</label>
+                        <input type="date" name="tanggal_memo" class="memo-input"
+                            value="{{ old('tanggal_memo', isset($editMemo) ? \Carbon\Carbon::parse($editMemo->tanggal_memo)->format('Y-m-d') : now()->format('Y-m-d')) }}" required>
+                        @error('tanggal_memo') <div class="memo-error">{{ $message }}</div> @enderror
                     </div>
                 </div>
 

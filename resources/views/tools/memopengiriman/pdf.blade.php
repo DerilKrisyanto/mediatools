@@ -46,12 +46,12 @@
     .checkbox-box {
         font-family: "DejaVu Sans", sans-serif;
         display: inline-block;
-        width: 11px;
-        height: 11px;
+        width: 14px;
+        height: 14px;
         border: 1pt solid #111;
         text-align: center;
         line-height: 10px;
-        font-size: 9pt;
+        font-size: 13pt;
         font-weight: bold;
         margin-right: 4px;
         vertical-align: middle;
@@ -92,18 +92,23 @@
 
         <table class="info">
             <tr><td class="label">Telah Terima Dari</td><td class="colon">:</td><td>{{ $memo->diterima_dari }}</td></tr>
-            <tr><td class="label">No Telepon</td><td class="colon">:</td><td>{{ $memo->telepon_dari ?: '-' }}</td></tr>
-            <tr><td class="label">No. Struk</td><td class="colon">:</td><td>{{ $memo->no_struk ?: '-' }}</td></tr>
-            <tr><td class="label">Berupa</td><td class="colon">:</td><td>{{ $memo->berupa_text ?: '-' }}</td></tr>
+            <tr><td class="label">No Telepon</td><td class="colon">:</td><td>{{ $memo->telepon_dari ?: '' }}</td></tr>
+            <tr><td class="label">No. Struk</td><td class="colon">:</td><td>{{ $memo->no_struk ?: '' }}</td></tr>
+            <tr><td class="label">Berupa</td><td class="colon">:</td><td>{{ $memo->berupa_text ?: '' }}</td></tr>
         </table>
 
         <div class="section-label">Untuk Dikirimkan Ke</div>
         <table class="info">
             <tr><td class="label">Contact Person</td><td class="colon">:</td><td>{{ $memo->tujuan_contact_person }}</td></tr>
-            <tr><td class="label">Alamat</td><td class="colon">:</td><td>{{ $memo->tujuan_alamat }}</td></tr>
-            <tr><td class="label">No Telepon</td><td class="colon">:</td><td>{{ $memo->tujuan_telepon ?: '-' }}</td></tr>
-            <tr><td class="label">Hari / Jam / Tgl</td><td class="colon">:</td><td>{{ $memo->pengiriman_hari_tanggal ?: '-' }}</td></tr>
-            <tr><td class="label">Biaya Kirim</td><td class="colon">:</td><td>Rp {{ number_format($memo->biaya_kirim ?? 0, 0, ',', '.') }}</td></tr>
+            <tr><td class="label">Alamat Tujuan</td><td class="colon">:</td><td>{{ $memo->tujuan_alamat }}</td></tr>
+            <tr><td class="label">No Telepon</td><td class="colon">:</td><td>{{ $memo->tujuan_telepon ?: '' }}</td></tr>
+            <tr><td class="label">Keterangan Lainnya</td><td class="colon">:</td><td>{{ $memo->keterangan_lainnya ?: '' }}</td></tr>
+            <tr><td class="label">Hari / Jam / Tgl</td><td class="colon">:</td><td>{{ $memo->pengiriman_hari_tanggal ?: '' }}</td></tr>
+            <tr>
+                <td class="label">Biaya Kirim</td>
+                <td class="colon">:</td>
+                <td>{{ $memo->biaya_kirim ? 'Rp ' . number_format($memo->biaya_kirim, 0, ',', '.') : '' }}</td>
+            </tr>
         </table>
 
         <div class="section-label">Instalasi</div>
@@ -116,9 +121,13 @@
                 </td>
             </tr>
             @if($memo->instalasi)
-            <tr><td class="label">No. Struk Instalasi</td><td class="colon">:</td><td>{{ $memo->no_struk_instalasi ?: '-' }}</td></tr>
-            <tr><td class="label">Hari / Jam / Tgl</td><td class="colon">:</td><td>{{ $memo->instalasi_hari_tanggal ?: '-' }}</td></tr>
-            <tr><td class="label">Biaya Instalasi</td><td class="colon">:</td><td>Rp {{ number_format($memo->biaya_instalasi ?? 0, 0, ',', '.') }}</td></tr>
+            <tr><td class="label">No. Struk Instalasi</td><td class="colon">:</td><td>{{ $memo->no_struk_instalasi ?: '' }}</td></tr>
+            <tr><td class="label">Hari / Jam / Tgl</td><td class="colon">:</td><td>{{ $memo->instalasi_hari_tanggal ?: '' }}</td></tr>
+            <tr>
+                <td class="label">Biaya Instalasi</td>
+                <td class="colon">:</td>
+                <td>{{ $memo->biaya_instalasi ? 'Rp ' . number_format($memo->biaya_instalasi, 0, ',', '.') : '' }}</td>
+            </tr>
             @endif
         </table>
 

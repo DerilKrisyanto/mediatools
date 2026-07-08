@@ -87,6 +87,7 @@ class MemoPengirimanExport
             'Berupa',
             'Contact Person Tujuan',
             'Alamat Tujuan',
+            'Keterangan Lainnya',
             'No Telepon (Tujuan)',
             'Nama Customer Service',
             'Hari / Jam / Tgl Pengiriman',
@@ -95,7 +96,7 @@ class MemoPengirimanExport
             'No. Struk Instalasi',
             'Hari / Jam / Tgl Instalasi',
             'Biaya Instalasi (Rp)',
-            'Dibuat Pada',
+            'Tanggal Memo',
         ];
     }
 
@@ -110,6 +111,7 @@ class MemoPengirimanExport
             $m->berupa_text ?: '-',
             $m->tujuan_contact_person,
             $m->tujuan_alamat,
+            $m->keterangan_lainnya ?: '-',
             $m->tujuan_telepon ?: '-',
             $m->customer_service ?: '-',
             $m->pengiriman_hari_tanggal ?: '-',
