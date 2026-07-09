@@ -2,7 +2,6 @@
     <thead>
         <tr style="background:#e2e8f0; font-weight:bold;">
             <th>No. Memo</th>
-            <th>Tanggal Memo</th>
             <th>Diterima Dari</th>
             <th>No. Struk</th>
             <th>No Telepon (Dari)</th>
@@ -10,20 +9,20 @@
             <th>Contact Person Tujuan</th>
             <th>Alamat Tujuan</th>
             <th>No Telepon (Tujuan)</th>
-            <th>Hari / Jam / Tgl Pengiriman</th>
+            <th>Tgl Pengiriman</th>
             <th>Biaya Kirim (Rp)</th>
             <th>Instalasi</th>
             <th>No. Struk Instalasi</th>
-            <th>Hari / Jam / Tgl Instalasi</th>
+            <th>Tgl Instalasi</th>
             <th>Biaya Instalasi (Rp)</th>
-            <th>Dibuat Pada</th>
+            <th>Nama Customer Service</th>
+            <th>Tgl Memo</th>
         </tr>
     </thead>
     <tbody>
         @foreach($memos as $m)
         <tr>
             <td>{{ $m->nomor_memo }}</td>
-            <td>{{ \Carbon\Carbon::parse($m->tanggal_memo)->format('d-m-Y') }}</td>
             <td>{{ $m->diterima_dari }}</td>
             <td>{{ $m->no_struk ?: '-' }}</td>
             <td>{{ $m->telepon_dari ?: '-' }}</td>
@@ -37,7 +36,8 @@
             <td>{{ $m->no_struk_instalasi ?: '-' }}</td>
             <td>{{ $m->instalasi_hari_tanggal ?: '-' }}</td>
             <td>{{ (int) ($m->biaya_instalasi ?? 0) }}</td>
-            <td>{{ $m->created_at->format('d-m-Y H:i') }}</td>
+            <td>{{ $m->instalasi_hari_tanggal ?: '-' }}</td>
+            <td>{{ \Carbon\Carbon::parse($m->tanggal_memo)->format('d-m-Y') }}</td>
         </tr>
         @endforeach
     </tbody>

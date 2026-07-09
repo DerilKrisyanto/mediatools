@@ -310,11 +310,11 @@
                     <thead>
                         <tr>
                             <th style="width:36px;"><input type="checkbox" class="memo-checkbox" id="checkAll"></th>
-                            <th>No. Memo</th>
                             <th>No. Struk</th>
                             <th>Tgl Pengiriman</th>
                             <th>Diterima Dari</th>
                             <th>Dikirim Ke</th>
+                            <th>Nama CS</th>
                             <th>Instalasi</th>
                             <th style="text-align:right;">Aksi</th>
                         </tr>
@@ -323,11 +323,11 @@
                         @forelse($memos as $m)
                         <tr>
                             <td><input type="checkbox" class="memo-checkbox row-check" value="{{ $m->id }}"></td>
-                            <td>{{ $m->nomor_memo }}</td>
                             <td>{{ $m->no_struk ?: '-' }}</td>
                             <td>{{ $m->pengiriman_hari_tanggal ?: '-' }}</td>
                             <td>{{ $m->diterima_dari }}</td>
                             <td>{{ $m->tujuan_contact_person }}</td>
+                            <td>{{ $m->customer_service ?: '-' }}</td>
                             <td>
                                 <span class="memo-badge {{ $m->instalasi ? 'memo-badge-yes' : 'memo-badge-no' }}">
                                     {{ $m->instalasi ? 'Ya' : 'Tidak' }}

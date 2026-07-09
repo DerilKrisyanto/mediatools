@@ -89,11 +89,11 @@ class MemoPengirimanExport
             'Keterangan Lainnya',
             'No Telepon (Tujuan)',
             'Nama Customer Service',
-            'Hari / Jam / Tgl Pengiriman',
+            'Tgl Pengiriman',
             'Biaya Kirim (Rp)',
             'Instalasi',
             'No. Struk Instalasi',
-            'Hari / Jam / Tgl Instalasi',
+            'Tgl Instalasi',
             'Biaya Instalasi (Rp)',
             'Dibuat Pada',
         ];
