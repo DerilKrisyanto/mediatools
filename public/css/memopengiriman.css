@@ -82,6 +82,8 @@ textarea.memo-input { resize: vertical; min-height: 68px; }
 }
 .memo-btn-primary { background: var(--memo-accent); color: #fff; }
 .memo-btn-primary:hover { background: #15803d; }
+.memo-btn-success { background:#2e65cc; color: #fff; }
+.memo-btn-warning { background: #e7b11c; color: #fff; }
 .memo-btn-outline { background: #fff; color: var(--memo-text); border: 1px solid var(--memo-border); }
 .memo-btn-outline:hover { background: #f9fafb; }
 .memo-btn-danger { background: #fff; color: var(--memo-danger); border: 1px solid #fecaca; }

@@ -58,7 +58,7 @@
                 <div class="memo-logo-actions">
                     <form action="{{ route('tools.memopengiriman.profile.logo.store') }}" method="POST" enctype="multipart/form-data" id="logoUploadForm">
                         @csrf
-                        <label for="logoInput" class="memo-btn memo-btn-outline" style="cursor:pointer;">
+                        <label for="logoInput" class="memo-btn memo-btn-success" style="cursor:pointer;">
                             <i class="fa-solid fa-upload"></i>
                             {{ auth()->user()->logo_path ? 'Ganti Logo' : 'Upload Logo' }}
                         </label>
@@ -110,7 +110,7 @@
                     <div class="memo-form-group">
                         <label>No Struk</label>
                         <div id="noStrukRepeater" class="memo-repeater"></div>
-                        <button type="button" class="memo-btn memo-btn-outline memo-btn-sm" id="btnAddNoStruk" style="margin-top:6px;">
+                        <button type="button" class="memo-btn memo-btn-success memo-btn-sm" id="btnAddNoStruk" style="margin-top:6px;">
                             <i class="fa-solid fa-plus"></i> Tambah Struk
                         </button>
                         @error('no_struk_items') <div class="memo-error">{{ $message }}</div> @enderror
@@ -128,7 +128,7 @@
                 <div class="memo-form-group">
                     <label>Berupa (Deskripsi Barang)</label>
                     <div id="barangRepeater" class="memo-repeater"></div>
-                    <button type="button" class="memo-btn memo-btn-outline memo-btn-sm" id="btnAddBarang" style="margin-top:6px;">
+                    <button type="button" class="memo-btn memo-btn-success memo-btn-sm" id="btnAddBarang" style="margin-top:6px;">
                         <i class="fa-solid fa-plus"></i> Tambah Barang
                     </button>
                     @error('barang_nama') <div class="memo-error">{{ $message }}</div> @enderror
@@ -218,7 +218,7 @@
                         <div class="memo-form-group">
                             <label>No Struk Instalasi</label>
                             <div id="noStrukInstalasiRepeater" class="memo-repeater"></div>
-                            <button type="button" class="memo-btn memo-btn-outline memo-btn-sm" id="btnAddNoStrukInstalasi" style="margin-top:6px;">
+                            <button type="button" class="memo-btn memo-btn-success memo-btn-sm" id="btnAddNoStrukInstalasi" style="margin-top:6px;">
                                 <i class="fa-solid fa-plus"></i> Tambah Struk
                             </button>
                             @error('no_struk_instalasi_items') <div class="memo-error">{{ $message }}</div> @enderror
@@ -237,7 +237,7 @@
                 </div>
 
                 <div style="display:flex; gap:10px; margin-top:8px;">
-                    <button type="submit" class="memo-btn memo-btn-primary">
+                    <button type="submit" class="memo-btn memo-btn-success">
                         <i class="fa-solid fa-floppy-disk"></i>
                         {{ isset($editMemo) ? 'Update Memo' : 'Simpan Memo' }}
                     </button>
@@ -263,12 +263,12 @@
                         <label>Sampai Tanggal</label>
                         <input type="date" name="date_to" value="{{ $dateTo }}" class="memo-input">
                     </div>
-                    <button type="submit" class="memo-btn memo-btn-primary">
+                    <button type="submit" class="memo-btn memo-btn-success">
                         <i class="fa-solid fa-search"></i> Cari
                     </button>
                 </form>
 
-                <button type="button" id="btnExportExcel" class="memo-btn memo-btn-outline">
+                <button type="button" id="btnExportExcel" class="memo-btn memo-btn-primary">
                     <i class="fa-solid fa-file-excel"></i> Export ke Excel
                 </button>
             </div>
@@ -293,13 +293,13 @@
             <div class="memo-bulk-bar" id="bulkBar" style="display:none;">
                 <span><span id="selectedCount">0</span> memo dipilih</span>
                 <div style="display:flex; gap:8px;">
-                    <button type="button" id="btnCetakTerpilih" class="memo-btn memo-btn-outline" disabled>
+                    <button type="button" id="btnCetakTerpilih" class="memo-btn memo-btn-primary" disabled>
                         <i class="fa-solid fa-print"></i> Cetak Memo
                     </button>
                     <button type="button" id="btnHapusTerpilih" class="memo-btn memo-btn-danger" disabled>
-                        <i class="fa-solid fa-trash"></i> Hapus Hapus
+                        <i class="fa-solid fa-trash"></i> Hapus Memo
                     </button>
-                    <button type="button" id="btnBatalPilih" class="memo-btn memo-btn-outline">
+                    <button type="button" id="btnBatalPilih" class="memo-btn memo-btn-warning">
                         <i class="fa-solid fa-xmark"></i> Batal
                     </button>
                 </div>
@@ -415,7 +415,7 @@
 
             var removeBtn = document.createElement('button');
             removeBtn.type = 'button';
-            removeBtn.className = 'memo-btn memo-btn-outline memo-btn-sm';
+            removeBtn.className = 'memo-btn memo-btn-warning memo-btn-sm';
             removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
             removeBtn.addEventListener('click', function () {
                 var rows = container.querySelectorAll('.memo-repeater-row');
@@ -482,7 +482,7 @@
 
             var removeBtn = document.createElement('button');
             removeBtn.type = 'button';
-            removeBtn.className = 'memo-btn memo-btn-outline memo-btn-sm';
+            removeBtn.className = 'memo-btn memo-btn-warning memo-btn-sm';
             removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
             removeBtn.addEventListener('click', function () {
                 var rows = container.querySelectorAll('.memo-repeater-row');
