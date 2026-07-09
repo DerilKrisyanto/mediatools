@@ -80,7 +80,6 @@ class MemoPengirimanExport
     {
         return [
             'No. Memo',
-            'Tanggal Memo',
             'Diterima Dari',
             'No. Struk',
             'No Telepon (Dari)',
@@ -96,7 +95,7 @@ class MemoPengirimanExport
             'No. Struk Instalasi',
             'Hari / Jam / Tgl Instalasi',
             'Biaya Instalasi (Rp)',
-            'Tanggal Memo',
+            'Dibuat Pada',
         ];
     }
 
@@ -104,7 +103,6 @@ class MemoPengirimanExport
     {
         return [
             $m->nomor_memo,
-            Carbon::parse($m->tanggal_memo)->format('d-m-Y'),
             $m->diterima_dari,
             $m->no_struk ?: '-',
             $m->telepon_dari ?: '-',
@@ -114,13 +112,13 @@ class MemoPengirimanExport
             $m->keterangan_lainnya ?: '-',
             $m->tujuan_telepon ?: '-',
             $m->customer_service ?: '-',
-            Carbon::parse($m->pengiriman_hari_tanggal)->format('d-m-Y'),
+            $m->pengiriman_hari_tanggal ?: '-',
             (float) ($m->biaya_kirim ?? 0),
             $m->instalasi ? 'Ya' : 'Tidak',
             $m->no_struk_instalasi ?: '-',
             $m->instalasi_hari_tanggal ?: '-',
             (float) ($m->biaya_instalasi ?? 0),
-            optional($m->created_at)->format('d-m-Y H:i'),
+            Carbon::parse($m->tanggal_memo)->format('d-m-Y'),
         ];
     }
 }

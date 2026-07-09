@@ -20,10 +20,33 @@ class MemoPengirimanController extends Controller
     {
         [$dateFrom, $dateTo] = $this->resolveDateRange($request);
 
-        $memos = MemoPengiriman::milikSaya()
-            ->whereBetween('tanggal_memo', [$dateFrom, $dateTo])
-            ->latest('tanggal_memo')
-            ->latest('id')
+        // 1. Ambil query dasar
+        $query = MemoPengiriman::milikSaya()
+            ->whereBetween('tanggal_memo', [$dateFrom, $dateTo]);
+
+        // 2. Lakukan pengurutan berdasarkan string kustom jika menggunakan PostgreSQL
+        if (config('database.default') === 'pgsql') {
+            // Kita bersihkan string hari (karena to_timestamp tidak butuh string hari)
+            // Dan kita replace nama bulan Indonesia ke Inggris agar dibaca oleh template 'DD-Month-YYYY HH24:MI'
+            $query->orderByRaw("
+                to_timestamp(
+                    regexp_replace(
+                        regexp_replace(
+                            substring(pengiriman_hari_tanggal from '[0-9].*'), 
+                            'Juli', 'July', 'g'
+                        ), 
+                        'Agustus', 'August', 'g'
+                    ), 
+                    'DD-Month-YYYY HH24:MI'
+                ) DESC
+            ");
+        } else {
+            // Fallback jika Anda masih testing di MySQL lokal Laragon
+            $query->latest('tanggal_memo');
+        }
+
+        // 3. Tambahkan secondary order dan pagination
+        $memos = $query->latest('id')
             ->paginate(10)
             ->withQueryString();
 
@@ -241,22 +264,41 @@ class MemoPengirimanController extends Controller
 
         $ids = array_filter($request->input('ids', []));
 
+        // 1. Inisialisasi Query Dasar
+        $query = MemoPengiriman::milikSaya();
+
         if (!empty($ids)) {
-            $memos = MemoPengiriman::milikSaya()
-                ->whereIn('id', $ids)
-                ->orderByDesc('pengiriman_hari_tanggal')
-                ->orderByDesc('id')
-                ->get();
+            // Jika user memilih baris data tertentu via checkbox
+            $query->whereIn('id', $ids);
         } else {
+            // Jika user melakukan export berdasarkan filter kalender tanggal_memo
             $dateFrom = $request->input('date_from') ?: now()->toDateString();
             $dateTo   = $request->input('date_to') ?: now()->toDateString();
 
-            $memos = MemoPengiriman::milikSaya()
-                ->whereBetween('pengiriman_hari_tanggal', [$dateFrom, $dateTo])
-                ->orderByDesc('pengiriman_hari_tanggal')
-                ->orderByDesc('id')
-                ->get();
+            $query->whereBetween('tanggal_memo', [$dateFrom, $dateTo]);
         }
+
+        // 2. Suntik Logika Urutan Berdasarkan String Pengiriman (PostgreSQL Sinkron)
+        if (config('database.default') === 'pgsql') {
+            $query->orderByRaw("
+                to_timestamp(
+                    regexp_replace(
+                        regexp_replace(
+                            substring(pengiriman_hari_tanggal from '[0-9].*'), 
+                            'Juli', 'July', 'g'
+                        ), 
+                        'Agustus', 'August', 'g'
+                    ), 
+                    'DD-Month-YYYY HH24:MI'
+                ) DESC
+            ");
+        } else {
+            // Fallback jika testing lokal menggunakan MySQL/Laragon
+            $query->orderByDesc('tanggal_memo');
+        }
+
+        // 3. Eksekusi Pengurutan Cadangan & Get Data
+        $memos = $query->orderByDesc('id')->get();
 
         abort_if($memos->isEmpty(), 404, 'Tidak ada data untuk diekspor.');
 
