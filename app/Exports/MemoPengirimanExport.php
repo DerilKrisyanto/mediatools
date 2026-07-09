@@ -114,7 +114,7 @@ class MemoPengirimanExport
             $m->keterangan_lainnya ?: '-',
             $m->tujuan_telepon ?: '-',
             $m->customer_service ?: '-',
-            $m->pengiriman_hari_tanggal ?: '-',
+            Carbon::parse($m->pengiriman_hari_tanggal)->format('d-m-Y'),
             (float) ($m->biaya_kirim ?? 0),
             $m->instalasi ? 'Ya' : 'Tidak',
             $m->no_struk_instalasi ?: '-',

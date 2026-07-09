@@ -244,7 +244,7 @@ class MemoPengirimanController extends Controller
         if (!empty($ids)) {
             $memos = MemoPengiriman::milikSaya()
                 ->whereIn('id', $ids)
-                ->orderByDesc('tanggal_memo')
+                ->orderByDesc('pengiriman_hari_tanggal')
                 ->orderByDesc('id')
                 ->get();
         } else {
@@ -252,8 +252,8 @@ class MemoPengirimanController extends Controller
             $dateTo   = $request->input('date_to') ?: now()->toDateString();
 
             $memos = MemoPengiriman::milikSaya()
-                ->whereBetween('tanggal_memo', [$dateFrom, $dateTo])
-                ->orderByDesc('tanggal_memo')
+                ->whereBetween('pengiriman_hari_tanggal', [$dateFrom, $dateTo])
+                ->orderByDesc('pengiriman_hari_tanggal')
                 ->orderByDesc('id')
                 ->get();
         }

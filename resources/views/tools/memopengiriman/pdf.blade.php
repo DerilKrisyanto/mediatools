@@ -147,7 +147,7 @@
             <tr>
                 <td>
                     Yang Menyerahkan,<br><br>
-                    ( {{ $memo->tujuan_contact_person }} )<br>
+                    ( {{ $memo->diterima_dari }} )<br>
                     Customer
                 </td>
                 <td>
