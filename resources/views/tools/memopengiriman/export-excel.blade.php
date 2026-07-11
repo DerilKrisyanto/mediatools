@@ -9,6 +9,8 @@
             <th>Contact Person Tujuan</th>
             <th>Alamat Tujuan</th>
             <th>No Telepon (Tujuan)</th>
+            <th>Nama CS</th>
+            <th>Nama Sales</th>
             <th>Tgl Pengiriman</th>
             <th>Biaya Kirim (Rp)</th>
             <th>Instalasi</th>
@@ -30,6 +32,8 @@
             <td>{{ $m->tujuan_contact_person }}</td>
             <td>{{ $m->tujuan_alamat }}</td>
             <td>{{ $m->tujuan_telepon ?: '-' }}</td>
+            <td>{{ $m->customer_service ?: '-' }}</td>
+            <td>{{ $m->nama_sales ?: '-' }}</td>
             <td>{{ $m->pengiriman_hari_tanggal ?: '-' }}</td>
             <td>{{ (int) ($m->biaya_kirim ?? 0) }}</td>
             <td>{{ $m->instalasi ? 'Ya' : 'Tidak' }}</td>

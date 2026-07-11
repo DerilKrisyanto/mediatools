@@ -435,6 +435,7 @@ class MemoPengirimanController extends Controller
             'keterangan_lainnya'          => ['nullable', 'string'],
             'tujuan_telepon'              => ['nullable', 'regex:/^[0-9+\-\s]{0,30}$/'],
             'customer_service'            => ['required', 'string', 'max:150'],
+            'nama_sales'                  => ['nullable', 'string', 'max:150'],
             'pengiriman_hari_tanggal'     => ['nullable', 'string', 'max:100'],
             'biaya_kirim'                 => ['nullable', 'numeric', 'min:0'],
             'instalasi'                   => ['nullable', 'boolean'],

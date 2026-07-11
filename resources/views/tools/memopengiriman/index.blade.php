@@ -168,7 +168,7 @@
                     </div>
                 </div>
 
-                <div class="memo-grid-3">
+                <div class="memo-grid-2">
                     <div class="memo-form-group">
                         <label>Nama Customer Service</label>
                         <input type="text" name="customer_service" class="memo-input"
@@ -176,6 +176,15 @@
                             value="{{ old('customer_service', $editMemo->customer_service ?? '') }}" required>
                         @error('customer_service') <div class="memo-error">{{ $message }}</div> @enderror
                     </div>
+                    <div class="memo-form-group">
+                        <label>Nama Sales</label>
+                        <input type="text" name="nama_sales" class="memo-input"
+                            placeholder="Nama sales dari pengiriman ini"
+                            value="{{ old('nama_sales', $editMemo->nama_sales ?? '') }}" required>
+                        @error('nama_sales') <div class="memo-error">{{ $message }}</div> @enderror
+                    </div>
+                </div>
+                <div class="memo-grid-2">
                     <div class="memo-form-group">
                         <label>Tanggal Pengiriman</label>
                         <input type="datetime-local" id="pengiriman_picker" class="memo-input">
@@ -315,6 +324,7 @@
                             <th>Diterima Dari</th>
                             <th>Dikirim Ke</th>
                             <th>Nama CS</th>
+                            <th>Nama Sales</th>
                             <th>Instalasi</th>
                             <th style="text-align:right;">Aksi</th>
                         </tr>
@@ -328,6 +338,7 @@
                             <td>{{ $m->diterima_dari }}</td>
                             <td>{{ $m->tujuan_contact_person }}</td>
                             <td>{{ $m->customer_service ?: '-' }}</td>
+                            <td>{{ $m->nama_sales ?: '-' }}</td>
                             <td>
                                 <span class="memo-badge {{ $m->instalasi ? 'memo-badge-yes' : 'memo-badge-no' }}">
                                     {{ $m->instalasi ? 'Ya' : 'Tidak' }}
