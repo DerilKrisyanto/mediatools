@@ -103,7 +103,7 @@
             <tr><td class="label">Alamat Tujuan</td><td class="colon">:</td><td>{{ $memo->tujuan_alamat }}</td></tr>
             <tr><td class="label">No Telepon</td><td class="colon">:</td><td>{{ $memo->tujuan_telepon ?: '' }}</td></tr>
             <tr><td class="label">Keterangan Lainnya</td><td class="colon">:</td><td>{{ $memo->keterangan_lainnya ?: '' }}</td></tr>
-            <tr><td class="label">Hari / Jam / Tgl</td><td class="colon">:</td><td>{{ $memo->pengiriman_hari_tanggal ?: '' }}</td></tr>
+            <tr><td class="label">Hari / Jam / Tgl Pengiriman</td><td class="colon">:</td><td>{{ $memo->pengiriman_hari_tanggal ?: '' }}</td></tr>
             <tr>
                 <td class="label">Biaya Kirim</td>
                 <td class="colon">:</td>
