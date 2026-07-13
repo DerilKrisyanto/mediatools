@@ -136,7 +136,7 @@
                 </div>
 
                 <div class="memo-section-label">Untuk Dikirimkan Ke</div>
-                <div class="memo-grid-2">
+                <div class="memo-grid-3">
                     <div class="memo-form-group">
                         <label>Contact Person</label>
                         <input type="text" name="tujuan_contact_person" class="memo-input"
@@ -150,6 +150,16 @@
                                placeholder="08xx-xxxx-xxxx"
                                value="{{ old('tujuan_telepon', $editMemo->tujuan_telepon ?? '') }}">
                         @error('tujuan_telepon') <div class="memo-error">{{ $message }}</div> @enderror
+                    </div>
+                    <div class="memo-form-group">
+                        <label>Email Tujuan (untuk kirim PDF)</label>
+                        <input type="email" name="email_tujuan_person" class="memo-input"
+                               placeholder="email@penerima.com"
+                               value="{{ old('email_tujuan_person', $editMemo->email_tujuan_person ?? '') }}">
+                        <p style="font-size:12px; color:#6b7280; margin-top:4px;">
+                            Opsional. Isi email jika ingin <strong>"Kirim"</strong> hasil cetak PDF memo ini langsung ke email penerima.
+                        </p>
+                        @error('email_tujuan_person') <div class="memo-error">{{ $message }}</div> @enderror
                     </div>
                 </div>
 
@@ -349,6 +359,15 @@
                                    class="memo-action-icon" title="Cetak">
                                     <i class="fa-solid fa-print"></i>
                                 </a>
+                                <form action="{{ route('tools.memopengiriman.kirim-email', $m) }}" method="POST"
+                                      style="display:inline;" class="kirim-email-form"
+                                      data-email="{{ $m->email_tujuan_person }}"
+                                      data-nomor="{{ $m->nomor_memo }}">
+                                    @csrf
+                                    <button type="submit" class="memo-action-icon" title="Kirim PDF via Email">
+                                        <i class="fa-solid fa-paper-plane"></i>
+                                    </button>
+                                </form>
                                 <a href="{{ route('tools.memopengiriman.edit', $m) }}"
                                    class="memo-action-icon" title="Edit">
                                     <i class="fa-solid fa-pen"></i>
@@ -662,6 +681,24 @@
         var form = document.getElementById('exportExcelForm');
         buildHiddenIds(form); // kalau ada yang dicentang, ids[] ikut terkirim; kalau tidak, kosong -> fallback ke filter tanggal
         form.submit();
+    });
+
+    /* ================= Aksi Kirim (PDF via Email) — validasi ringan sebelum submit ================= */
+    document.querySelectorAll('.kirim-email-form').forEach(function (form) {
+        form.addEventListener('submit', function (e) {
+            var email = form.getAttribute('data-email');
+            var nomor = form.getAttribute('data-nomor');
+
+            if (!email) {
+                e.preventDefault();
+                alert('Email tujuan untuk memo ' + nomor + ' belum diisi.\n\nSilakan klik "Edit" pada memo ini dan isi kolom "Email Tujuan" terlebih dahulu sebelum mengirim.');
+                return;
+            }
+
+            if (!confirm('Kirim cetakan PDF memo ' + nomor + ' ke ' + email + '?')) {
+                e.preventDefault();
+            }
+        });
     });
 
     refresh();

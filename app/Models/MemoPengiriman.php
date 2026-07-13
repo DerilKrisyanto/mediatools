@@ -25,6 +25,7 @@ class MemoPengiriman extends Model
         'tujuan_alamat',
         'keterangan_lainnya',
         'tujuan_telepon',
+        'email_tujuan_person',
         'customer_service',
         'nama_sales',
         'pengiriman_hari_tanggal',

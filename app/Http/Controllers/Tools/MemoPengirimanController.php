@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Tools;
 
 use App\Http\Controllers\Controller;
+use App\Mail\MemoPengirimanMail;
 use App\Models\MemoPengiriman;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -12,6 +13,8 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 
 class MemoPengirimanController extends Controller
@@ -305,6 +308,53 @@ class MemoPengirimanController extends Controller
         return $this->buildExcelResponse($memos);
     }
 
+    /**
+     * Kirim hasil cetak PDF dari 1 memo ke email tujuan (kolom email_tujuan_person),
+     * memakai mail sender bawaan sistem (Resend, sama seperti pengiriman OTP).
+     * Hanya berlaku untuk 1 data — tidak ada versi bulk untuk aksi ini.
+     */
+    public function kirimEmail(MemoPengiriman $memoPengiriman): RedirectResponse
+    {
+        $this->authorizeOwner($memoPengiriman);
+
+        if (empty($memoPengiriman->email_tujuan_person)) {
+            return redirect()
+                ->route('tools.memopengiriman')
+                ->withErrors([
+                    'kirim' => 'Email tujuan untuk memo "' . $memoPengiriman->nomor_memo . '" belum diisi. Silakan edit memo ini dan isi kolom "Email Tujuan" terlebih dahulu sebelum mengirim.',
+                ]);
+        }
+
+        try {
+            $pdfBinary = Pdf::loadView('tools.memopengiriman.pdf', [
+                'memos'    => collect([$memoPengiriman]),
+                'logoPath' => $this->resolveLogoPath(Auth::user()),
+            ])->setPaper('a4', 'portrait')->output();
+
+            $namaFile = $this->sanitizeFilename('memo-pengiriman-' . $memoPengiriman->nomor_memo) . '.pdf';
+
+            Mail::to($memoPengiriman->email_tujuan_person)
+                ->send(new MemoPengirimanMail($memoPengiriman, $pdfBinary, $namaFile));
+
+        } catch (\Exception $e) {
+            Log::error('Gagal mengirim email memo pengiriman', [
+                'memo_id' => $memoPengiriman->id,
+                'email'   => $memoPengiriman->email_tujuan_person,
+                'error'   => $e->getMessage(),
+            ]);
+
+            return redirect()
+                ->route('tools.memopengiriman')
+                ->withErrors([
+                    'kirim' => 'Gagal mengirim email ke ' . $memoPengiriman->email_tujuan_person . '. Pastikan alamat email tersebut benar dan aktif, lalu coba lagi. Jika masalah berlanjut, hubungi support.',
+                ]);
+        }
+
+        return redirect()
+            ->route('tools.memopengiriman')
+            ->with('success', 'Cetakan PDF memo "' . $memoPengiriman->nomor_memo . '" berhasil dikirim ke ' . $memoPengiriman->email_tujuan_person . '.');
+    }
+
     private function authorizeOwner(MemoPengiriman $memo): void
     {
         abort_if($memo->user_id !== Auth::id(), 403, 'Anda tidak memiliki akses ke memo ini.');
@@ -434,6 +484,7 @@ class MemoPengirimanController extends Controller
             'tujuan_alamat'               => ['required', 'string'],
             'keterangan_lainnya'          => ['nullable', 'string'],
             'tujuan_telepon'              => ['nullable', 'regex:/^[0-9+\-\s]{0,30}$/'],
+            'email_tujuan_person'         => ['nullable', 'email:rfc,dns', 'max:255'],
             'customer_service'            => ['required', 'string', 'max:150'],
             'nama_sales'                  => ['nullable', 'string', 'max:150'],
             'pengiriman_hari_tanggal'     => ['nullable', 'string', 'max:100'],

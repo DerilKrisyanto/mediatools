@@ -148,6 +148,8 @@ Route::prefix('memopengiriman')->group(function () {
 
         Route::post('/profile/logo',   [UserLogoController::class, 'store'])->name('tools.memopengiriman.profile.logo.store');
         Route::delete('/profile/logo', [UserLogoController::class, 'destroy'])->name('tools.memopengiriman.profile.logo.destroy');
+        // kirim email ke customer //
+        Route::post('/{memoPengiriman}/kirim-email', [MemoPengirimanController::class, 'kirimEmail'])->name('tools.memopengiriman.kirim-email');
     });
 });
 
