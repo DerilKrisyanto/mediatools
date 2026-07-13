@@ -23,30 +23,14 @@ class MemoPengirimanController extends Controller
     {
         [$dateFrom, $dateTo] = $this->resolveDateRange($request);
 
-        // 1. Ambil query dasar
-        $query = MemoPengiriman::milikSaya()
-            ->whereBetween('tanggal_memo', [$dateFrom, $dateTo]);
+        // 1. Ambil query dasar, filter periode berdasarkan pengiriman_hari_tanggal
+        $query = MemoPengiriman::milikSaya();
+        $this->applyPengirimanDateFilter($query, $dateFrom, $dateTo);
 
-        // 2. Lakukan pengurutan berdasarkan string kustom jika menggunakan PostgreSQL
-        if (config('database.default') === 'pgsql') {
-            // Kita bersihkan string hari (karena to_timestamp tidak butuh string hari)
-            // Dan kita replace nama bulan Indonesia ke Inggris agar dibaca oleh template 'DD-Month-YYYY HH24:MI'
-            $query->orderByRaw("
-                to_timestamp(
-                    regexp_replace(
-                        regexp_replace(
-                            substring(pengiriman_hari_tanggal from '[0-9].*'), 
-                            'Juli', 'July', 'g'
-                        ), 
-                        'Agustus', 'August', 'g'
-                    ), 
-                    'DD-Month-YYYY HH24:MI'
-                ) DESC
-            ");
-        } else {
-            // Fallback jika Anda masih testing di MySQL lokal Laragon
-            $query->latest('tanggal_memo');
-        }
+        // 2. Urutkan berdasarkan pengiriman_hari_tanggal (bukan tanggal_memo),
+        //    memakai ekspresi yang sama dengan filter di atas agar konsisten
+        //    dan otomatis mendukung PostgreSQL maupun MySQL.
+        $query->orderByRaw($this->pengirimanDateExpression() . ' DESC');
 
         // 3. Tambahkan secondary order dan pagination
         $memos = $query->latest('id')
@@ -62,9 +46,10 @@ class MemoPengirimanController extends Controller
 
         [$dateFrom, $dateTo] = $this->resolveDateRange($request);
 
-        $memos = MemoPengiriman::milikSaya()
-            ->whereBetween('tanggal_memo', [$dateFrom, $dateTo])
-            ->latest('tanggal_memo')
+        $query = MemoPengiriman::milikSaya();
+        $this->applyPengirimanDateFilter($query, $dateFrom, $dateTo);
+
+        $memos = $query->orderByRaw($this->pengirimanDateExpression() . ' DESC')
             ->latest('id')
             ->paginate(10)
             ->withQueryString();
@@ -274,31 +259,17 @@ class MemoPengirimanController extends Controller
             // Jika user memilih baris data tertentu via checkbox
             $query->whereIn('id', $ids);
         } else {
-            // Jika user melakukan export berdasarkan filter kalender tanggal_memo
+            // Jika user melakukan export berdasarkan filter kalender —
+            // filter periode berdasarkan pengiriman_hari_tanggal (bukan tanggal_memo)
             $dateFrom = $request->input('date_from') ?: now()->toDateString();
             $dateTo   = $request->input('date_to') ?: now()->toDateString();
 
-            $query->whereBetween('tanggal_memo', [$dateFrom, $dateTo]);
+            $this->applyPengirimanDateFilter($query, $dateFrom, $dateTo);
         }
 
-        // 2. Suntik Logika Urutan Berdasarkan String Pengiriman (PostgreSQL Sinkron)
-        if (config('database.default') === 'pgsql') {
-            $query->orderByRaw("
-                to_timestamp(
-                    regexp_replace(
-                        regexp_replace(
-                            substring(pengiriman_hari_tanggal from '[0-9].*'), 
-                            'Juli', 'July', 'g'
-                        ), 
-                        'Agustus', 'August', 'g'
-                    ), 
-                    'DD-Month-YYYY HH24:MI'
-                ) DESC
-            ");
-        } else {
-            // Fallback jika testing lokal menggunakan MySQL/Laragon
-            $query->orderByDesc('tanggal_memo');
-        }
+        // 2. Urutkan berdasarkan pengiriman_hari_tanggal, konsisten dengan index()/edit()
+        //    dan otomatis mendukung PostgreSQL maupun MySQL.
+        $query->orderByRaw($this->pengirimanDateExpression() . ' DESC');
 
         // 3. Eksekusi Pengurutan Cadangan & Get Data
         $memos = $query->orderByDesc('id')->get();
@@ -372,6 +343,79 @@ class MemoPengirimanController extends Controller
         }
 
         return [$dateFrom, $dateTo];
+    }
+
+    /**
+     * Bangun ekspresi SQL mentah yang mem-parsing kolom pengiriman_hari_tanggal
+     * (contoh isi kolom: "Minggu, 05-Juli-2026 17:37") menjadi nilai timestamp
+     * yang bisa dibandingkan/diurutkan secara native oleh database.
+     *
+     * Dipakai untuk WHERE (filter periode) maupun ORDER BY (urutan tabel & export),
+     * supaya keduanya selalu konsisten memakai sumber tanggal yang sama persis.
+     * Mendukung PostgreSQL (produksi) maupun MySQL (Laragon lokal).
+     *
+     * PENTING: fungsi to_timestamp() / STR_TO_DATE() di bawah ini akan error
+     * jika ada baris dengan isi pengiriman_hari_tanggal yang formatnya TIDAK
+     * sesuai pola "Hari, DD-NamaBulan-YYYY HH:MM" (misalnya diedit manual
+     * langsung di database dengan format bebas). Selama field ini hanya diisi
+     * lewat datetime-picker di form (seperti sekarang), formatnya akan selalu
+     * konsisten dan aman.
+     */
+    private function pengirimanDateExpression(): string
+    {
+        // Nama bulan Indonesia yang penulisannya berbeda dari bahasa Inggris.
+        // April, September, November tidak perlu diganti karena penulisannya sama.
+        $bulanMap = [
+            'Januari'  => 'January',
+            'Februari' => 'February',
+            'Maret'    => 'March',
+            'Mei'      => 'May',
+            'Juni'     => 'June',
+            'Juli'     => 'July',
+            'Agustus'  => 'August',
+            'Oktober'  => 'October',
+            'Desember' => 'December',
+        ];
+
+        if (config('database.default') === 'pgsql') {
+            // Buang nama hari di depan (ambil mulai dari karakter angka pertama)
+            $expr = "substring(pengiriman_hari_tanggal from '[0-9].*')";
+
+            foreach ($bulanMap as $id => $en) {
+                $expr = "regexp_replace({$expr}, '{$id}', '{$en}', 'g')";
+            }
+
+            return "to_timestamp({$expr}, 'DD-Month-YYYY HH24:MI')";
+        }
+
+        // MySQL (Laragon lokal): buang nama hari di depan via posisi koma,
+        // lalu ganti nama bulan Indonesia -> Inggris secara berantai.
+        $expr = "SUBSTRING(pengiriman_hari_tanggal, LOCATE(', ', pengiriman_hari_tanggal) + 2)";
+
+        foreach ($bulanMap as $id => $en) {
+            $expr = "REPLACE({$expr}, '{$id}', '{$en}')";
+        }
+
+        return "STR_TO_DATE({$expr}, '%d-%M-%Y %H:%i')";
+    }
+
+    /**
+     * Terapkan filter rentang tanggal ($dateFrom - $dateTo) berdasarkan kolom
+     * pengiriman_hari_tanggal (bukan tanggal_memo), memakai ekspresi parsing
+     * di atas supaya string seperti "Minggu, 05-Juli-2026 17:37" bisa
+     * dibandingkan sebagai tanggal sesungguhnya.
+     *
+     * Data dengan pengiriman_hari_tanggal kosong/null otomatis TIDAK akan
+     * muncul saat difilter — karena memang tidak ada tanggal pengiriman
+     * untuk dicocokkan terhadap rentang yang dipilih.
+     */
+    private function applyPengirimanDateFilter($query, string $dateFrom, string $dateTo): void
+    {
+        $expr = $this->pengirimanDateExpression();
+
+        $query->whereNotNull('pengiriman_hari_tanggal')
+            ->where('pengiriman_hari_tanggal', '!=', '')
+            ->whereRaw("CAST({$expr} AS DATE) BETWEEN ? AND ?", [$dateFrom, $dateTo]);
     }
 
     private function buildExcelResponse($memos): StreamedResponse

@@ -271,6 +271,7 @@
         <div class="memo-card">
             <h2>Laporan Memo Pengiriman</h2>
 
+            <div class="memo-section-label">Pilih Tanggal Pengiriman :</div>
             {{-- ---------- Filter Periode Tanggal ---------- --}}
             <div class="memo-filter-row">
                 <form method="GET" action="{{ route('tools.memopengiriman') }}" class="memo-filter-form">
