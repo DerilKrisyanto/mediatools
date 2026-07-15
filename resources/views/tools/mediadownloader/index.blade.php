@@ -33,8 +33,8 @@
                 <span class="tlb-hbadge"><i class="fa-solid fa-brands fa-instagram"></i> Instagram</span>
                 <span class="tlb-hbadge"><i class="fa-solid fa-star"></i> Hingga 1080p</span>
             </div>
-            <h1 class="tlb-header-title">Media <span>Downloader.</span></h1>
-            <p class="tlb-header-sub">Download video & audio dari YouTube, TikTok, Instagram, dan 20+ platform. Cukup paste URL — selesai.</p>
+            <h1 class="tlb-header-title">Media Downloader — <span>YouTube, TikTok & IG HD.</span></h1>
+            <p class="tlb-header-sub">Download video YouTube, TikTok, dan Instagram Reels sekaligus dalam kualitas HD, tanpa watermark. Cukup paste URL — selesai.</p>
         </div>
     </div>
 </div>
@@ -308,6 +308,15 @@
 @endpush
 
 @include('components.tools.seo-section', ['tool' => 'mediadownloader'])
+
+<div style="max-width:860px;margin:32px auto 0;padding:0 20px 40px;text-align:center;">
+    <p style="font-size:13px;color:var(--text-3,#9ca3af);line-height:1.7;">
+        Butuh panduan lebih lengkap? Baca
+        <a href="{{ route('blog.show', 'cara-download-video-tiktok-tanpa-watermark') }}" style="color:var(--accent);text-decoration:underline;">cara download TikTok tanpa watermark</a>
+        atau
+        <a href="{{ route('blog.show', 'download-video-youtube-tiktok-instagram-sekaligus-hd') }}" style="color:var(--accent);text-decoration:underline;">cara download YouTube, TikTok & Instagram sekaligus HD</a>.
+    </p>
+</div>
 
 @endsection
 

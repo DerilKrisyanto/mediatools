@@ -165,6 +165,30 @@
             'category' => 'SoftwareApplication',
             'image'    => 'signature',
         ],
+        [
+            'name'     => 'FotoBox Online — Photo Booth Gratis 6 Foto + Template',
+            'slug'     => 'fotobox',
+            'desc'     => 'Photo booth online gratis langsung dari browser. Ambil 6 foto sekali sesi dengan template lucu, tanpa instal aplikasi.',
+            'keywords' => 'fotobox online gratis, photo booth online, foto strip online, aplikasi fotobox gratis',
+            'category' => 'SoftwareApplication',
+            'image'    => 'home',
+        ],
+        [
+            'name'     => 'Smart Photo Studio — Pas Foto Online 2x3 3x4 4x6 Gratis',
+            'slug'     => 'pasfoto',
+            'desc'     => 'Buat pas foto ukuran 2x3, 3x4, dan 4x6 otomatis rapi sesuai standar dokumen resmi — tanpa perlu ke studio foto.',
+            'keywords' => 'pas foto online gratis, buat pas foto 3x4 online, pas foto digital, ukuran pas foto 2x3',
+            'category' => 'SoftwareApplication',
+            'image'    => 'home',
+        ],
+        [
+            'name'     => 'File Security & Privacy Scanner — Hapus Metadata Foto',
+            'slug'     => 'sanitizer',
+            'desc'     => 'Deteksi dan hapus metadata tersembunyi (EXIF, GPS) dari foto dan file sebelum dibagikan.',
+            'keywords' => 'hapus metadata foto, hapus exif gps, file security scanner gratis, privacy scanner online',
+            'category' => 'SoftwareApplication',
+            'image'    => 'home',
+        ],
     ];
 
     /* Build ItemList & OfferCatalog once */
@@ -200,10 +224,6 @@
                 'operatingSystem'     => 'Web Browser',
                 // FIX KRITIS: image wajib ada untuk Listingan penjual
                 'image'               => $imageUrl,
-                // FIX: aggregateRating pada tiap tool
-                'aggregateRating'     => $platformRating,
-                // FIX: review minimal 1
-                'review'              => [$sampleReview],
                 // FIX: offers lengkap dengan availability, shipping, returnPolicy
                 'offers'              => $freeOffer,
             ],
@@ -325,10 +345,6 @@
             'inLanguage'          => 'id-ID',
             // FIX: offers dengan availability + shippingDetails + returnPolicy
             'offers'              => $freeOffer,
-            // FIX: aggregateRating lengkap dengan reviewCount
-            'aggregateRating'     => $platformRating,
-            // FIX: review minimal 1 entry
-            'review'              => [$sampleReview],
             'author'              => ['@id' => $appUrl . '/#organization'],
         ],
     ];

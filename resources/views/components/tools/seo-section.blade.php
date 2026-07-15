@@ -56,21 +56,22 @@ $toolData = [
     ],
 
     'mediadownloader' => [
-        'title'       => 'Media Downloader — Download YouTube, TikTok, Instagram Gratis',
-        'intro'       => 'Media Downloader MediaTools adalah solusi paling mudah untuk mengunduh video dari YouTube, TikTok, Instagram Reels, Facebook, dan 20+ platform lainnya — cukup dengan paste URL dan klik tombol download. Tidak perlu instal software, tidak perlu ekstensi browser.',
-        'desc'        => 'Unduh video YouTube hingga kualitas 1080p Full HD, atau konversi langsung ke MP3 untuk menyimpan audio saja. Untuk TikTok, tersedia opsi download tanpa watermark sehingga video bersih tanpa logo merah TikTok. Instagram Reels dan foto carousel juga didukung sepenuhnya. Semua proses terjadi di server kami yang cepat dan aman — file siap diunduh dalam hitungan detik. Gratis tanpa batas, tanpa iklan yang menggangu proses download.',
-        'use_cases'   => ['Simpan video tutorial YouTube offline', 'Download lagu dari YouTube ke MP3', 'Download TikTok tanpa watermark untuk re-posting', 'Simpan Instagram Reels favorit', 'Arsip konten untuk keperluan konten kreator', 'Download video untuk presentasi/edukasi'],
+        'title'       => 'Media Downloader — Download YouTube, TikTok, Instagram HD Gratis',
+        'intro'       => 'Media Downloader MediaTools adalah solusi paling mudah untuk mengunduh video dari YouTube, TikTok, dan Instagram Reels sekaligus dalam kualitas HD — cukup dengan paste URL dan klik tombol download. Mendukung juga 20+ platform lain seperti Twitter/X, Reddit, dan Pinterest. Tidak perlu instal software, tidak perlu ekstensi browser.',
+        'desc'        => 'Unduh video YouTube hingga kualitas 1080p Full HD, atau konversi langsung ke MP3 untuk menyimpan audio saja. Untuk TikTok, tersedia opsi download tanpa watermark sehingga video bersih tanpa logo TikTok. Instagram Reels dan foto carousel juga didukung sepenuhnya dalam kualitas asli/HD. Semua proses terjadi di server kami yang cepat dan aman — file siap diunduh dalam hitungan detik. Gratis tanpa batas, tanpa iklan yang mengganggu proses download.',
+        'use_cases'   => ['Simpan video tutorial YouTube offline', 'Download lagu dari YouTube ke MP3', 'Download TikTok tanpa watermark untuk re-posting', 'Simpan Instagram Reels favorit dalam HD', 'Arsip konten untuk keperluan konten kreator', 'Download video untuk presentasi/edukasi'],
         'faq'         => [
             ['q' => 'Bagaimana cara download video YouTube gratis?', 'a' => 'Salin URL video YouTube dari browser, pilih tab YouTube di MediaTools, paste URL di kolom pencarian, pilih format (MP4/MP3) dan kualitas, lalu klik Download. File akan diunduh langsung ke perangkat Anda.'],
+            ['q' => 'Apakah bisa download TikTok dan Instagram sekaligus dalam kualitas HD?', 'a' => 'Bisa. Media Downloader mendukung YouTube, TikTok, dan Instagram dalam satu halaman yang sama — tinggal pilih tab platform yang sesuai, paste URL, dan download dalam kualitas HD tanpa perlu berpindah situs.'],
             ['q' => 'Apakah bisa download TikTok tanpa watermark?', 'a' => 'Ya. Paste URL video TikTok, pilih opsi "Tanpa Watermark", dan klik download. Hasilnya adalah video MP4 bersih tanpa logo TikTok.'],
-            ['q' => 'Apakah bisa convert YouTube ke MP3?', 'a' => 'Bisa. Setelah paste URL YouTube, pilih format "MP3 Audio" dan klik download untuk mendapatkan file audio dalam format MP3.'],
-            ['q' => 'Berapa kualitas tertinggi yang bisa didownload?', 'a' => 'Hingga 1080p Full HD untuk YouTube. Kualitas yang tersedia tergantung pada kualitas asli video yang di-upload oleh pemilik konten.'],
+            ['q' => 'Apakah bisa convert YouTube ke MP3 dan download TikTok di halaman yang sama?', 'a' => 'Bisa. Pilih tab YouTube untuk convert ke MP3, atau tab TikTok untuk download videonya — tanpa perlu membuka tool terpisah.'],
+            ['q' => 'Berapa kualitas tertinggi yang bisa didownload?', 'a' => 'Hingga 1080p Full HD untuk YouTube, dan kualitas asli/HD untuk TikTok serta Instagram, tergantung kualitas video yang diunggah pemilik konten.'],
             ['q' => 'Apakah download video YouTube legal?', 'a' => 'Mengunduh video untuk keperluan pribadi umumnya diizinkan. Namun menggunakan konten orang lain untuk tujuan komersial tanpa izin melanggar hak cipta. Selalu hormati hak cipta kreator.'],
         ],
         'relatedTools' => [
             ['name' => 'Image Converter', 'desc' => 'Konversi & compress gambar', 'url' => '/imageconverter', 'icon' => 'fa-image'],
             ['name' => 'File Converter', 'desc' => 'Konversi format file', 'url' => '/file-converter', 'icon' => 'fa-arrows-rotate'],
-            ['name' => 'PDF Utilities', 'desc' => 'Kelola file PDF', 'url' => '/pdfutilities', 'icon' => 'fa-file-pdf'],
+            ['name' => 'Tutorial: Download TikTok Tanpa Watermark', 'desc' => 'Panduan lengkap step-by-step', 'url' => '/blog/cara-download-video-tiktok-tanpa-watermark', 'icon' => 'fa-book-open'],
         ],
     ],
 

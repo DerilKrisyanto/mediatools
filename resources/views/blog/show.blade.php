@@ -9,18 +9,29 @@
 @php
 $appUrl = rtrim(config('app.url','https://mediatools.cloud'),'/');
 $schema = [
-    '@context'         => 'https://schema.org',
-    '@type'            => 'Article',
-    'headline'         => $article['title'],
-    'description'      => $article['description'],
-    'image'            => $appUrl . $article['og_image'],
-    'author'           => ['@type' => 'Organization', 'name' => 'Tim MediaTools', 'url' => $appUrl],
-    'publisher'        => ['@id' => $appUrl . '/#organization'],
-    'datePublished'    => $article['date'],
-    'dateModified'     => $article['date'],
-    'mainEntityOfPage' => ['@type' => 'WebPage', '@id' => $appUrl . '/blog/' . $article['slug']],
-    'keywords'         => $article['keywords'],
-    'inLanguage'       => 'id-ID',
+    [
+        '@context'         => 'https://schema.org',
+        '@type'            => 'Article',
+        'headline'         => $article['title'],
+        'description'      => $article['description'],
+        'image'            => $appUrl . $article['og_image'],
+        'author'           => ['@type' => 'Organization', 'name' => 'Tim MediaTools', 'url' => $appUrl],
+        'publisher'        => ['@id' => $appUrl . '/#organization'],
+        'datePublished'    => $article['date'],
+        'dateModified'     => $article['date'],
+        'mainEntityOfPage' => ['@type' => 'WebPage', '@id' => $appUrl . '/blog/' . $article['slug']],
+        'keywords'         => $article['keywords'],
+        'inLanguage'       => 'id-ID',
+    ],
+    [
+        '@context' => 'https://schema.org',
+        '@type'    => 'BreadcrumbList',
+        'itemListElement' => [
+            ['@type' => 'ListItem', 'position' => 1, 'name' => 'Beranda', 'item' => $appUrl],
+            ['@type' => 'ListItem', 'position' => 2, 'name' => 'Blog',    'item' => $appUrl . '/blog'],
+            ['@type' => 'ListItem', 'position' => 3, 'name' => $article['category'], 'item' => $appUrl . '/blog/' . $article['slug']],
+        ],
+    ],
 ];
 @endphp
 <script type="application/ld+json">{!! json_encode($schema, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE) !!}</script>
@@ -292,6 +303,67 @@ $schema = [
             <li>Cek gambar — gambar mungkin perlu diposisikan ulang</li>
             <li>Verifikasi font — font khusus mungkin terganti dengan font standar</li>
         </ul>
+
+        @elseif($article['content_key'] === 'multi_platform_hd_tutorial')
+
+        <p>Butuh video YouTube untuk ditonton offline, sekaligus mau simpan video TikTok yang lagi viral, dan juga ingin download Reels Instagram favorit — tapi malas buka tiga website downloader berbeda? Kabar baiknya, ketiganya bisa dilakukan di satu tempat yang sama, dengan hasil kualitas HD dan tanpa watermark.</p>
+
+        <h2>Kenapa Sebaiknya Pakai Satu Tools untuk Semua Platform?</h2>
+        <p>Sebagian besar situs downloader hanya fokus pada satu platform — ada yang khusus YouTube, ada yang khusus TikTok. Kalau kebutuhan Anda beragam, Anda jadi harus:</p>
+        <ul>
+            <li>Membuka banyak tab/website berbeda</li>
+            <li>Menghadapi iklan pop-up yang berbeda-beda di tiap situs</li>
+            <li>Belajar ulang cara pakai UI setiap kali ganti platform</li>
+            <li>Rawan salah klik ke situs downloader palsu berisi malware</li>
+        </ul>
+        <p>Media Downloader MediaTools menggabungkan YouTube, TikTok, dan Instagram (plus 20+ platform lain) dalam satu antarmuka yang konsisten — tinggal pindah tab, paste URL, dan download.</p>
+
+        <h2>Cara Download Video YouTube Kualitas HD</h2>
+        <ol>
+            <li><strong>Salin URL video</strong> — Buka video YouTube yang diinginkan, salin link dari address bar atau tombol Share.</li>
+            <li><strong>Buka Media Downloader</strong> — Kunjungi mediatools.cloud/media-downloader, pastikan tab "YouTube" aktif.</li>
+            <li><strong>Paste URL dan pilih format</strong> — Tempel link, lalu pilih MP4 (video) atau MP3 (audio saja).</li>
+            <li><strong>Pilih kualitas</strong> — Untuk MP4, pilih resolusi hingga 1080p Full HD sesuai ketersediaan video asli.</li>
+            <li><strong>Download</strong> — Klik tombol download dan tunggu proses selesai.</li>
+        </ol>
+
+        <h2>Cara Download TikTok Tanpa Watermark HD</h2>
+        <ol>
+            <li><strong>Salin link TikTok</strong> — Tap Share → "Salin Tautan" di aplikasi TikTok.</li>
+            <li><strong>Pindah ke tab TikTok</strong> — Di Media Downloader, klik tab "TikTok".</li>
+            <li><strong>Paste URL</strong> — Tempel link video.</li>
+            <li><strong>Aktifkan "Tanpa Watermark"</strong> — Pastikan toggle ini aktif agar hasil bersih tanpa logo TikTok.</li>
+            <li><strong>Download</strong> — Video akan diunduh dalam kualitas asli/HD.</li>
+        </ol>
+
+        <h2>Cara Download Instagram Reels & Foto HD</h2>
+        <ol>
+            <li><strong>Salin link Instagram</strong> — Tap ikon titik tiga pada Reels/post, pilih "Salin Tautan".</li>
+            <li><strong>Pindah ke tab Instagram</strong> — Klik tab "Instagram" di Media Downloader.</li>
+            <li><strong>Paste dan download</strong> — Tempel URL, klik download. Mendukung Reels, video, foto, dan carousel dari akun publik.</li>
+        </ol>
+
+        <div class="callout">
+            <i class="fa-solid fa-lightbulb"></i>
+            <strong>Tips kualitas HD:</strong> Hasil download selalu mengikuti kualitas asli yang diunggah pemilik konten. Jika video sumber diunggah dalam resolusi rendah, hasil download juga tidak bisa lebih tinggi — ini berlaku di semua tools downloader manapun, bukan hanya MediaTools.
+        </div>
+
+        <h2>Ringkasan Format yang Didukung</h2>
+        <ul>
+            <li><strong>YouTube</strong> — MP4 hingga 1080p, atau MP3 audio</li>
+            <li><strong>TikTok</strong> — MP4 dengan opsi tanpa watermark, atau audio saja</li>
+            <li><strong>Instagram</strong> — Reels, video, foto, dan carousel dari akun publik</li>
+        </ul>
+
+        <h2>Platform Lain yang Juga Didukung</h2>
+        <p>Selain tiga platform utama di atas, tab "Lainnya" pada Media Downloader juga mendukung Twitter/X, Reddit, Pinterest, SoundCloud, Vimeo, Dailymotion, dan 20+ platform populer lainnya — cukup paste URL-nya, sistem otomatis mendeteksi sumbernya.</p>
+
+        <div class="callout">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <strong>Penting:</strong> Gunakan fitur download hanya untuk keperluan pribadi dan selalu hormati hak cipta kreator. Jangan gunakan ulang konten orang lain untuk tujuan komersial tanpa izin.
+        </div>
+
+        @endif
 
         @endif
 

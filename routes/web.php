@@ -293,6 +293,10 @@ Route::get('/sitemap.xml', function () {
         ['loc' => '/blog/cara-convert-pdf-ke-word-yang-bisa-diedit', 'priority' => '0.8', 'changefreq' => 'monthly', 'lastmod' => $today,
             'image' => ['loc' => '/images/og/fileconverter.png', 'title' => 'Cara Convert PDF ke Word']],
 
+        //Blog Media Downloader
+        ['loc' => '/blog/download-video-youtube-tiktok-instagram-sekaligus-hd', 'priority' => '0.8', 'changefreq' => 'monthly', 'lastmod' => $today,
+            'image' => ['loc' => '/images/og/mediadownloader.png', 'title' => 'Download YouTube TikTok Instagram Sekaligus HD']],
+
 
         // ── Finance: auth-required, tidak diindex Google ──
         // (dikecualikan dari sitemap karena membutuhkan login)

@@ -68,6 +68,14 @@
             'q' => 'Apakah perlu install aplikasi?',
             'a' => 'Tidak. Semua berbasis web dan bekerja langsung di browser.',
         ],
+        [
+            'q' => 'Bisa download YouTube, TikTok, dan Instagram sekaligus di satu tempat yang sama?',
+            'a' => 'Bisa. Media Downloader MediaTools mendukung ketiga platform tersebut dalam satu halaman — tinggal pilih tab platform, paste URL, lalu download dalam kualitas HD.',
+        ],
+        [
+            'q' => 'Apakah hasil download TikTok dan Instagram dalam kualitas HD?',
+            'a' => 'Ya, video TikTok dan Instagram Reels diunduh dalam kualitas asli/HD sesuai kualitas video yang diunggah pemilik konten.',
+        ],
     ];
 
     $faqSchema = [];
@@ -86,8 +94,8 @@
         '@context' => 'https://schema.org',
         '@type'    => 'HowTo',
         '@id'      => $pageUrl . '#howto',
-        'name'     => 'Cara Download Video YouTube Gratis',
-        'description' => 'Langkah mudah download video YouTube ke MP4 atau MP3 gratis menggunakan MediaTools.',
+        'name'     => 'Cara Download Video YouTube, TikTok & Instagram HD',
+        'description' => 'Langkah mudah download video YouTube, TikTok, dan Instagram ke MP4 HD atau MP3 gratis menggunakan MediaTools.',
         'totalTime' => 'PT1M',
         'step' => [
             [
@@ -168,21 +176,6 @@
                 'Bekerja di semua browser dan smartphone',
             ],
             'offers'              => $toolOffer,
-            'aggregateRating' => [
-                '@type' => 'AggregateRating',
-                'ratingValue' => '4.9',
-                'ratingCount' => '8214',
-                'reviewCount' => '8214',
-                'bestRating' => '5',
-                'worstRating' => '1',
-            ],
-            // FIX: review minimal 1 entry (wajib jika pakai aggregateRating)
-            'review' => [[
-                '@type'        => 'Review',
-                'reviewRating' => ['@type' => 'Rating', 'ratingValue' => '5', 'bestRating' => '5'],
-                'author'       => ['@type' => 'Person', 'name' => 'Pengguna MediaTools'],
-                'reviewBody'   => 'Download YouTube dan TikTok jadi mudah sekali. Kualitas videonya tetap HD dan proses downloadnya sangat cepat. Gratis tanpa batas!',
-            ]],
             'provider' => [
                 '@id' => $appUrl . '/#organization',
             ],

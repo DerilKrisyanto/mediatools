@@ -8,12 +8,24 @@
 @php
 $appUrl = rtrim(config('app.url','https://mediatools.cloud'),'/');
 $schema = [
-    '@context' => 'https://schema.org',
-    '@type'    => 'Blog',
-    'name'     => 'Blog MediaTools',
-    'url'      => $appUrl . '/blog',
-    'description' => 'Tutorial dan panduan penggunaan tools digital gratis untuk UMKM, freelancer, dan kreator Indonesia.',
-    'publisher' => ['@id' => $appUrl . '/#organization'],
+    [
+        '@context' => 'https://schema.org',
+        '@type'    => 'Blog',
+        '@id'      => $appUrl . '/blog#blog',
+        'name'     => 'Blog MediaTools',
+        'url'      => $appUrl . '/blog',
+        'description' => 'Tutorial dan panduan penggunaan tools digital gratis untuk UMKM, freelancer, dan kreator Indonesia.',
+        'inLanguage' => 'id-ID',
+        'publisher' => ['@id' => $appUrl . '/#organization'],
+    ],
+    [
+        '@context' => 'https://schema.org',
+        '@type'    => 'BreadcrumbList',
+        'itemListElement' => [
+            ['@type' => 'ListItem', 'position' => 1, 'name' => 'Beranda', 'item' => $appUrl],
+            ['@type' => 'ListItem', 'position' => 2, 'name' => 'Blog',    'item' => $appUrl . '/blog'],
+        ],
+    ],
 ];
 @endphp
 <script type="application/ld+json">{!! json_encode($schema, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE) !!}</script>

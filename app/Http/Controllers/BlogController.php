@@ -84,6 +84,20 @@ class BlogController extends Controller
                 'tool_name'   => 'File Converter',
                 'content_key' => 'pdf_word_tutorial',
             ],
+            [
+                'slug'        => 'download-video-youtube-tiktok-instagram-sekaligus-hd',
+                'title'       => 'Cara Download Video YouTube, TikTok & Instagram Sekaligus dalam Kualitas HD — Gratis Tanpa Watermark',
+                'description' => 'Panduan download video dari YouTube, TikTok, dan Instagram Reels sekaligus dalam satu tools yang sama — kualitas HD, tanpa watermark, dan gratis.',
+                'keywords'    => 'download tiktok ig hd, youtube mp3 download video tiktok, download video youtube tiktok instagram, mp4 ig tiktok, download video tanpa watermark hd',
+                'category'    => 'Tutorial',
+                'author'      => 'Tim MediaTools',
+                'date'        => '2026-07-14',
+                'og_image'    => '/images/og/mediadownloader.png',
+                'read_time'   => '5 menit',
+                'tool_url'    => '/media-downloader',
+                'tool_name'   => 'Media Downloader',
+                'content_key' => 'multi_platform_hd_tutorial',
+            ],
         ];
     }
 
