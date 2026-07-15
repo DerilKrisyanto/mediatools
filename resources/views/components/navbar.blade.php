@@ -147,6 +147,10 @@
         <span class="icon"><i class="fa-solid fa-house" style="font-size:12px;color:var(--text-3)"></i></span>
         Beranda
     </a>
+    <a href="{{ route('blog.index') }}" class="mobile-nav-link">
+        <span class="icon"><i class="fa-solid fa-newspaper" style="font-size:12px;color:var(--text-3)"></i></span>
+        Blog
+    </a>
     <!-- <button onclick="closeMobileMenu(); openSearch();"
             class="mobile-nav-link"
             style="background:none;border:none;cursor:pointer;width:100%;text-align:left;">
