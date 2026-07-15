@@ -80,6 +80,7 @@ class MemoPengirimanExport
     {
         return [
             'No. Memo',
+            'Status Pengiriman',
             'Diterima Dari',
             'No. Struk',
             'No Telepon (Dari)',
@@ -104,6 +105,7 @@ class MemoPengirimanExport
     {
         return [
             $m->nomor_memo,
+            $m->status_pengiriman ? 'Terkirim' : 'Pending',
             $m->diterima_dari,
             $m->no_struk ?: '-',
             $m->telepon_dari ?: '-',

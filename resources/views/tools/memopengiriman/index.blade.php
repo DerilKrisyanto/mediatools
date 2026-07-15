@@ -1,5 +1,8 @@
 @extends('layouts.app')
-@section('title', 'Memo Pengiriman Barang — MediaTools')
+@section('title', 'Memo Pengiriman Online — Buat & Kirim PDF Berlogo | MediaTools')
+@section('og_image', 'memopengiriman')
+
+@include('seo.memopengiriman')
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/memopengiriman.css') }}">
@@ -10,16 +13,110 @@
 
     {{-- ====================== HEADER BANNER ====================== --}}
     <div class="memo-header">
+        <div class="memo-header-decor" aria-hidden="true"></div>
+
         <div class="memo-wrap">
-            <p class="breadcrumb">
-                <a href="{{ route('home') }}">Home</a> &rsaquo; <span>Memo Pengiriman</span>
-            </p>
-            <h1>Memo Pengiriman Barang</h1>
-            <p>Input, kelola, dan cetak memo pengiriman barang Anda. Setiap memo yang Anda simpan hanya dapat dilihat dan dikelola oleh akun Anda sendiri.</p>
+            <div class="memo-header-inner">
+
+                <div class="memo-header-content">
+                    <p class="breadcrumb">
+                        <a href="{{ route('home') }}" class="breadcrumb-home"><i class="fa-solid fa-house"></i> Home</a>
+                        <i class="fa-solid fa-chevron-right breadcrumb-sep"></i>
+                        <span class="breadcrumb-current">Memo Pengiriman</span>
+                    </p>
+
+                    <h1>Memo <span class="memo-hero-accent-text">Pengiriman</span>.</h1>
+
+                    <p class="memo-hero-desc">
+                        Buat, kelola, cetak PDF berlogo, dan kirim memo pengiriman via email
+                        dengan cepat dan mudah. Data Anda privat, hanya bisa diakses oleh akun Anda sendiri.
+                    </p>
+
+                    <div class="memo-hero-tags">
+                        <div class="memo-hero-tag">
+                            <i class="fa-solid fa-shield-halved"></i>
+                            <div>
+                                <strong>Privat &amp; Aman</strong>
+                                <span>Data hanya milik Anda</span>
+                            </div>
+                        </div>
+                        <div class="memo-hero-tag">
+                            <i class="fa-solid fa-file-pdf"></i>
+                            <div>
+                                <strong>PDF Berlogo</strong>
+                                <span>Siap cetak profesional</span>
+                            </div>
+                        </div>
+                        <div class="memo-hero-tag">
+                            <i class="fa-solid fa-envelope"></i>
+                            <div>
+                                <strong>Kirim via Email</strong>
+                                <span>Langsung ke pelanggan</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Decorative illustration — hidden on small/medium screens --}}
+                <div class="memo-hero-illustration" aria-hidden="true">
+                    <div class="memo-hero-glow"></div>
+
+                    <div class="memo-hero-card">
+                        <div class="memo-hero-card-badge"><i class="fa-solid fa-check"></i></div>
+                        <div class="memo-hero-card-header">
+                            <i class="fa-solid fa-file-lines"></i>
+                            <span>MEMO PENGIRIMAN</span>
+                        </div>
+                        <div class="memo-hero-card-lines">
+                            <span></span><span></span><span class="short"></span>
+                        </div>
+                        <div class="memo-hero-card-table">
+                            <span></span><span></span><span></span><span></span>
+                        </div>
+                    </div>
+
+                    <div class="memo-hero-box memo-hero-box-1"><i class="fa-solid fa-box"></i></div>
+                    <div class="memo-hero-box memo-hero-box-2"><i class="fa-solid fa-box"></i></div>
+                    <div class="memo-hero-truck"><i class="fa-solid fa-truck-fast"></i></div>
+                </div>
+
+            </div>
         </div>
     </div>
 
     <div class="memo-wrap">
+
+        {{-- ====================== STATS BAR (overlaps header) ====================== --}}
+        <div class="memo-stats-bar">
+            <div class="memo-stat">
+                <span class="memo-stat-icon"><i class="fa-regular fa-clock"></i></span>
+                <div>
+                    <strong>Hemat Waktu</strong>
+                    <span>template memo dalam hitungan detik</span>
+                </div>
+            </div>
+            <div class="memo-stat">
+                <span class="memo-stat-icon"><i class="fa-solid fa-print"></i></span>
+                <div>
+                    <strong>Cetak Mudah</strong>
+                    <span>PDF siap cetak dengan logo perusahaan Anda</span>
+                </div>
+            </div>
+            <div class="memo-stat">
+                <span class="memo-stat-icon"><i class="fa-solid fa-paper-plane"></i></span>
+                <div>
+                    <strong>Kirim Cepat</strong>
+                    <span>Kirim memo PDF langsung ke email pelanggan</span>
+                </div>
+            </div>
+            <div class="memo-stat">
+                <span class="memo-stat-icon"><i class="fa-solid fa-lock"></i></span>
+                <div>
+                    <strong>100% Privat</strong>
+                    <span>Hanya Anda yang dapat mengakses data Anda</span>
+                </div>
+            </div>
+        </div>
 
         {{-- ====================== FLASH MESSAGES ====================== --}}
         @if(session('success'))
@@ -34,8 +131,17 @@
             </div>
         @endif
 
+        {{-- ======================================================
+            LAYOUT 2 KOLOM (desktop & tablet, >=768px):
+            Kiri  = Form Input Memo
+            Kanan = Logo Perusahaan (atas) + Laporan Memo (bawah)
+            Di mobile (<768px), otomatis kembali stack 1 kolom
+            mengikuti urutan DOM asli: Logo -> Form -> Laporan.
+            ====================================================== --}}
+        <div class="memo-layout">
+
         {{-- ====================== LOGO PERUSAHAAN (PER USER) ====================== --}}
-        <div class="memo-card memo-logo-card">
+        <div class="memo-card memo-logo-card memo-card--logo">
             <h2>Logo Perusahaan / Toko</h2>
             <p class="memo-logo-desc">
                 Logo ini akan otomatis tampil di setiap cetakan memo pengiriman Anda.
@@ -82,7 +188,7 @@
         </div>
 
         {{-- ====================== FORM INPUT / EDIT ====================== --}}
-        <div class="memo-card">
+        <div class="memo-card memo-card--form">
             <h2>{{ isset($editMemo) ? 'Edit Memo Pengiriman' : 'Input Memo Pengiriman Baru' }}</h2>
 
             <form method="POST"
@@ -126,17 +232,17 @@
                 @endphp
 
                 <div class="memo-form-group">
-                    <label>Berupa (Deskripsi Barang)</label>
+                    <label>Berupa (Deskripsi)</label>
                     <div id="barangRepeater" class="memo-repeater"></div>
                     <button type="button" class="memo-btn memo-btn-success memo-btn-sm" id="btnAddBarang" style="margin-top:6px;">
-                        <i class="fa-solid fa-plus"></i> Tambah Barang
+                        <i class="fa-solid fa-plus"></i> Tambah Data
                     </button>
                     @error('barang_nama') <div class="memo-error">{{ $message }}</div> @enderror
                     @error('barang_nama.*') <div class="memo-error">{{ $message }}</div> @enderror
                 </div>
 
                 <div class="memo-section-label">Untuk Dikirimkan Ke</div>
-                <div class="memo-grid-3">
+                <div class="memo-grid-2">
                     <div class="memo-form-group">
                         <label>Contact Person</label>
                         <input type="text" name="tujuan_contact_person" class="memo-input"
@@ -151,13 +257,16 @@
                                value="{{ old('tujuan_telepon', $editMemo->tujuan_telepon ?? '') }}">
                         @error('tujuan_telepon') <div class="memo-error">{{ $message }}</div> @enderror
                     </div>
+                </div>
+
+                <div class="memo-grid-2">
                     <div class="memo-form-group">
                         <label>Email Tujuan (untuk kirim PDF)</label>
                         <input type="email" name="email_tujuan_person" class="memo-input"
                                placeholder="email@penerima.com"
                                value="{{ old('email_tujuan_person', $editMemo->email_tujuan_person ?? '') }}">
                         <p style="font-size:12px; color:#6b7280; margin-top:4px;">
-                            Opsional. Isi email jika ingin <strong>"Kirim"</strong> hasil cetak PDF memo ini langsung ke email penerima.
+                            Opsional. Isi kolom ini agar tombol <strong>"Kirim"</strong> pada tabel rekap bisa mengirim hasil cetak PDF memo ini langsung ke email penerima.
                         </p>
                         @error('email_tujuan_person') <div class="memo-error">{{ $message }}</div> @enderror
                     </div>
@@ -253,26 +362,34 @@
                             value="{{ old('tanggal_memo', isset($editMemo) ? \Carbon\Carbon::parse($editMemo->tanggal_memo)->format('Y-m-d') : now()->format('Y-m-d')) }}" required>
                         @error('tanggal_memo') <div class="memo-error">{{ $message }}</div> @enderror
                     </div>
-                </div>
-
-                <div style="display:flex; gap:10px; margin-top:8px;">
-                    <button type="submit" class="memo-btn memo-btn-success">
-                        <i class="fa-solid fa-floppy-disk"></i>
-                        {{ isset($editMemo) ? 'Update Memo' : 'Simpan Memo' }}
-                    </button>
-                    @if(isset($editMemo))
-                        <a href="{{ route('tools.memopengiriman') }}" class="memo-btn memo-btn-outline">Batal Edit</a>
-                    @endif
+                    <div class="memo-grid-2">
+                        <div class="memo-form-group">
+                            <label>Status</label>
+                            <select name="status_pengiriman" id="statusPengirimanSelect" class="memo-input">
+                                <option value="1" {{ old('status_pengiriman', $editMemo->status_pengiriman ?? true) ? 'selected' : '' }}>Terkirim</option>
+                                <option value="0" {{ !old('status_pengiriman', $editMemo->status_pengiriman ?? true) ? 'selected' : '' }}>Pending</option>
+                            </select>
+                            @error('status_pengiriman') <div class="memo-error">{{ $message }}</div> @enderror
+                        </div>
+                    </div>
+                    <div style="text-align:right; margin-top:25px;">
+                        <button type="submit" class="memo-btn memo-btn-success">
+                            <i class="fa-solid fa-floppy-disk"></i>
+                            {{ isset($editMemo) ? 'Update Memo' : 'Simpan Memo' }}
+                        </button>
+                        @if(isset($editMemo))
+                            <a href="{{ route('tools.memopengiriman') }}" class="memo-btn memo-btn-outline">Batal Edit</a>
+                        @endif
+                    </div>
                 </div>
             </form>
         </div>
 
         {{-- ====================== REKAP / TABEL ====================== --}}
-        <div class="memo-card">
+        <div class="memo-card memo-card--report">
             <h2>Laporan Memo Pengiriman</h2>
 
-            <div class="memo-section-label">Pilih Tanggal Pengiriman :</div>
-            {{-- ---------- Filter Periode Tanggal ---------- --}}
+            {{-- ---------- Filter Periode Tanggal & Status ---------- --}}
             <div class="memo-filter-row">
                 <form method="GET" action="{{ route('tools.memopengiriman') }}" class="memo-filter-form">
                     <div class="memo-filter-field">
@@ -282,6 +399,14 @@
                     <div class="memo-filter-field">
                         <label>Sampai Tanggal</label>
                         <input type="date" name="date_to" value="{{ $dateTo }}" class="memo-input">
+                    </div>
+                    <div class="memo-filter-field">
+                        <label>Status</label>
+                        <select name="status" class="memo-input">
+                            <option value="" {{ is_null($statusFilter) ? 'selected' : '' }}>Semua Status</option>
+                            <option value="1" {{ $statusFilter === true ? 'selected' : '' }}>Terkirim</option>
+                            <option value="0" {{ $statusFilter === false ? 'selected' : '' }}>Pending</option>
+                        </select>
                     </div>
                     <button type="submit" class="memo-btn memo-btn-success">
                         <i class="fa-solid fa-search"></i> Cari
@@ -294,7 +419,7 @@
             </div>
             <p class="memo-filter-hint">
                 Export akan mengambil data <strong>yang dicentang</strong> pada tabel di bawah.
-                Kalau tidak ada yang dicentang, export akan mengambil <strong>semua data sesuai periode filter</strong> di atas.
+                Kalau tidak ada yang dicentang, export akan mengambil <strong>semua data sesuai periode & status filter</strong> di atas.
             </p>
 
             <form id="bulkPrintForm" method="POST" action="{{ route('tools.memopengiriman.bulk-pdf') }}" target="_blank">
@@ -304,22 +429,33 @@
                 @csrf
                 @method('DELETE')
             </form>
+            <form id="bulkStatusForm" method="POST" action="{{ route('tools.memopengiriman.bulk-status') }}">
+                @csrf
+                <input type="hidden" name="status" id="bulkStatusValue" value="1">
+            </form>
             <form id="exportExcelForm" method="POST" action="{{ route('tools.memopengiriman.export-excel') }}">
                 @csrf
                 <input type="hidden" name="date_from" value="{{ $dateFrom }}">
                 <input type="hidden" name="date_to" value="{{ $dateTo }}">
+                <input type="hidden" name="status" value="{{ is_null($statusFilter) ? '' : ($statusFilter ? '1' : '0') }}">
             </form>
 
             <div class="memo-bulk-bar" id="bulkBar" style="display:none;">
                 <span><span id="selectedCount">0</span> memo dipilih</span>
-                <div style="display:flex; gap:8px;">
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
                     <button type="button" id="btnCetakTerpilih" class="memo-btn memo-btn-primary" disabled>
-                        <i class="fa-solid fa-print"></i> Cetak Memo
+                        <i class="fa-solid fa-print"></i> Cetak
+                    </button>
+                    <button type="button" id="btnTandaiTerkirim" class="memo-btn memo-btn-success" disabled>
+                        <i class="fa-solid fa-truck-fast"></i> Kirim
+                    </button>
+                    <button type="button" id="btnTandaiPending" class="memo-btn memo-btn-warning" disabled>
+                        <i class="fa-solid fa-clock"></i> Pending
                     </button>
                     <button type="button" id="btnHapusTerpilih" class="memo-btn memo-btn-danger" disabled>
-                        <i class="fa-solid fa-trash"></i> Hapus Memo
+                        <i class="fa-solid fa-trash"></i> Hapus
                     </button>
-                    <button type="button" id="btnBatalPilih" class="memo-btn memo-btn-warning">
+                    <button type="button" id="btnBatalPilih" class="memo-btn memo-btn-outline">
                         <i class="fa-solid fa-xmark"></i> Batal
                     </button>
                 </div>
@@ -330,6 +466,7 @@
                     <thead>
                         <tr>
                             <th style="width:36px;"><input type="checkbox" class="memo-checkbox" id="checkAll"></th>
+                            <th>Status</th>
                             <th>No. Struk</th>
                             <th>Tgl Pengiriman</th>
                             <th>Diterima Dari</th>
@@ -344,6 +481,11 @@
                         @forelse($memos as $m)
                         <tr>
                             <td><input type="checkbox" class="memo-checkbox row-check" value="{{ $m->id }}"></td>
+                            <td>
+                                <span class="memo-badge {{ $m->status_pengiriman ? 'memo-badge-yes' : 'memo-badge-pending' }}">
+                                    {{ $m->status_pengiriman ? 'Terkirim' : 'Pending' }}
+                                </span>
+                            </td>
                             <td>{{ $m->no_struk ?: '-' }}</td>
                             <td>{{ $m->pengiriman_hari_tanggal ?: '-' }}</td>
                             <td>{{ $m->diterima_dari }}</td>
@@ -386,7 +528,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="7">
+                            <td colspan="10">
                                 <div class="memo-empty">Tidak ada memo pengiriman pada periode yang dipilih.</div>
                             </td>
                         </tr>
@@ -400,74 +542,18 @@
             </div>
         </div>
 
+        </div>{{-- /.memo-layout --}}
+
     </div>
 </div>
 @endsection
 
 @push('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="{{ asset('js/memopengiriman.js') }}"></script>
 <script>
 (function () {
-    /* ================= Preview logo sebelum upload ================= */
-    var logoInput = document.getElementById('logoInput');
-    if (logoInput) {
-        logoInput.addEventListener('change', function () {
-            var file = this.files[0];
-            if (!file) return;
-            var reader = new FileReader();
-            reader.onload = function (e) {
-                var img = document.getElementById('logoPreviewImg');
-                var placeholder = document.getElementById('logoPreviewPlaceholder');
-                img.src = e.target.result;
-                img.style.display = 'block';
-                if (placeholder) placeholder.style.display = 'none';
-            };
-            reader.readAsDataURL(file);
-        });
-    }
-
     /* ================= Repeater No Struk & No Struk Instalasi ================= */
-    function bindRepeater(containerId, addBtnId, inputName, initialValues) {
-        var container = document.getElementById(containerId);
-        var addBtn = document.getElementById(addBtnId);
-
-        function addRow(value) {
-            var row = document.createElement('div');
-            row.className = 'memo-repeater-row';
-            row.style.display = 'flex';
-            row.style.gap = '6px';
-            row.style.marginBottom = '6px';
-
-            var input = document.createElement('input');
-            input.type = 'text';
-            input.name = inputName + '[]';
-            input.className = 'memo-input';
-            input.value = value || '';
-            input.style.flex = '1';
-
-            var removeBtn = document.createElement('button');
-            removeBtn.type = 'button';
-            removeBtn.className = 'memo-btn memo-btn-warning memo-btn-sm';
-            removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
-            removeBtn.addEventListener('click', function () {
-                var rows = container.querySelectorAll('.memo-repeater-row');
-                if (rows.length > 1) {
-                    row.remove();
-                } else {
-                    input.value = '';
-                }
-            });
-
-            row.appendChild(input);
-            row.appendChild(removeBtn);
-            container.appendChild(row);
-        }
-
-        var values = (initialValues && initialValues.length) ? initialValues : [''];
-        values.forEach(function (v) { addRow(v); });
-
-        addBtn.addEventListener('click', function () { addRow(''); });
-    }
-
     bindRepeater(
         'noStrukRepeater',
         'btnAddNoStruk',
@@ -483,226 +569,15 @@
     );
 
     /* ================= Repeater Barang (Nama + Qty) ================= */
-    function bindBarangRepeater(containerId, addBtnId, initialItems) {
-        var container = document.getElementById(containerId);
-        var addBtn = document.getElementById(addBtnId);
-
-        function addRow(nama, qty) {
-            var row = document.createElement('div');
-            row.className = 'memo-repeater-row';
-            row.style.display = 'flex';
-            row.style.gap = '6px';
-            row.style.marginBottom = '6px';
-
-            var namaInput = document.createElement('input');
-            namaInput.type = 'text';
-            namaInput.name = 'barang_nama[]';
-            namaInput.className = 'memo-input';
-            namaInput.placeholder = 'Nama barang, contoh: AC Split 1PK';
-            namaInput.value = nama || '';
-            namaInput.style.flex = '2';
-
-            var qtyInput = document.createElement('input');
-            qtyInput.type = 'number';
-            qtyInput.name = 'barang_qty[]';
-            qtyInput.className = 'memo-input';
-            qtyInput.placeholder = 'Qty';
-            qtyInput.min = '1';
-            qtyInput.value = qty || '1';
-            qtyInput.style.flex = '0 0 90px';
-
-            var removeBtn = document.createElement('button');
-            removeBtn.type = 'button';
-            removeBtn.className = 'memo-btn memo-btn-warning memo-btn-sm';
-            removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
-            removeBtn.addEventListener('click', function () {
-                var rows = container.querySelectorAll('.memo-repeater-row');
-                if (rows.length > 1) {
-                    row.remove();
-                } else {
-                    namaInput.value = '';
-                    qtyInput.value = '1';
-                }
-            });
-
-            row.appendChild(namaInput);
-            row.appendChild(qtyInput);
-            row.appendChild(removeBtn);
-            container.appendChild(row);
-        }
-
-        var items = (initialItems && initialItems.length) ? initialItems : [{ nama: '', qty: 1 }];
-        items.forEach(function (item) { addRow(item.nama, item.qty); });
-
-        addBtn.addEventListener('click', function () { addRow('', 1); });
-    }
-
     bindBarangRepeater('barangRepeater', 'btnAddBarang', @json($barangInitial));
 
-    /* ================= Batasi input No Telepon hanya angka/+/-/spasi ================= */
-    document.querySelectorAll('.only-phone').forEach(function (el) {
-        el.addEventListener('input', function () {
-            this.value = this.value.replace(/[^0-9+\-\s]/g, '');
-        });
-    });
-
     /* ================= Format Rupiah live (Biaya Kirim & Biaya Instalasi) ================= */
-    function bindRupiah(displayId, hiddenId, initialValue) {
-        var display = document.getElementById(displayId);
-        var hidden  = document.getElementById(hiddenId);
-
-        function setDisplay(raw) {
-            display.value = raw ? 'Rp ' + Number(raw).toLocaleString('id-ID') : '';
-        }
-
-        setDisplay(initialValue || '');
-        hidden.value = initialValue || '';
-
-        display.addEventListener('input', function () {
-            var angka = this.value.replace(/\D/g, '');
-            hidden.value = angka;
-            setDisplay(angka);
-        });
-    }
-
     bindRupiah('biaya_kirim_display', 'biaya_kirim', '{{ old('biaya_kirim', $editMemo->biaya_kirim ?? '') }}');
     bindRupiah('biaya_instalasi_display', 'biaya_instalasi', '{{ old('biaya_instalasi', $editMemo->biaya_instalasi ?? '') }}');
 
     /* ================= Datetime picker -> format "Minggu, 05-Juli-2026 16:42" ================= */
-    var HARI  = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
-    var BULAN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-
-    function pad(n) { return String(n).padStart(2, '0'); }
-
-    function formatIndo(d) {
-        return HARI[d.getDay()] + ', ' + pad(d.getDate()) + '-' + BULAN[d.getMonth()] + '-' + d.getFullYear() + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
-    }
-
-    function nowLocalValue() {
-        var d = new Date();
-        return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + 'T' + pad(d.getHours()) + ':' + pad(d.getMinutes());
-    }
-
-    function bindTanggalIndo(pickerId, hiddenId, initialFormatted) {
-        var picker = document.getElementById(pickerId);
-        var hidden = document.getElementById(hiddenId);
-
-        if (!picker.value) picker.value = nowLocalValue();
-
-        hidden.value = initialFormatted ? initialFormatted : formatIndo(new Date(picker.value));
-
-        picker.addEventListener('input', function () {
-            if (this.value) hidden.value = formatIndo(new Date(this.value));
-        });
-    }
-
     bindTanggalIndo('pengiriman_picker', 'pengiriman_hari_tanggal', @json(old('pengiriman_hari_tanggal', $editMemo->pengiriman_hari_tanggal ?? null)));
     bindTanggalIndo('instalasi_picker', 'instalasi_hari_tanggal', @json(old('instalasi_hari_tanggal', $editMemo->instalasi_hari_tanggal ?? null)));
-
-    /* ================= Toggle field instalasi (tampil HANYA jika "Ya") ================= */
-    var instalasiSelect = document.getElementById('instalasi_select');
-    var instalasiFields = document.getElementById('instalasi_extra_fields');
-
-    function toggleInstalasi() {
-        var ya = instalasiSelect.value === '1';
-        instalasiFields.style.display = ya ? 'block' : 'none';
-    }
-    instalasiSelect.addEventListener('change', toggleInstalasi);
-    toggleInstalasi();
-
-    /* ================= Checkbox bulk select (cetak/hapus/export/batal) ================= */
-    var checkAll   = document.getElementById('checkAll');
-    var countEl    = document.getElementById('selectedCount');
-    var btnCetak   = document.getElementById('btnCetakTerpilih');
-    var btnHapus   = document.getElementById('btnHapusTerpilih');
-    var btnBatal   = document.getElementById('btnBatalPilih');
-    var btnExport  = document.getElementById('btnExportExcel');
-    var bulkBar    = document.getElementById('bulkBar');
-
-    function rowChecks() { return document.querySelectorAll('.row-check'); }
-
-    function refresh() {
-        var checked = document.querySelectorAll('.row-check:checked');
-        var total = rowChecks().length;
-
-        countEl.textContent = checked.length;
-        var has = checked.length > 0;
-        btnCetak.disabled = !has;
-        btnHapus.disabled = !has;
-        bulkBar.style.display = has ? 'flex' : 'none';
-
-        if (checkAll) checkAll.checked = total > 0 && checked.length === total;
-    }
-
-    if (checkAll) {
-        checkAll.addEventListener('change', function () {
-            rowChecks().forEach(function (cb) { cb.checked = checkAll.checked; });
-            refresh();
-        });
-    }
-
-    document.addEventListener('change', function (e) {
-        if (e.target.classList.contains('row-check')) refresh();
-    });
-
-    function buildHiddenIds(form) {
-        form.querySelectorAll('input[name="ids[]"]').forEach(function (el) { el.remove(); });
-        document.querySelectorAll('.row-check:checked').forEach(function (cb) {
-            var inp = document.createElement('input');
-            inp.type = 'hidden';
-            inp.name = 'ids[]';
-            inp.value = cb.value;
-            form.appendChild(inp);
-        });
-    }
-
-    btnCetak.addEventListener('click', function () {
-        var form = document.getElementById('bulkPrintForm');
-        buildHiddenIds(form);
-        form.submit();
-    });
-
-    btnHapus.addEventListener('click', function () {
-        var checked = document.querySelectorAll('.row-check:checked');
-        if (checked.length === 0) return;
-        if (!confirm('Hapus ' + checked.length + ' memo terpilih? Tindakan ini tidak bisa dibatalkan.')) return;
-
-        var form = document.getElementById('bulkDeleteForm');
-        buildHiddenIds(form);
-        form.submit();
-    });
-
-    btnBatal.addEventListener('click', function () {
-        rowChecks().forEach(function (cb) { cb.checked = false; });
-        refresh();
-    });
-
-    /* Export selalu bisa diklik (baik ada seleksi maupun tidak) */
-    btnExport.addEventListener('click', function () {
-        var form = document.getElementById('exportExcelForm');
-        buildHiddenIds(form); // kalau ada yang dicentang, ids[] ikut terkirim; kalau tidak, kosong -> fallback ke filter tanggal
-        form.submit();
-    });
-
-    /* ================= Aksi Kirim (PDF via Email) — validasi ringan sebelum submit ================= */
-    document.querySelectorAll('.kirim-email-form').forEach(function (form) {
-        form.addEventListener('submit', function (e) {
-            var email = form.getAttribute('data-email');
-            var nomor = form.getAttribute('data-nomor');
-
-            if (!email) {
-                e.preventDefault();
-                alert('Email tujuan untuk memo ' + nomor + ' belum diisi.\n\nSilakan klik "Edit" pada memo ini dan isi kolom "Email Tujuan" terlebih dahulu sebelum mengirim.');
-                return;
-            }
-
-            if (!confirm('Kirim cetakan PDF memo ' + nomor + ' ke ' + email + '?')) {
-                e.preventDefault();
-            }
-        });
-    });
-
-    refresh();
 })();
 </script>
 @endpush

@@ -2,6 +2,7 @@
     <thead>
         <tr style="background:#e2e8f0; font-weight:bold;">
             <th>No. Memo</th>
+            <th>Status Pengiriman</th>
             <th>Diterima Dari</th>
             <th>No. Struk</th>
             <th>No Telepon (Dari)</th>
@@ -25,6 +26,7 @@
         @foreach($memos as $m)
         <tr>
             <td>{{ $m->nomor_memo }}</td>
+            <td>{{ (int) ($m->status_pengiriman ?? 0) }}</td>
             <td>{{ $m->diterima_dari }}</td>
             <td>{{ $m->no_struk ?: '-' }}</td>
             <td>{{ $m->telepon_dari ?: '-' }}</td>

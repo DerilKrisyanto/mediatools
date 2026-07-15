@@ -31,17 +31,19 @@ class MemoPengiriman extends Model
         'pengiriman_hari_tanggal',
         'biaya_kirim',
         'instalasi',
+        'status_pengiriman',
         'instalasi_hari_tanggal',
         'no_struk_instalasi',
         'biaya_instalasi',
     ];
 
     protected $casts = [
-        'tanggal_memo'    => 'date',
-        'instalasi'       => 'boolean',
-        'biaya_kirim'     => 'decimal:2',
-        'biaya_instalasi' => 'decimal:2',
-        'berupa'          => 'array', // disimpan sebagai JSON: [{"nama":"...","qty":2}, ...]
+        'tanggal_memo'      => 'date',
+        'instalasi'         => 'boolean',
+        'status_pengiriman' => 'boolean',
+        'biaya_kirim'       => 'decimal:2',
+        'biaya_instalasi'   => 'decimal:2',
+        'berupa'            => 'array', // disimpan sebagai JSON: [{"nama":"...","qty":2}, ...]
     ];
 
     public function user()

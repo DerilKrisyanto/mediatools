@@ -22,10 +22,16 @@ class MemoPengirimanController extends Controller
     public function index(Request $request): View
     {
         [$dateFrom, $dateTo] = $this->resolveDateRange($request);
+        $statusFilter = $this->resolveStatusFilter($request);
 
         // 1. Ambil query dasar, filter periode berdasarkan pengiriman_hari_tanggal
         $query = MemoPengiriman::milikSaya();
         $this->applyPengirimanDateFilter($query, $dateFrom, $dateTo);
+
+        // 1b. Filter status pengiriman (opsional — default tampilkan semua status)
+        if (!is_null($statusFilter)) {
+            $query->where('status_pengiriman', $statusFilter);
+        }
 
         // 2. Urutkan berdasarkan pengiriman_hari_tanggal (bukan tanggal_memo),
         //    memakai ekspresi yang sama dengan filter di atas agar konsisten
@@ -37,7 +43,7 @@ class MemoPengirimanController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        return view('tools.memopengiriman.index', compact('memos', 'dateFrom', 'dateTo'));
+        return view('tools.memopengiriman.index', compact('memos', 'dateFrom', 'dateTo', 'statusFilter'));
     }
 
     public function edit(Request $request, MemoPengiriman $memoPengiriman): View
@@ -45,9 +51,14 @@ class MemoPengirimanController extends Controller
         $this->authorizeOwner($memoPengiriman);
 
         [$dateFrom, $dateTo] = $this->resolveDateRange($request);
+        $statusFilter = $this->resolveStatusFilter($request);
 
         $query = MemoPengiriman::milikSaya();
         $this->applyPengirimanDateFilter($query, $dateFrom, $dateTo);
+
+        if (!is_null($statusFilter)) {
+            $query->where('status_pengiriman', $statusFilter);
+        }
 
         $memos = $query->orderByRaw($this->pengirimanDateExpression() . ' DESC')
             ->latest('id')
@@ -55,10 +66,11 @@ class MemoPengirimanController extends Controller
             ->withQueryString();
 
         return view('tools.memopengiriman.index', [
-            'memos'    => $memos,
-            'editMemo' => $memoPengiriman,
-            'dateFrom' => $dateFrom,
-            'dateTo'   => $dateTo,
+            'memos'        => $memos,
+            'editMemo'     => $memoPengiriman,
+            'dateFrom'     => $dateFrom,
+            'dateTo'       => $dateTo,
+            'statusFilter' => $statusFilter,
         ]);
     }
 
@@ -107,6 +119,9 @@ class MemoPengirimanController extends Controller
         );
 
         $validated['instalasi']          = $instalasi;
+        $validated['status_pengiriman']  = $request->has('status_pengiriman')
+            ? $request->boolean('status_pengiriman')
+            : true;
         $validated['no_struk']           = $noStruk;
         $validated['no_struk_instalasi'] = $noStrukInstalasi ?: null;
         $validated['berupa']             = $barangItems;
@@ -165,6 +180,9 @@ class MemoPengirimanController extends Controller
         );
 
         $validated['instalasi']          = $instalasi;
+        $validated['status_pengiriman']  = $request->has('status_pengiriman')
+            ? $request->boolean('status_pengiriman')
+            : true;
         $validated['no_struk']           = $noStruk;
         $validated['no_struk_instalasi'] = $noStrukInstalasi ?: null;
         $validated['berupa']             = $barangItems;
@@ -241,6 +259,32 @@ class MemoPengirimanController extends Controller
             ->with('success', "{$jumlah} memo pengiriman berhasil dihapus.");
     }
 
+    /**
+     * Ubah status_pengiriman untuk beberapa memo TERPILIH sekaligus
+     * (ditandai "Terkirim" atau "Pending"). Query dibatasi milik user
+     * login lewat scope milikSaya() — aman dari manipulasi ID orang lain.
+     */
+    public function bulkUpdateStatus(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'ids'    => ['required', 'array', 'min:1'],
+            'ids.*'  => ['integer'],
+            'status' => ['required', 'boolean'],
+        ]);
+
+        $status = $request->boolean('status');
+
+        $jumlah = MemoPengiriman::milikSaya()
+            ->whereIn('id', $request->input('ids'))
+            ->update(['status_pengiriman' => $status]);
+
+        $label = $status ? 'Terkirim' : 'Pending';
+
+        return redirect()
+            ->route('tools.memopengiriman')
+            ->with('success', "{$jumlah} memo berhasil ditandai sebagai \"{$label}\".");
+    }
+
     public function exportExcel(Request $request): StreamedResponse
     {
         $request->validate([
@@ -248,6 +292,7 @@ class MemoPengirimanController extends Controller
             'ids.*'     => ['integer'],
             'date_from' => ['nullable', 'date'],
             'date_to'   => ['nullable', 'date'],
+            'status'    => ['nullable', 'string'],
         ]);
 
         $ids = array_filter($request->input('ids', []));
@@ -265,6 +310,12 @@ class MemoPengirimanController extends Controller
             $dateTo   = $request->input('date_to') ?: now()->toDateString();
 
             $this->applyPengirimanDateFilter($query, $dateFrom, $dateTo);
+
+            // Filter status pengiriman juga ikut diterapkan (opsional)
+            $statusFilter = $this->resolveStatusFilter($request);
+            if (!is_null($statusFilter)) {
+                $query->where('status_pengiriman', $statusFilter);
+            }
         }
 
         // 2. Urutkan berdasarkan pengiriman_hari_tanggal, konsisten dengan index()/edit()
@@ -343,6 +394,25 @@ class MemoPengirimanController extends Controller
         }
 
         return [$dateFrom, $dateTo];
+    }
+
+    /**
+     * Baca filter status pengiriman dari query string.
+     * Return null = tampilkan semua status (default), true = Terkirim, false = Pending.
+     */
+    private function resolveStatusFilter(Request $request): ?bool
+    {
+        $value = $request->query('status', '');
+
+        if ($value === '1') {
+            return true;
+        }
+
+        if ($value === '0') {
+            return false;
+        }
+
+        return null;
     }
 
     /**
@@ -534,6 +604,7 @@ class MemoPengirimanController extends Controller
             'pengiriman_hari_tanggal'     => ['nullable', 'string', 'max:100'],
             'biaya_kirim'                 => ['nullable', 'numeric', 'min:0'],
             'instalasi'                   => ['nullable', 'boolean'],
+            'status_pengiriman'           => ['nullable', 'boolean'],
             'no_struk_instalasi_items'    => ['nullable', 'array'],
             'no_struk_instalasi_items.*'  => ['nullable', 'string', 'max:100'],
             'instalasi_hari_tanggal'      => ['nullable', 'required_if:instalasi,1', 'string', 'max:100'],
