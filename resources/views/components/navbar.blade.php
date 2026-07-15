@@ -35,7 +35,7 @@
                 ['tools.passwordgenerator', 'fa-key',                 'Password Generator',  'Kata sandi kuat & aman',   'purple'],
                 ['tools.sanitizer',         'fa-shield-halved',       'File Security & Privacy Scanner',  'Hapus EXIF, GPS & data tersembunyi',   'purple'],
                 ['tools.finance',           'fa-chart-pie',           'Pencatatan Keuangan',      'Catat pemasukan & pengeluaran', 'amber'],
-                ['tools.memopengiriman',    'fa-id-card',             'Memo Pengiriman',      'Catat, rekap dan cetak memo pengiriman barang anda disini', 'amber'],
+                ['tools.memopengiriman',    'fa-id-card',             'Memo Pengiriman',      'Buat & Kelola Memo Pengiriman - Kirim PDF Berlogo', 'amber'],
             ];
             @endphp
 
@@ -221,7 +221,7 @@
                         ['tools.pdfutilities','fa-file-pdf',            'amber',  'PDF Utilities',        'Merge, split & compress PDF',         ['pdf','merge','split','compress']],
                         ['tools.fileconverter','fa-repeat',             'amber',  'File Converter',       'Konversi PDF, Word, Excel, PPT',       ['pdf','word','excel','convert']],
                         ['tools.finance',    'fa-chart-pie',            'amber', 'Pencatatan Keuangan',       'Catat pemasukan & pengeluaran',               ['catatan keuangan','finance','catat pemasukan','catat pengeluaran']],
-                        ['tools.memopengiriman',    'fa-id-card',            'amber', 'Memo Pengiriman',       'Catat, rekap dan cetak memo pengiriman barang anda disini',               ['memo pengiriman','catat pengiriman','rekap data pengiriman','cetak memo pengiriman']],
+                        ['tools.memopengiriman','fa-id-card',           'amber', 'Memo Pengiriman',       'Buat & Kelola Memo Pengiriman - Kirim PDF Berlogo', ['memo pengiriman','catat pengiriman','rekap data pengiriman','cetak memo pengiriman']],
                     ]],
                     ['blue', 'fa-image', 'Gambar & Media', [
                         ['tools.imageconverter','fa-image',   'blue',  'Image Converter',    'Resize, compress & convert gambar',   ['gambar','image','foto','resize','compress','webp','png','jpg']],

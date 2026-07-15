@@ -108,6 +108,7 @@
             <h4>Tools Populer</h4>
             <div class="footer-links">
                 @foreach([
+                    ['tools.memopengiriman',    'Memo Pengiriman'],
                     ['tools.invoice',           'Invoice Generator'],
                     ['tools.qr',                'QR Code Generator'],
                     ['tools.bgremover',         'Background Remover'],

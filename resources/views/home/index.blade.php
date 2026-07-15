@@ -2,7 +2,7 @@
 
 @section('title', 'MediaTools — Tools Digital Gratis: Invoice, PDF, QR Code & Background Remover')
 @section('meta_description', 'Platform tools produktivitas digital 100% gratis. Hapus background foto, konversi PDF, buat invoice, QR Code, password generator, dan 10+ tools lainnya. Tanpa daftar, langsung pakai.')
-@section('meta_keywords', 'tools online gratis indonesia, invoice generator gratis, hapus background foto, konversi pdf word, qr code generator, media tools, password generator, link tree')
+@section('meta_keywords', 'tools online gratis indonesia, invoice generator gratis, hapus background foto, konversi pdf word, qr code generator, media tools, password generator, link tree, memo pengiriman, kelola keuangan')
 
 @section('content')
 
@@ -116,7 +116,7 @@
         ['doc',     'fa-file-pdf',              'rgba(245,158,11,0.12)',    '#fbbf24',      'PDF Utilities',                    'Merge, split & compress PDF di browser — tanpa upload ke server.',                     'HOT',      'pdfutilities',         true],
         ['doc',     'fa-repeat',                'rgba(245,158,11,0.12)',    '#fbbf24',      'File Converter',                   'Konversi PDF ke Word, Excel, PPT & sebaliknya. Upload 5 file sekaligus.',              'HOT',      'fileconverter',        true],
         ['doc',     'fa-chart-pie',             'rgba(245,158,11,0.12)',    '#fbbf24',      'Pencatatan Keuangan',              'Catat pemasukan & pengeluaran, sangat cocok untuk UMKM kecil dan menengah',            'BARU',     'finance',              true],
-        ['doc',     'fa-id-card',               'rgba(245,158,11,0.12)',    '#fbbf24',      'Memo Pengiriman',                  'Catat, rekap dan cetak memo pengiriman barang anda disini.',                           'BARU',     'memopengiriman',true],
+        ['doc',     'fa-id-card',               'rgba(245,158,11,0.12)',    '#fbbf24',      'Memo Pengiriman',                  'Catat, kelola, cetak PDF berlogo, dan kirim memo pengiriman via email gratis disini.', 'BARU',     'memopengiriman',true],
 
         ['image',   'fa-image',                 'rgba(59,130,246,0.12)',    '#60a5fa',      'Image Converter',                  'Resize, compress & convert JPG/PNG/WebP langsung di browser, tanpa upload.',           null,       'imageconverter',       true],
         ['image',   'fa-scissors',              'rgba(59,130,246,0.12)',    '#60a5fa',      'Background Remover',               'Hapus background foto otomatis dengan AI BiRefNet — presisi pada rambut.',             null,       'bgremover',            true],
