@@ -72,7 +72,7 @@ class MediaDownloaderController extends Controller
     {
         $request->validate(['url' => 'required|string|min:10|max:2048']);
 
-        $url    = trim($request->input('url'));
+        $url    = $this->normalizeUrl(trim($request->input('url')));
         $action = $request->input('action', 'process'); // process | get_formats
 
         if ($this->isYouTubeUrl($url)) {
@@ -363,22 +363,7 @@ class MediaDownloaderController extends Controller
         }
 
         if ($status === 'local-processing') {
-            $tunnels = $data['tunnel'] ?? [];
-            if (!empty($tunnels)) {
-                $token = Str::random(32);
-                Cache::put("md_proxy_{$token}", [
-                    'url'      => $tunnels[0],
-                    'filename' => $data['output']['filename'] ?? null,
-                    'created'  => time(),
-                ], now()->addMinutes(15));
-
-                return response()->json([
-                    'status' => 'ready',
-                    'token'  => $token,
-                    'mode'   => 'proxy',
-                    'type'   => $type,
-                ]);
-            }
+            return $this->handleLocalProcessing($data, $type);
         }
 
         if ($status === 'picker') {
@@ -401,6 +386,105 @@ class MediaDownloaderController extends Controller
             'status'  => 'error',
             'message' => 'Respons tidak dikenali dari server pemroses. Coba lagi dalam beberapa menit.',
         ], 502);
+    }
+
+    // ──────────────────────────────────────────────────────────────
+    //  COBALT "local-processing" — gabung video+audio terpisah
+    //  dengan ffmpeg (dipakai TikTok saat video & audio dipisah)
+    // ──────────────────────────────────────────────────────────────
+
+    private function handleLocalProcessing(array $data, string $type): JsonResponse
+    {
+        $tunnels = $data['tunnel'] ?? [];
+        if (empty($tunnels)) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Server pemroses tidak mengembalikan file yang valid. Coba lagi.',
+            ]);
+        }
+
+        $outDir = storage_path('app/md_temp');
+        if (!is_dir($outDir)) mkdir($outDir, 0775, true);
+
+        set_time_limit(300);
+        $token     = Str::random(32);
+        $tempFiles = [];
+
+        try {
+            // Ambil semua stream (video-only + audio-only, atau cukup 1 stream)
+            foreach ($tunnels as $i => $tunnelUrl) {
+                $tmpPath = "{$outDir}/{$token}_part{$i}.tmp";
+                $resp    = Http::timeout(120)->withOptions(['sink' => $tmpPath])->get($tunnelUrl);
+
+                if (!$resp->successful() || !file_exists($tmpPath) || filesize($tmpPath) === 0) {
+                    throw new \RuntimeException('Gagal mengambil bagian file dari server pemroses.');
+                }
+                $tempFiles[] = $tmpPath;
+            }
+
+            $ext     = $type === 'audio' ? 'mp3' : 'mp4';
+            $outFile = "{$outDir}/{$token}.{$ext}";
+            $ffmpeg  = env('FFMPEG_BINARY', 'ffmpeg');
+
+            if (count($tempFiles) >= 2) {
+                // Video (index 0) + audio (index 1) terpisah — mux tanpa re-encode
+                $cmd = $this->buildCmd([
+                    $ffmpeg, '-y',
+                    '-i', $tempFiles[0],
+                    '-i', $tempFiles[1],
+                    '-map', '0:v:0', '-map', '1:a:0',
+                    '-c', 'copy',
+                    $outFile,
+                ]);
+                $out = []; $exit = 0;
+                exec($cmd . ' 2>&1', $out, $exit);
+
+                if ($exit !== 0 || !file_exists($outFile) || filesize($outFile) === 0) {
+                    // Fallback: codec audio tidak kompatibel utk copy langsung → re-encode ke AAC
+                    $cmd2 = $this->buildCmd([
+                        $ffmpeg, '-y',
+                        '-i', $tempFiles[0],
+                        '-i', $tempFiles[1],
+                        '-map', '0:v:0', '-map', '1:a:0',
+                        '-c:v', 'copy', '-c:a', 'aac',
+                        $outFile,
+                    ]);
+                    $out2 = []; $exit2 = 0;
+                    exec($cmd2 . ' 2>&1', $out2, $exit2);
+
+                    if ($exit2 !== 0 || !file_exists($outFile) || filesize($outFile) === 0) {
+                        Log::error('ffmpeg merge failed', ['stderr' => implode("\n", array_slice($out2, -10))]);
+                        throw new \RuntimeException('Gagal menggabungkan video & audio.');
+                    }
+                }
+            } else {
+                // Hanya 1 stream (mute/audio/remux/gif) — langsung pakai
+                rename($tempFiles[0], $outFile);
+            }
+
+            foreach ($tempFiles as $f) { if (file_exists($f)) @unlink($f); }
+
+            Cache::put("md_dl_{$token}", [
+                'path'    => $outFile,
+                'mime'    => $type === 'audio' ? 'audio/mpeg' : 'video/mp4',
+                'ext'     => $ext,
+                'created' => time(),
+            ], now()->addMinutes(30));
+
+            return response()->json([
+                'status' => 'ready',
+                'token'  => $token,
+                'type'   => $type,
+            ]);
+
+        } catch (\Throwable $e) {
+            foreach ($tempFiles as $f) { if (file_exists($f)) @unlink($f); }
+            Log::error('Local-processing merge failed: ' . $e->getMessage());
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Gagal memproses file TikTok/Instagram. Coba lagi dalam beberapa saat.',
+            ]);
+        }
     }
 
     // ──────────────────────────────────────────────────────────────
@@ -497,6 +581,26 @@ class MediaDownloaderController extends Controller
     private function isYouTubeUrl(string $url): bool
     {
         return (bool) preg_match('/youtube\.com|youtu\.be/i', $url);
+    }
+
+    private function normalizeUrl(string $url): string
+    {
+        // Instagram: ambil hanya /reel|p|tv/{kode}/, buang semua query string (?utm_source=...)
+        if (preg_match('#instagram\.com/(reel|p|tv)/([A-Za-z0-9_-]+)#i', $url, $m)) {
+            return "https://www.instagram.com/{$m[1]}/{$m[2]}/";
+        }
+
+        // TikTok (link video biasa): ambil hanya sampai /video/{id}, buang semua setelah "?"
+        if (preg_match('#tiktok\.com/@([\w.\-]+)/video/(\d+)#i', $url, $m)) {
+            return "https://www.tiktok.com/@{$m[1]}/video/{$m[2]}";
+        }
+
+        // TikTok short link (vm.tiktok.com/xxxx atau vt.tiktok.com/xxxx) — buang query string saja
+        if (preg_match('#^(https?://(?:vm|vt)\.tiktok\.com/[A-Za-z0-9]+/?)#i', $url, $m)) {
+            return $m[1];
+        }
+
+        return $url;
     }
 
     private function heightLabel(int $h): string

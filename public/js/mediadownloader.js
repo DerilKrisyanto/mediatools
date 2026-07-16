@@ -55,7 +55,7 @@
 
     const TIPS = {
         youtube:   ['Video harus bersifat publik (bukan private/unlisted)', 'YouTube Shorts dan Music juga didukung', 'Jika gagal, coba URL yang disalin langsung dari browser'],
-        tiktok:    ['Akun TikTok harus bersifat publik', 'Link harus ke video spesifik, bukan halaman profil', 'Aktifkan "Tanpa Watermark" untuk hasil bersih'],
+        tiktok:    ['Akun TikTok harus bersifat publik', 'Link harus ke video spesifik, bukan halaman profil', 'Hasil download otomatis tanpa watermark'],
         instagram: ['Hanya konten dari akun publik', 'Salin link dari browser, bukan aplikasi IG', 'Reels, foto, dan video post didukung'],
         other:     ['Pastikan konten bisa diakses tanpa login', 'Gunakan link langsung dari browser desktop', 'Beberapa platform mungkin tidak selalu berhasil'],
     };
@@ -175,6 +175,22 @@
             if (patterns.some(p => p.test(url))) return plat;
         }
         return null;
+    }
+
+    function cleanPlatformUrl(url, platform) {
+        try {
+            if (platform === 'instagram') {
+                const m = url.match(/instagram\.com\/(reel|p|tv)\/([A-Za-z0-9_-]+)/i);
+                if (m) return `https://www.instagram.com/${m[1]}/${m[2]}/`;
+            }
+            if (platform === 'tiktok') {
+                const m = url.match(/tiktok\.com\/@([\w.-]+)\/video\/(\d+)/i);
+                if (m) return `https://www.tiktok.com/@${m[1]}/video/${m[2]}`;
+                const short = url.match(/^(https?:\/\/(?:vm|vt)\.tiktok\.com\/[A-Za-z0-9]+\/?)/i);
+                if (short) return short[1];
+            }
+        } catch { /* biarkan url asli kalau gagal parse */ }
+        return url;
     }
 
     /* ──────────────────────────────────────────────
@@ -356,7 +372,7 @@
 
     let _formatDebounce = null;
     function onUrlChange() {
-        const val = DOM.urlInput.value.trim();
+        let val = DOM.urlInput.value.trim();
         DOM.btnClear.classList.toggle('visible', val.length > 0);
 
         // Auto-detect platform
@@ -364,6 +380,13 @@
             const detected = autoDetect(val);
             if (detected && detected !== S.platform) {
                 switchPlatform(detected);
+            }
+
+            // Bersihkan URL otomatis untuk TikTok & Instagram (buang query string/tracking)
+            const cleaned = cleanPlatformUrl(val, detected || S.platform);
+            if (cleaned !== val) {
+                val = cleaned;
+                DOM.urlInput.value = cleaned;
             }
         }
 

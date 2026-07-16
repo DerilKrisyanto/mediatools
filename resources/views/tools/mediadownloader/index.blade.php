@@ -153,16 +153,6 @@
         <div class="md-toggle-list">
           <label class="md-toggle-row">
             <div class="md-toggle-info">
-              <span class="md-toggle-name">Tanpa Watermark</span>
-              <span class="md-toggle-hint">Download tanpa logo TikTok</span>
-            </div>
-            <div class="md-toggle-wrap">
-              <input type="checkbox" id="tt-no-watermark" class="md-toggle-input" checked>
-              <div class="md-toggle-track"><div class="md-toggle-thumb"></div></div>
-            </div>
-          </label>
-          <label class="md-toggle-row">
-            <div class="md-toggle-info">
               <span class="md-toggle-name">Audio Saja</span>
               <span class="md-toggle-hint">Download hanya suara/musik</span>
             </div>
