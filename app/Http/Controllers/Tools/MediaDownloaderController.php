@@ -314,7 +314,7 @@ class MediaDownloaderController extends Controller
     {
         $payload = [
             'url'           => $url,
-            'downloadMode'  => 'auto', // auto | audio | mute
+            'downloadMode'  => 'auto',
             'filenameStyle' => 'basic',
         ];
 
@@ -325,32 +325,17 @@ class MediaDownloaderController extends Controller
             $payload['tiktokFullAudio'] = true;
         }
 
-        $base = $this->cobaltUrl();
-
-        try {
-            $response = Http::timeout(30)
-                ->withHeaders([
-                    'Accept'       => 'application/json',
-                    'Content-Type' => 'application/json',
-                ])
-                ->post("{$base}/", $payload);
-        } catch (\Exception $e) {
-            Log::error('Cobalt instance unreachable: ' . $e->getMessage());
-            return response()->json([
-                'status'  => 'error',
-                'message' => 'Server pemroses TikTok/Instagram sedang tidak aktif. Coba lagi sebentar.',
-            ], 502);
-        }
-
-        $data   = $response->json();
-        $status = $data['status'] ?? 'error';
+        $base   = $this->cobaltUrl();
         $type   = $payload['downloadMode'] === 'audio' ? 'audio' : 'video';
+        $data   = $this->cobaltRequest($base, $payload);
+        $status = $data['status'] ?? 'error';
 
         if (in_array($status, ['tunnel', 'redirect'], true)) {
             $token = Str::random(32);
             Cache::put("md_proxy_{$token}", [
                 'url'      => $data['url'],
                 'filename' => $data['filename'] ?? null,
+                'type'     => $type,
                 'created'  => time(),
             ], now()->addMinutes(15));
 
@@ -375,17 +360,44 @@ class MediaDownloaderController extends Controller
 
         if ($status === 'error') {
             $code = $data['error']['code'] ?? 'unknown';
-            Log::warning('Cobalt error', ['code' => $code, 'url' => $url]);
+            Log::warning('Cobalt error (final, setelah retry)', ['code' => $code, 'url' => $url]);
             return response()->json([
                 'status'  => 'error',
                 'message' => $this->mapCobaltError($code),
             ]);
         }
 
+        Log::warning('Cobalt: status tidak dikenali', ['raw' => $data]);
         return response()->json([
             'status'  => 'error',
             'message' => 'Respons tidak dikenali dari server pemroses. Coba lagi dalam beberapa menit.',
         ], 502);
+    }
+
+    // Retry otomatis (2x) — TikTok sering gagal sekali di percobaan pertama
+    private function cobaltRequest(string $base, array $payload, int $attempts = 2): array
+    {
+        $last = ['status' => 'error', 'error' => ['code' => 'connection_failed']];
+
+        for ($i = 0; $i < $attempts; $i++) {
+            try {
+                $response = Http::timeout(30)
+                    ->withHeaders(['Accept' => 'application/json', 'Content-Type' => 'application/json'])
+                    ->post("{$base}/", $payload);
+                $data = $response->json() ?? [];
+                $last = $data;
+                if (($data['status'] ?? null) !== 'error') {
+                    return $data;
+                }
+                Log::info("Cobalt error di percobaan " . ($i + 1) . ", mencoba lagi...", ['code' => $data['error']['code'] ?? null]);
+            } catch (\Exception $e) {
+                Log::warning("Cobalt tidak terhubung (percobaan " . ($i + 1) . "): " . $e->getMessage());
+                $last = ['status' => 'error', 'error' => ['code' => 'connection_failed']];
+            }
+            if ($i < $attempts - 1) usleep(700_000); // jeda 0.7 detik sebelum retry
+        }
+
+        return $last;
     }
 
     // ──────────────────────────────────────────────────────────────
@@ -493,7 +505,7 @@ class MediaDownloaderController extends Controller
 
     public function download(Request $request, string $token)
     {
-        // 1) File hasil yt-dlp (lokal di server)
+        // 1) File hasil yt-dlp / ffmpeg merge (lokal di server)
         $ytData = Cache::get("md_dl_{$token}");
         if ($ytData && file_exists($ytData['path'])) {
             $path = $ytData['path'];
@@ -508,43 +520,108 @@ class MediaDownloaderController extends Controller
             ])->deleteFileAfterSend(true);
         }
 
-        // 2) Tunnel dari Cobalt — di-stream lewat server kita sendiri
-        //    (Cobalt hanya bisa diakses dari 127.0.0.1, jadi TIDAK boleh redirect() langsung)
+        // 2) Tunnel dari Cobalt — validasi dulu (peek), baru stream penuh
         $proxyData = Cache::get("md_proxy_{$token}");
         if ($proxyData && isset($proxyData['url'])) {
             Cache::forget("md_proxy_{$token}");
 
-            set_time_limit(300);
+            $type = $proxyData['type'] ?? 'video';
+            $peek = $this->peekRemoteFile($proxyData['url']);
 
-            try {
-                $upstream = Http::timeout(120)->withOptions(['stream' => true])->get($proxyData['url']);
-            } catch (\Exception $e) {
-                Log::error('Gagal fetch tunnel Cobalt: ' . $e->getMessage());
-                abort(502, 'Gagal mengambil file dari server pemroses. Silakan proses ulang.');
+            if (!$peek['ok']) {
+                Log::error('Tunnel Cobalt tidak valid saat mau didownload', $peek);
+                abort(502, 'File dari server pemroses tidak valid atau sudah kedaluwarsa. Silakan proses ulang.');
             }
 
-            if (!$upstream->successful()) {
-                abort(502, 'File sudah tidak tersedia di server pemroses. Silakan proses ulang.');
-            }
-
-            $filename    = $proxyData['filename'] ?? ('mediatools_' . time() . '.mp4');
-            $contentType = $upstream->header('Content-Type') ?: 'application/octet-stream';
-
-            return response()->stream(function () use ($upstream) {
-                $body = $upstream->toPsrResponse()->getBody();
-                while (!$body->eof()) {
-                    echo $body->read(1024 * 512);
-                    if (ob_get_level() > 0) { @ob_flush(); }
-                    flush();
-                }
-            }, 200, [
-                'Content-Type'        => $contentType,
-                'Content-Disposition' => 'attachment; filename="' . addslashes($filename) . '"',
-                'Cache-Control'       => 'no-store',
-            ]);
+            return $this->streamRemoteFile($proxyData['url'], $proxyData['filename'] ?? null, $type);
         }
 
         abort(404, 'Link sudah expired. Silakan proses ulang.');
+    }
+
+    // Cek cepat 2KB pertama sebelum commit ke browser — mencegah "video" palsu
+    // (misalnya halaman error HTML) ikut ter-download sebagai .mp4
+    private function peekRemoteFile(string $url): array
+    {
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HEADER         => true,
+            CURLOPT_RANGE          => '0-2047',
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_MAXREDIRS      => 5,
+            CURLOPT_CONNECTTIMEOUT => 15,
+            CURLOPT_TIMEOUT        => 20,
+        ]);
+        $raw    = curl_exec($ch);
+        $err    = curl_error($ch);
+        $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $hSize  = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+        curl_close($ch);
+
+        if ($raw === false) {
+            return ['ok' => false, 'reason' => 'curl_error', 'curl_error' => $err];
+        }
+
+        $headers = substr($raw, 0, $hSize);
+        $body    = substr($raw, $hSize);
+        $contentType = preg_match('/content-type:\s*([^\r\n]+)/i', $headers, $m) ? trim($m[1]) : 'unknown';
+
+        $isOkStatus = in_array($status, [200, 206], true);
+        $isMedia    = (bool) preg_match('#^(video|audio|application/octet-stream)#i', $contentType);
+
+        if (!$isOkStatus || !$isMedia) {
+            return [
+                'ok'           => false,
+                'reason'       => 'invalid_response',
+                'http_status'  => $status,
+                'content_type' => $contentType,
+                'body_preview' => substr($body, 0, 300),
+            ];
+        }
+
+        return ['ok' => true, 'content_type' => $contentType, 'http_status' => $status];
+    }
+
+    // Streaming file besar tanpa batas waktu total (hanya batal jika benar-benar macet)
+    private function streamRemoteFile(string $url, ?string $filename, string $type = 'video')
+    {
+        $ext      = $type === 'audio' ? 'mp3' : 'mp4';
+        $mime     = $type === 'audio' ? 'audio/mpeg' : 'video/mp4';
+        $filename = $filename ?: ('mediatools_' . time() . '.' . $ext);
+
+        return response()->stream(function () use ($url) {
+            @set_time_limit(0);
+
+            $ch = curl_init($url);
+            curl_setopt_array($ch, [
+                CURLOPT_FOLLOWLOCATION  => true,
+                CURLOPT_MAXREDIRS       => 5,
+                CURLOPT_CONNECTTIMEOUT  => 20,
+                CURLOPT_TIMEOUT         => 0,     // TIDAK ada batas waktu total
+                CURLOPT_LOW_SPEED_LIMIT => 500,   // anggap macet kalau < 500 byte/detik...
+                CURLOPT_LOW_SPEED_TIME  => 30,    // ...selama lebih dari 30 detik berturut-turut
+                CURLOPT_HTTPHEADER      => ['Accept: */*'],
+                CURLOPT_WRITEFUNCTION   => function ($curl, $chunk) {
+                    echo $chunk;
+                    if (ob_get_level() > 0) { @ob_flush(); }
+                    @flush();
+                    return strlen($chunk);
+                },
+            ]);
+            $ok  = curl_exec($ch);
+            $err = curl_error($ch);
+            curl_close($ch);
+
+            if (!$ok) {
+                Log::error('Tunnel stream terputus di tengah transfer: ' . $err);
+            }
+        }, 200, [
+            'Content-Type'        => $mime,
+            'Content-Disposition' => 'attachment; filename="' . addslashes($filename) . '"',
+            'Cache-Control'       => 'no-store',
+            'X-Accel-Buffering'   => 'no', // penting: cegah Nginx menahan/buffer seluruh response
+        ]);
     }
 
     // ──────────────────────────────────────────────────────────────
