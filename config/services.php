@@ -52,4 +52,8 @@ return [
 
     'google_analytics_id' => env('GOOGLE_ANALYTICS_ID', ''),
 
+    'cobalt' => [
+        'url' => env('COBALT_API_URL', 'http://127.0.0.1:9000'),
+    ],
+
 ];

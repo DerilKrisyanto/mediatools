@@ -550,9 +550,7 @@
         const body = { url, action: 'process' };
 
         if (S.platform === 'tiktok') {
-            const noWm = document.getElementById('tt-no-watermark');
             const aoOnly = document.getElementById('tt-audio-only');
-            body.removeTikTokWatermark = noWm?.checked ?? true;
             if (aoOnly?.checked) body.downloadMode = 'audio';
         }
 
