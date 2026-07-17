@@ -526,11 +526,12 @@ class MediaDownloaderController extends Controller
             Cache::forget("md_proxy_{$token}");
 
             $type = $proxyData['type'] ?? 'video';
-            $peek = $this->peekRemoteFile($proxyData['url']);
 
-            if (!$peek['ok']) {
-                Log::error('Tunnel Cobalt tidak valid saat mau didownload', $peek);
-                abort(502, 'File dari server pemroses tidak valid atau sudah kedaluwarsa. Silakan proses ulang.');
+            // Cek kadaluwarsa tunnel dari parameter "exp" di URL-nya sendiri
+            $query = [];
+            parse_str((string) parse_url($proxyData['url'], PHP_URL_QUERY), $query);
+            if (!empty($query['exp']) && (int) $query['exp'] < (int) (microtime(true) * 1000)) {
+                abort(410, 'Link download sudah kedaluwarsa (lebih dari beberapa menit). Silakan klik Download Sekarang lagi.');
             }
 
             return $this->streamRemoteFile($proxyData['url'], $proxyData['filename'] ?? null, $type);
@@ -541,49 +542,8 @@ class MediaDownloaderController extends Controller
 
     // Cek cepat 2KB pertama sebelum commit ke browser — mencegah "video" palsu
     // (misalnya halaman error HTML) ikut ter-download sebagai .mp4
-    private function peekRemoteFile(string $url): array
-    {
-        $ch = curl_init($url);
-        curl_setopt_array($ch, [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HEADER         => true,
-            CURLOPT_RANGE          => '0-2047',
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_MAXREDIRS      => 5,
-            CURLOPT_CONNECTTIMEOUT => 15,
-            CURLOPT_TIMEOUT        => 20,
-        ]);
-        $raw    = curl_exec($ch);
-        $err    = curl_error($ch);
-        $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $hSize  = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-        curl_close($ch);
-
-        if ($raw === false) {
-            return ['ok' => false, 'reason' => 'curl_error', 'curl_error' => $err];
-        }
-
-        $headers = substr($raw, 0, $hSize);
-        $body    = substr($raw, $hSize);
-        $contentType = preg_match('/content-type:\s*([^\r\n]+)/i', $headers, $m) ? trim($m[1]) : 'unknown';
-
-        $isOkStatus = in_array($status, [200, 206], true);
-        $isMedia    = (bool) preg_match('#^(video|audio|application/octet-stream)#i', $contentType);
-
-        if (!$isOkStatus || !$isMedia) {
-            return [
-                'ok'           => false,
-                'reason'       => 'invalid_response',
-                'http_status'  => $status,
-                'content_type' => $contentType,
-                'body_preview' => substr($body, 0, 300),
-            ];
-        }
-
-        return ['ok' => true, 'content_type' => $contentType, 'http_status' => $status];
-    }
-
-    // Streaming file besar tanpa batas waktu total (hanya batal jika benar-benar macet)
+    // Cek + stream sekaligus dalam SATU request (tunnel Cobalt kemungkinan
+    // sekali-pakai/berumur pendek — jangan pernah fetch tunnel yang sama 2x)
     private function streamRemoteFile(string $url, ?string $filename, string $type = 'video')
     {
         $ext      = $type === 'audio' ? 'mp3' : 'mp4';
@@ -593,34 +553,62 @@ class MediaDownloaderController extends Controller
         return response()->stream(function () use ($url) {
             @set_time_limit(0);
 
+            $valid       = null;  // null = belum tahu, diputuskan begitu header final diterima
+            $sentInvalid = false;
+
             $ch = curl_init($url);
             curl_setopt_array($ch, [
                 CURLOPT_FOLLOWLOCATION  => true,
                 CURLOPT_MAXREDIRS       => 5,
                 CURLOPT_CONNECTTIMEOUT  => 20,
-                CURLOPT_TIMEOUT         => 0,     // TIDAK ada batas waktu total
-                CURLOPT_LOW_SPEED_LIMIT => 500,   // anggap macet kalau < 500 byte/detik...
-                CURLOPT_LOW_SPEED_TIME  => 30,    // ...selama lebih dari 30 detik berturut-turut
+                CURLOPT_TIMEOUT         => 0,
+                CURLOPT_LOW_SPEED_LIMIT => 500,
+                CURLOPT_LOW_SPEED_TIME  => 30,
                 CURLOPT_HTTPHEADER      => ['Accept: */*'],
-                CURLOPT_WRITEFUNCTION   => function ($curl, $chunk) {
+                CURLOPT_HEADERFUNCTION  => function ($curl, $header) use (&$valid) {
+                    $len     = strlen($header);
+                    $trimmed = trim($header);
+
+                    // Setiap kali ada status line baru (termasuk saat redirect),
+                    // reset validasi — yang dipakai cuma response TERAKHIR.
+                    if (stripos($trimmed, 'HTTP/') === 0) {
+                        $valid = null;
+                    }
+                    if (stripos($trimmed, 'content-type:') === 0) {
+                        $ct    = trim(substr($trimmed, strlen('content-type:')));
+                        $valid = (bool) preg_match('#^(video|audio|application/octet-stream)#i', $ct);
+                    }
+                    return $len;
+                },
+                CURLOPT_WRITEFUNCTION => function ($curl, $chunk) use (&$valid, &$sentInvalid) {
+                    if ($valid === false) {
+                        $sentInvalid = true;
+                        return -1; // hentikan transfer segera
+                    }
                     echo $chunk;
                     if (ob_get_level() > 0) { @ob_flush(); }
                     @flush();
                     return strlen($chunk);
                 },
             ]);
-            $ok  = curl_exec($ch);
-            $err = curl_error($ch);
+
+            $ok       = curl_exec($ch);
+            $err      = curl_error($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             curl_close($ch);
 
-            if (!$ok) {
-                Log::error('Tunnel stream terputus di tengah transfer: ' . $err);
+            if (!$ok || $sentInvalid || $valid === false) {
+                Log::error('Tunnel stream gagal atau bukan file media', [
+                    'curl_error' => $err,
+                    'http_code'  => $httpCode,
+                    'valid'      => $valid,
+                ]);
             }
         }, 200, [
             'Content-Type'        => $mime,
             'Content-Disposition' => 'attachment; filename="' . addslashes($filename) . '"',
             'Cache-Control'       => 'no-store',
-            'X-Accel-Buffering'   => 'no', // penting: cegah Nginx menahan/buffer seluruh response
+            'X-Accel-Buffering'   => 'no',
         ]);
     }
 
