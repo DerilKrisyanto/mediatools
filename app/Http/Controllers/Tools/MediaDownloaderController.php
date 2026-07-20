@@ -124,6 +124,10 @@ class MediaDownloaderController extends Controller
             set_time_limit(300);
             exec($cmd . ' 2>&1', $output, $exit);
 
+            Log::info("yt-dlp attempt [{$attempt['label']}] exit={$exit}", [
+                'tail' => implode(' | ', array_slice($output, -3)),
+            ]);
+
             $lastOutput = $output;
             $lastExit   = $exit;
             $lastLabel  = $attempt['label'];
@@ -355,7 +359,7 @@ class MediaDownloaderController extends Controller
                     $ext   = $type === 'audio' ? 'mp3' : 'mp4';
                     Cache::put("md_proxy_{$token}", [
                         'url'      => $remoteUrl,
-                        'filename' => Str::slug($tw['title'] ?: 'tiktok_video') . ".{$ext}",
+                        'filename' => $this->brandedFilename('tiktok', $ext),
                         'type'     => $type,
                         'created'  => time(),
                     ], now()->addMinutes(15));
@@ -390,10 +394,16 @@ class MediaDownloaderController extends Controller
         $status = $data['status'] ?? 'error';
 
         if (in_array($status, ['tunnel', 'redirect'], true)) {
+            $platform = $this->detectPlatform($url);
+            $ext      = $type === 'audio' ? 'mp3' : 'mp4';
+            $filename = in_array($platform, ['instagram', 'tiktok'], true)
+                ? $this->brandedFilename($platform, $ext)
+                : ($data['filename'] ?? null);
+
             $token = Str::random(32);
             Cache::put("md_proxy_{$token}", [
                 'url'      => $data['url'],
-                'filename' => $data['filename'] ?? null,
+                'filename' => $filename,
                 'type'     => $type,
                 'created'  => time(),
             ], now()->addMinutes(15));
@@ -407,7 +417,7 @@ class MediaDownloaderController extends Controller
         }
 
         if ($status === 'local-processing') {
-            return $this->handleLocalProcessing($data, $type);
+            return $this->handleLocalProcessing($data, $type, $this->detectPlatform($url));
         }
 
         if ($status === 'picker') {
@@ -536,10 +546,13 @@ class MediaDownloaderController extends Controller
             foreach ($tempFiles as $f) { if (file_exists($f)) @unlink($f); }
 
             Cache::put("md_dl_{$token}", [
-                'path'    => $outFile,
-                'mime'    => $type === 'audio' ? 'audio/mpeg' : 'video/mp4',
-                'ext'     => $ext,
-                'created' => time(),
+                'path'     => $outFile,
+                'mime'     => $type === 'audio' ? 'audio/mpeg' : 'video/mp4',
+                'ext'      => $ext,
+                'filename' => in_array($platform, ['instagram', 'tiktok'], true)
+                    ? $this->brandedFilename($platform, $ext)
+                    : null,
+                'created'  => time(),
             ], now()->addMinutes(30));
 
             return response()->json([
@@ -567,13 +580,14 @@ class MediaDownloaderController extends Controller
         // 1) File hasil yt-dlp / ffmpeg merge (lokal di server)
         $ytData = Cache::get("md_dl_{$token}");
         if ($ytData && file_exists($ytData['path'])) {
-            $path = $ytData['path'];
-            $mime = $ytData['mime'];
-            $ext  = $ytData['ext'];
+            $path     = $ytData['path'];
+            $mime     = $ytData['mime'];
+            $ext      = $ytData['ext'];
+            $filename = $ytData['filename'] ?? "mediatools_video.{$ext}";
 
             Cache::forget("md_dl_{$token}");
 
-            return response()->download($path, "mediatools_video.{$ext}", [
+            return response()->download($path, $filename, [
                 'Content-Type'  => $mime,
                 'Cache-Control' => 'no-store',
             ])->deleteFileAfterSend(true);
@@ -700,6 +714,24 @@ class MediaDownloaderController extends Controller
     private function buildCmd(array $args): string
     {
         return implode(' ', array_map('escapeshellarg', $args));
+    }
+
+    private function detectPlatform(string $url): string
+    {
+        $u = strtolower($url);
+        if (str_contains($u, 'tiktok.com'))    return 'tiktok';
+        if (str_contains($u, 'instagram.com')) return 'instagram';
+        if ($this->isYouTubeUrl($url))         return 'youtube';
+        return 'other';
+    }
+
+    private function brandedFilename(string $platform, string $ext): string
+    {
+        return match ($platform) {
+            'instagram' => "ig_downloaded_by_mediatools.{$ext}",
+            'tiktok'    => "tt_downloaded_by_mediatools.{$ext}",
+            default     => "mediatools_downloaded.{$ext}",
+        };
     }
 
     private function isYouTubeUrl(string $url): bool
