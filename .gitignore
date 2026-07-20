@@ -20,10 +20,6 @@ auth.json
 npm-debug.log
 yarn-error.log
 
-# Composer
-composer.json
-composer.lock
-
 # Keep folder structure tapi kosongkan isi
 !storage/app/file_converter/.gitkeep
 !storage/app/pdf_utilities/.gitkeep
