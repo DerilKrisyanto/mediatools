@@ -1,6 +1,9 @@
 @extends('layouts.app')
-@section('title', 'Memo Pengiriman Online — Buat & Kirim PDF Berlogo | MediaTools')
+
 @section('og_image', 'memopengiriman')
+@section('title', 'Memo Pengiriman Online — Buat & Kirim PDF Berlogo | MediaTools')
+@section('meta_description', 'Buat memo pengiriman & surat jalan PDF berlogo gratis, kirim via email ke pelanggan, dan export Excel. Cepat, rapi, & privat — alternatif terbaik template Word & Excel manual.')
+@section('meta_keywords', 'memo pengiriman online, buat memo pengiriman, surat jalan online, memo pengiriman pdf, format memo pengiriman barang, template memo pengiriman excel, delivery note generator, bukti pengiriman barang, contoh memo pengiriman, aplikasi memo pengiriman gratis, generator surat jalan, cetak memo pengiriman, buat surat jalan pdf, aplikasi surat jalan umkm')
 
 @include('seo.memopengiriman')
 
@@ -540,6 +543,16 @@
             <div style="margin-top:16px;">
                 {{ $memos->links() }}
             </div>
+        </div>
+
+        {{-- ═══ SLOT 3: RESULT BANNER 300×250 ═══ --}}
+        <div class="ads-slot-result no-print">
+            @include('components.ads.banner-result')
+        </div>
+
+        {{-- ═══ SLOT 4: NATIVE BANNER ═══ --}}
+        <div class="ads-slot-native no-print">
+            @include('components.ads.banner-content')
         </div>
 
         </div>{{-- /.memo-layout --}}
