@@ -212,7 +212,7 @@
         <p class="md-result-sub"   id="result-sub">File siap diunduh</p>
 
         <div id="result-single" class="md-result-actions md-hidden">
-          <a href="#" id="btn-download-single" class="md-btn-download">
+          <a id="btn-download-single" class="md-btn-download">
             <i class="fa-solid fa-download"></i>
             <span id="download-label">Download File</span>
           </a>
