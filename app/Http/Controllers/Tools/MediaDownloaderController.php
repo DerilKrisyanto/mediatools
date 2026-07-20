@@ -310,8 +310,68 @@ class MediaDownloaderController extends Controller
     //  NON-YOUTUBE — Cobalt API (self-hosted, skema v10+)
     // ──────────────────────────────────────────────────────────────
 
+    // TikTok via TikWM (layanan publik gratis, tidak butuh proxy) —
+    // dicoba PERTAMA untuk TikTok karena Cobalt self-hosted kita sudah
+    // terbukti diblokir IP VPS ini. Cobalt tetap jadi fallback kedua.
+    private function tiktokViaTikwm(string $url, int $attempts = 2): ?array
+    {
+        for ($i = 0; $i < $attempts; $i++) {
+            try {
+                $resp = Http::timeout(15)->get('https://www.tikwm.com/api/', [
+                    'url' => $url,
+                    'hd'  => 1,
+                ]);
+                $data = $resp->json();
+
+                if ($data && (int) ($data['code'] ?? 1) === 0 && !empty($data['data'])) {
+                    $d = $data['data'];
+                    return [
+                        'video_url' => $d['hdplay'] ?? $d['play'] ?? null,
+                        'audio_url' => $d['music'] ?? null,
+                        'title'     => $d['title'] ?? 'tiktok_video',
+                    ];
+                }
+
+                Log::info('TikWM belum berhasil, percobaan ' . ($i + 1), ['raw' => $data]);
+            } catch (\Exception $e) {
+                Log::warning('TikWM tidak terhubung (percobaan ' . ($i + 1) . '): ' . $e->getMessage());
+            }
+            if ($i < $attempts - 1) usleep(700_000);
+        }
+        return null;
+    }
+
     private function cobaltDownload(string $url, Request $request): JsonResponse
     {
+        $type = $request->input('downloadMode') === 'audio' ? 'audio' : 'video';
+
+        // TikTok: coba TikWM dulu (gratis, tidak kena blokir IP VPS ini)
+        if (str_contains(strtolower($url), 'tiktok.com')) {
+            $tw = $this->tiktokViaTikwm($url);
+            if ($tw) {
+                $remoteUrl = $type === 'audio' ? ($tw['audio_url'] ?? null) : ($tw['video_url'] ?? null);
+                if ($remoteUrl) {
+                    $token = Str::random(32);
+                    $ext   = $type === 'audio' ? 'mp3' : 'mp4';
+                    Cache::put("md_proxy_{$token}", [
+                        'url'      => $remoteUrl,
+                        'filename' => Str::slug($tw['title'] ?: 'tiktok_video') . ".{$ext}",
+                        'type'     => $type,
+                        'created'  => time(),
+                    ], now()->addMinutes(15));
+
+                    return response()->json([
+                        'status' => 'ready',
+                        'token'  => $token,
+                        'mode'   => 'proxy',
+                        'type'   => $type,
+                    ]);
+                }
+            }
+            Log::info('TikWM gagal/tidak dapat URL, fallback ke Cobalt self-hosted...');
+        }
+
+        // ── logic Cobalt yang SUDAH ADA, tidak ada perubahan dari sini ──
         $payload = [
             'url'           => $url,
             'downloadMode'  => 'auto',
@@ -326,7 +386,6 @@ class MediaDownloaderController extends Controller
         }
 
         $base   = $this->cobaltUrl();
-        $type   = $payload['downloadMode'] === 'audio' ? 'audio' : 'video';
         $data   = $this->cobaltRequest($base, $payload);
         $status = $data['status'] ?? 'error';
 
@@ -564,7 +623,7 @@ class MediaDownloaderController extends Controller
                 CURLOPT_TIMEOUT         => 0,
                 CURLOPT_LOW_SPEED_LIMIT => 500,
                 CURLOPT_LOW_SPEED_TIME  => 30,
-                CURLOPT_HTTPHEADER      => ['Accept: */*'],
+                CURLOPT_HTTPHEADER      => ['Accept: */*', 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36'],
                 CURLOPT_HEADERFUNCTION  => function ($curl, $header) use (&$valid) {
                     $len     = strlen($header);
                     $trimmed = trim($header);
