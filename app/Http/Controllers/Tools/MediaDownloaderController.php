@@ -791,7 +791,7 @@ class MediaDownloaderController extends Controller
         if (str_contains($r, 'unavailable') || str_contains($r, 'removed'))
             return 'Video tidak tersedia atau sudah dihapus.';
         if (str_contains($r, 'sign in') || str_contains($r, 'confirm you') || str_contains($r, 'login'))
-            return 'YouTube sedang membatasi akses dari server kami. Tim kami sudah diberi tahu — coba lagi dalam beberapa menit.';
+            return 'Download YouTube sedang mengalami gangguan teknis dari pihak kami. Silakan gunakan TikTok atau Instagram Downloader untuk saat ini — tim kami sedang menangani perbaikan YouTube secepatnya.';
         if (str_contains($r, 'copyright') || str_contains($r, 'blocked'))
             return 'Video diblokir karena masalah hak cipta di wilayah ini.';
         if (str_contains($r, 'not found') || str_contains($r, 'no such'))
