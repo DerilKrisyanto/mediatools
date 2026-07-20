@@ -250,7 +250,7 @@
                 </p>
                 <p class="text-xs text-gray-600 mb-6 font-mono" id="dlFilename"></p>
 
-                <a href="#"
+                <a
                    id="dlBtn"
                    class="btn-primary px-8 py-3.5 text-sm font-extrabold rounded-xl inline-flex"
                    download>

@@ -436,7 +436,7 @@
                 </div>
 
                 <div class="pdf-result-actions" id="btnDownloadWrap">
-                    <a href="#" id="btnDownload" class="pdf-btn-primary pdf-btn-download"
+                    <a id="btnDownload" class="pdf-btn-primary pdf-btn-download"
                        download="mediatools_result.pdf">
                         <i class="fa-solid fa-download fa-xs"></i>
                         <span>Download PDF</span>
