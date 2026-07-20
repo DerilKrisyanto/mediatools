@@ -52,7 +52,7 @@
 <div class="stats-bar">
     <div class="stats-bar-inner">
         <div class="stat-cell reveal">
-            <div class="stat-num" data-target="10" data-suffix="+">0+</div>
+            <div class="stat-num" data-target="13" data-suffix="+">0+</div>
             <div class="stat-label">Tools Aktif</div>
         </div>
         <div class="stat-cell reveal reveal-d1">
