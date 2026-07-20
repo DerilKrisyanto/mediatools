@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('og_image', 'pdfutilities')
-@section('title', 'PDF Tools Gratis — Merge Split Compress PDF Online | MediaTools')
-@section('meta_description', 'Gabung (merge), pisah (split), dan kompres PDF langsung di browser — tanpa upload ke server untuk merge & split. Compress menggunakan Ghostscript server-side. Gratis, privasi terjaga, alternatif iLovePDF terbaik.')
+@section('title', 'Gabung & Pisah PDF Online Gratis — Tanpa Watermark | MediaTools')
+@section('meta_description', 'Merge, split, dan kompres file PDF online gratis. Tanpa instal aplikasi, tanpa watermark, langsung download.')
 @section('meta_keywords', 'merge pdf gratis, split pdf online, compress pdf, gabung pdf, ilovepdf alternative, gabung pdf online, kompres pdf, pdf tools gratis, pisah pdf, combine pdf online, merge pdf online, pdf merge split, kompres ukuran pdf, pdf utilities, ilovepdf indonesia')
 @include('seo.pdfutilities')
 

@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('og_image', 'imageconverter')
-@section('title', 'Resize Kompres & Konversi Gambar Gratis — JPG PNG WebP | MediaTools')
-@section('meta_description', 'Resize, kompres, dan konversi gambar JPG PNG WebP langsung di browser. Tanpa upload ke server, privasi 100% terjaga. Gratis unlimited.')
+@section('title', 'Konversi & Kompres Gambar Online — JPG PNG WebP Gratis | MediaTools')
+@section('meta_description', 'Resize, kompres, dan konversi format gambar langsung di browser. Tanpa upload ke server, cepat dan aman.')
 @section('meta_keywords', 'resize gambar online, konversi gambar, image converter gratis, kompres foto online, ubah format gambar, jpg to png, png to jpg, jpg to webp, image resize online, compress gambar gratis, webp to jpg, png to webp, image compressor, ubah ukuran gambar, konversi foto online')
 @include('seo.imageconverter')
 

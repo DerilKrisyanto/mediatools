@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('og_image', 'fileconverter')
-@section('title', 'File Converter Online Gratis — PDF Word Excel JPG PowerPoint | MediaTools')
-@section('meta_description', 'Konversi PDF ke Word, Word ke PDF, Excel ke PDF, JPG ke PDF dan sebaliknya secara gratis. Upload 5 file sekaligus, hasil instan, privasi terjaga.')
+@section('title', 'Konversi File Online — PDF ke Word, PPT ke Excel Gratis | MediaTools')
+@section('meta_description', 'Ubah format file PDF, Word, Excel, PowerPoint dalam sekali klik. Gratis, aman, tanpa batas harian. Konversi PDF ke Word, Word ke PDF, Excel ke PDF, JPG ke PDF dan sebaliknya secara gratis.')
 @section('meta_keywords', 'convert pdf to word','convert word to pdf','pdf to word, word to pdf, konversi pdf, compress pdf, excel to pdf, jpg to pdf, pdf converter gratis, convert pdf online, ilovepdf alternative, konversi file online, pdf ke word gratis, word ke pdf, powerpoint to pdf, pdf to jpg, merge pdf')
 
 @include('seo.fileconverter')

@@ -363,7 +363,180 @@ $schema = [
             <strong>Penting:</strong> Gunakan fitur download hanya untuk keperluan pribadi dan selalu hormati hak cipta kreator. Jangan gunakan ulang konten orang lain untuk tujuan komersial tanpa izin.
         </div>
 
-        @endif
+        @elseif($article['content_key'] === 'linktree_tutorial')
+
+        <p>Punya banyak akun media sosial, portofolio, dan link penting tapi cuma bisa pasang satu link di bio Instagram atau TikTok? Solusinya adalah halaman "link in bio" — satu halaman ringkas yang memuat semua link Anda, dan bisa dibuat gratis tanpa coding dalam hitungan menit.</p>
+
+        <h2>Apa Itu Link in Bio dan Kenapa Anda Butuh Ini?</h2>
+        <p>Link in bio adalah halaman landing sederhana yang berisi kumpulan tombol link — ke Instagram, TikTok, WhatsApp Business, toko online, portofolio, atau apapun yang ingin Anda bagikan. Berguna untuk:</p>
+        <ul>
+            <li><strong>Kreator konten</strong> — Arahkan follower ke semua platform sekaligus dari satu link di bio.</li>
+            <li><strong>Pelaku UMKM</strong> — Gabungkan katalog produk, WhatsApp, dan lokasi toko dalam satu halaman.</li>
+            <li><strong>Freelancer</strong> — Tampilkan portofolio, CV, dan kontak dalam satu tempat yang rapi.</li>
+            <li><strong>Event/campaign</strong> — Kumpulkan link pendaftaran, RSVP, atau promo musiman.</li>
+        </ul>
+
+        <h2>Cara Membuat Halaman Link in Bio di MediaTools</h2>
+        <ol>
+            <li><strong>Buka Link Tree Builder</strong> — Kunjungi mediatools.cloud/linktree.</li>
+            <li><strong>Isi profil Anda</strong> — Upload foto profil, isi nama tampilan, dan bio singkat.</li>
+            <li><strong>Tambahkan link</strong> — Klik "+ Tambah Link", isi judul dan URL tujuan untuk tiap tombol (Instagram, TikTok, WhatsApp, toko online, dst).</li>
+            <li><strong>Atur urutan dan tema</strong> — Drag & drop untuk mengurutkan link berdasarkan prioritas, lalu pilih tema warna yang sesuai brand Anda.</li>
+            <li><strong>Publish dan salin link</strong> — Klik "Publish", lalu salin link halaman Anda dan pasang di bio Instagram/TikTok.</li>
+        </ol>
+
+        <div class="callout">
+            <i class="fa-solid fa-lightbulb"></i>
+            <strong>Tips:</strong> Taruh link yang paling ingin diklik (misalnya WhatsApp order atau produk terbaru) di posisi paling atas. Pengunjung cenderung hanya scroll 2-3 tombol pertama.
+        </div>
+
+        <h2>Bedanya dengan Linktree Berbayar?</h2>
+        <p>Link Tree Builder MediaTools gratis sepenuhnya tanpa batasan jumlah link, tanpa watermark paksa, dan tanpa perlu upgrade untuk fitur dasar seperti custom tema atau reorder link — fitur yang di beberapa layanan sejenis justru dikunci di paket berbayar.</p>
+
+        @elseif($article['content_key'] === 'qr_business_tutorial')
+
+        <p>QR Code sudah jadi kebutuhan standar bisnis — dari menu restoran, pembayaran QRIS, sampai kartu nama digital. Membuat QR Code yang custom dan branded (bukan sekadar kotak hitam-putih generik) ternyata bisa dilakukan gratis tanpa software desain.</p>
+
+        <h2>Kegunaan QR Code untuk Bisnis</h2>
+        <ul>
+            <li><strong>Menu restoran digital</strong> — Tempel QR di meja, pelanggan scan untuk lihat menu tanpa kontak fisik.</li>
+            <li><strong>Pembayaran</strong> — QR untuk nomor rekening, e-wallet, atau QRIS statis di kasir.</li>
+            <li><strong>Kartu nama digital</strong> — Scan langsung simpan kontak Anda ke HP klien.</li>
+            <li><strong>Link ke media sosial atau katalog</strong> — Tempel di kemasan produk atau banner promosi.</li>
+        </ul>
+
+        <h2>Cara Membuat QR Code Custom di MediaTools</h2>
+        <ol>
+            <li><strong>Buka QR Business Kit</strong> — Kunjungi mediatools.cloud/qr.</li>
+            <li><strong>Pilih jenis QR</strong> — URL, teks, WiFi, kontak, atau pembayaran, sesuai kebutuhan.</li>
+            <li><strong>Masukkan data</strong> — Isi link, nomor, atau informasi yang ingin di-encode.</li>
+            <li><strong>Custom desain</strong> — Ganti warna QR, tambahkan logo di tengah, dan pilih bentuk modul agar sesuai identitas brand.</li>
+            <li><strong>Download HD</strong> — Unduh sebagai PNG resolusi tinggi atau SVG, siap cetak di banner maupun stiker meja.</li>
+        </ol>
+
+        <div class="callout">
+            <i class="fa-solid fa-lightbulb"></i>
+            <strong>Tips:</strong> Selalu tes scan QR Code Anda dengan 2-3 HP berbeda sebelum dicetak dalam jumlah banyak, terutama jika Anda menambahkan logo di tengah — logo yang terlalu besar bisa membuat QR gagal terbaca.
+        </div>
+
+        <h2>Ukuran Cetak yang Direkomendasikan</h2>
+        <p>Untuk jarak scan normal (30-50cm), ukuran minimal QR Code yang dicetak adalah 3×3cm. Untuk banner atau spanduk yang discan dari jarak lebih jauh, perbesar proporsional — semakin jauh jarak scan, semakin besar ukuran cetak yang dibutuhkan.</p>
+
+        @elseif($article['content_key'] === 'signature_tutorial')
+
+        <p>Email signature yang rapi adalah detail kecil yang sering diabaikan, padahal ini muncul di <em>setiap</em> email yang Anda kirim — jadi bagian dari kesan profesional Anda ke klien, rekruter, atau partner bisnis, tanpa Anda perlu bilang apa-apa.</p>
+
+        <h2>Elemen yang Wajib Ada di Email Signature</h2>
+        <ul>
+            <li><strong>Nama lengkap dan jabatan</strong> — Jelas dan tidak disingkat berlebihan.</li>
+            <li><strong>Nama perusahaan/brand</strong> — Termasuk logo jika ada.</li>
+            <li><strong>Kontak</strong> — Nomor telepon dan email aktif.</li>
+            <li><strong>Link relevan</strong> — Website, LinkedIn, atau portofolio.</li>
+            <li><strong>Disclaimer singkat (opsional)</strong> — Untuk email korporat, kadang diperlukan baris kerahasiaan.</li>
+        </ul>
+
+        <h2>Cara Membuat Email Signature di MediaTools</h2>
+        <ol>
+            <li><strong>Buka Email Signature</strong> — Kunjungi mediatools.cloud/signature.</li>
+            <li><strong>Pilih template</strong> — Tersedia beberapa layout: minimalis, dengan foto profil, atau dengan logo perusahaan.</li>
+            <li><strong>Isi data Anda</strong> — Nama, jabatan, perusahaan, kontak, dan link sosial media/website.</li>
+            <li><strong>Sesuaikan warna dan font</strong> — Cocokkan dengan identitas brand perusahaan Anda.</li>
+            <li><strong>Copy dan pasang</strong> — Klik "Copy HTML Signature", lalu tempel ke pengaturan signature di Gmail, Outlook, atau email client lainnya.</li>
+        </ol>
+
+        <div class="callout">
+            <i class="fa-solid fa-lightbulb"></i>
+            <strong>Tips:</strong> Hindari signature dengan terlalu banyak warna atau font berbeda — 1-2 warna brand dan 1 jenis font sudah cukup untuk terlihat profesional dan konsisten di semua device.
+        </div>
+
+        <h2>Cara Pasang di Gmail</h2>
+        <p>Buka Gmail → Settings → General, scroll ke bagian "Signature", klik "Create new", lalu paste signature yang sudah disalin dari MediaTools. Simpan dengan klik "Save Changes" di bagian bawah halaman.</p>
+
+        @elseif($article['content_key'] === 'password_tutorial')
+
+        <p>Password seperti "123456" atau "namaanda1990" masih jadi penyebab utama akun diretas — bukan karena sistem kena hack, tapi karena passwordnya mudah ditebak atau sudah bocor di database lain. Membuat password yang kuat sebenarnya gampang jika tahu caranya.</p>
+
+        <h2>Ciri-Ciri Password yang Kuat</h2>
+        <ul>
+            <li><strong>Minimal 12 karakter</strong> — Makin panjang, makin sulit ditebak dengan brute force.</li>
+            <li><strong>Kombinasi acak</strong> — Huruf besar, huruf kecil, angka, dan simbol.</li>
+            <li><strong>Tidak berkaitan dengan data pribadi</strong> — Hindari tanggal lahir, nama anak, atau nomor HP.</li>
+            <li><strong>Unik per akun</strong> — Jangan pakai password yang sama untuk email, media sosial, dan akun bank sekaligus.</li>
+        </ul>
+
+        <h2>Cara Membuat Password Kuat di MediaTools</h2>
+        <ol>
+            <li><strong>Buka Password Generator</strong> — Kunjungi mediatools.cloud/password-generator.</li>
+            <li><strong>Atur panjang password</strong> — Geser slider, minimal disarankan 12-16 karakter.</li>
+            <li><strong>Pilih jenis karakter</strong> — Aktifkan huruf besar, huruf kecil, angka, dan simbol.</li>
+            <li><strong>Generate</strong> — Klik tombol generate untuk mendapatkan password acak baru.</li>
+            <li><strong>Copy dan simpan</strong> — Salin password, lalu simpan di password manager — jangan di catatan HP atau kertas.</li>
+        </ol>
+
+        <div class="callout">
+            <i class="fa-solid fa-lightbulb"></i>
+            <strong>Tips:</strong> Password yang dibuat tools ini tidak pernah dikirim atau disimpan ke server — semua diproses langsung di browser Anda, jadi aman untuk akun sensitif seperti email atau perbankan.
+        </div>
+
+        <h2>Kenapa Perlu Password Manager?</h2>
+        <p>Karena setiap akun sebaiknya punya password unik, mengingat semuanya secara manual jadi tidak realistis. Password manager (seperti Bitwarden yang gratis) menyimpan semua password terenkripsi, sehingga Anda hanya perlu ingat satu master password.</p>
+
+        @elseif($article['content_key'] === 'sanitizer_tutorial')
+
+        <p>Setiap foto yang Anda ambil dengan HP menyimpan data tersembunyi (metadata/EXIF) — mulai dari lokasi GPS, tipe perangkat, hingga waktu persis pengambilan. Data ini ikut terunggah tanpa Anda sadari setiap kali membagikan foto ke internet, dan bisa jadi risiko privasi.</p>
+
+        <h2>Apa Risiko Metadata yang Tidak Dibersihkan?</h2>
+        <ul>
+            <li><strong>Lokasi rumah terekspos</strong> — Foto dari dalam rumah bisa membocorkan koordinat GPS persis.</li>
+            <li><strong>Jejak digital tidak diinginkan</strong> — Waktu dan perangkat yang dipakai bisa dilacak dari metadata.</li>
+            <li><strong>File berisi script tersembunyi</strong> — Beberapa file yang diunduh dari sumber tidak jelas bisa menyisipkan kode berbahaya (backdoor) yang tidak terlihat kasat mata.</li>
+        </ul>
+
+        <h2>Cara Membersihkan Metadata File di MediaTools</h2>
+        <ol>
+            <li><strong>Buka File Security & Privacy Scanner</strong> — Kunjungi mediatools.cloud/sanitizer.</li>
+            <li><strong>Upload file</strong> — Drag & drop foto atau dokumen yang ingin diperiksa.</li>
+            <li><strong>Tunggu proses scan</strong> — Sistem memeriksa metadata tersembunyi dan indikasi kode mencurigakan dalam file.</li>
+            <li><strong>Lihat hasil laporan</strong> — Anda akan melihat data apa saja yang ditemukan (lokasi, perangkat, waktu, dsb).</li>
+            <li><strong>Download versi bersih</strong> — Unduh file yang sudah dihapus metadatanya, siap dibagikan dengan aman.</li>
+        </ol>
+
+        <div class="callout">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <strong>Penting:</strong> Selalu bersihkan metadata sebelum mengunggah foto ke marketplace, forum jual-beli, atau media sosial publik — terutama foto yang diambil dari dalam atau sekitar rumah Anda.
+        </div>
+
+        <h2>Kapan Sebaiknya Selalu Melakukan Ini?</h2>
+        <p>Jadikan kebiasaan sebelum membagikan foto produk untuk jualan online, dokumen yang diunggah ke portal publik, atau file yang diteruskan dari sumber yang tidak sepenuhnya Anda percaya.</p>
+
+        @elseif($article['content_key'] === 'imageconverter_tutorial')
+
+        <p>Gambar berukuran besar bikin website lemot, susah dikirim lewat email, atau ditolak saat upload ke formulir online yang punya batas ukuran file. Solusinya: kompres dan konversi format gambar — tanpa kehilangan kualitas yang terlihat mata.</p>
+
+        <h2>Kapan Perlu Kompres atau Konversi Gambar?</h2>
+        <ul>
+            <li><strong>Upload ke website</strong> — Gambar besar memperlambat loading halaman, buruk untuk pengalaman pengguna dan SEO.</li>
+            <li><strong>Kirim lewat email/form online</strong> — Banyak formulir membatasi ukuran upload di bawah 2-5MB.</li>
+            <li><strong>Hemat ruang penyimpanan</strong> — Foto dari kamera HP modern bisa 5-10MB per file.</li>
+            <li><strong>Butuh format berbeda</strong> — Misalnya PNG untuk transparansi, atau WebP untuk ukuran lebih kecil di web.</li>
+        </ul>
+
+        <h2>Cara Kompres & Konversi Gambar di MediaTools</h2>
+        <ol>
+            <li><strong>Buka Image Converter</strong> — Kunjungi mediatools.cloud/imageconverter.</li>
+            <li><strong>Upload gambar</strong> — Drag & drop satu atau beberapa gambar sekaligus (JPG, PNG, WebP).</li>
+            <li><strong>Pilih format output</strong> — Tentukan mau dikonversi ke JPG, PNG, atau WebP.</li>
+            <li><strong>Atur level kompresi</strong> — Geser slider kualitas sesuai kebutuhan; makin rendah, makin kecil ukuran file.</li>
+            <li><strong>Download hasil</strong> — Unduh satu per satu atau semua sekaligus dalam file ZIP.</li>
+        </ol>
+
+        <div class="callout">
+            <i class="fa-solid fa-lightbulb"></i>
+            <strong>Tips:</strong> Format WebP biasanya menghasilkan ukuran file 25-35% lebih kecil dari JPG dengan kualitas visual yang setara — pilihan terbaik untuk gambar yang akan dipakai di website.
+        </div>
+
+        <h2>Apakah Prosesnya Aman?</h2>
+        <p>Ya — semua proses kompresi dan konversi dilakukan langsung di browser Anda, gambar tidak diunggah dan disimpan ke server pihak manapun, sehingga aman untuk foto pribadi maupun dokumen bisnis yang sensitif.</p>
 
         @endif
 

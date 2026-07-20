@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'MediaTools — Tools Digital Gratis: Invoice, PDF, QR Code & Background Remover')
-@section('meta_description', 'Platform tools produktivitas digital 100% gratis. Hapus background foto, konversi PDF, buat invoice, QR Code, password generator, dan 10+ tools lainnya. Tanpa daftar, langsung pakai.')
+@section('title', 'MediaTools — Tools Digital Gratis: Invoice, PDF, QR Code, Finance, Background Remover & Downloader Gratis')
+@section('meta_description', 'Platform 13+ tools produktivitas digital 100% gratis. Hapus background foto, konversi PDF, buat invoice, QR Code, password generator, catat keuangan dan tools lainnya. Gratis tanpa batas dan bisa langsung pakai.')
 @section('meta_keywords', 'tools online gratis indonesia, invoice generator gratis, hapus background foto, konversi pdf word, qr code generator, media tools, password generator, link tree, memo pengiriman, kelola keuangan')
 
 @section('content')
@@ -17,7 +17,7 @@
     <div class="hero-content">
         <div class="hero-badge reveal">
             <span class="hero-badge-dot"></span>
-            10+ Tools Gratis
+            13+ Tools Gratis
         </div>
 
         <h1 class="hero-title reveal reveal-d1">

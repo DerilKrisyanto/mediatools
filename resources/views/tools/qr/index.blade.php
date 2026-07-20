@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('og_image', 'qr')
-@section('title', 'QR Code Generator Gratis — Buat QR Code Custom Bisnis Online | MediaTools')
-@section('meta_description', 'Buat QR Code custom gratis untuk menu restoran, pembayaran, kontak, WiFi, dan URL bisnis. Download PNG resolusi tinggi, kustom warna & logo, tanpa watermark, tanpa daftar.')
+@section('title', 'Generator QR Code Custom Gratis — Menu, Link, WiFi | MediaTools')
+@section('meta_description', 'Buat QR Code untuk menu, link, kontak, atau WiFi dalam hitungan detik. Desain modern, bisa diunduh HD tanpa watermark.')
 @section('meta_keywords', 'qr code generator gratis, buat qr code, qr code maker, qr code free, qr code online, buat qr code bisnis, qr code custom logo, qr code menu restoran, generate qr code online, qr code pembayaran, qr code url, qr code wifi, buat qr code custom, qr code download png, qr code creator')
 @include('seo.qr')
 

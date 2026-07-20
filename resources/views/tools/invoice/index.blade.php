@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('og_image', 'invoice')
-@section('title', 'Free Invoice Generator — Buat Invoice PDF Profesional Online | MediaTools')
-@section('meta_description', 'Buat invoice atau tagihan profesional dalam 2 menit. 3 template siap pakai, kalkulasi PPN & diskon otomatis, download PDF gratis tanpa daftar. Terbaik untuk freelancer & UMKM Indonesia.')
+@section('title', 'Invoice Generator Gratis — Buat & Kirim Invoice PDF Online | MediaTools')
+@section('meta_description', 'Buat invoice profesional dalam 1 menit, tanpa daftar. Export PDF instan, bisa custom logo & warna brand. 100% gratis.')
 @section('meta_keywords', 'invoice generator free, buat invoice, invoice maker free, invoice pdf online, invoice creator, buat tagihan online, template invoice pdf, invoice freelancer, invoice template gratis, invoice generator indonesia, invoice profesional, buat tagihan pdf, invoice online gratis, nota tagihan digital, invoice bisnis')
 @include('seo.invoice')
 

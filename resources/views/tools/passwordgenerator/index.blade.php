@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('og_image', 'passwordgenerator')
-@section('title', 'Password Generator Gratis — Buat Kata Sandi Kuat & Aman Instan | MediaTools')
-@section('meta_description', 'Buat password kuat dan aman secara instan menggunakan kriptografi browser — zero server, privasi 100%. Generator kata sandi gratis dengan mode acak, mudah diingat, dan PIN.')
+@section('title', 'Password Generator Aman & Gratis — Buat Password Kuat Instan | MediaTools')
+@section('meta_description', 'Buat password acak yang kuat dan aman untuk akun Anda. Atur panjang & karakter, tanpa disimpan di server.')
 @section('meta_keywords', 'password generator gratis, buat password kuat, strong password generator, password aman, kata sandi kuat, generate password kuat, random password generator, password generator online, generator kata sandi, secure password generator, password creator gratis, buat kata sandi, password maker, random password, password keamanan akun')
 @include('seo.passwordgenerator')
 
