@@ -2,7 +2,7 @@
 
 @section('title', 'MediaTools — Tools Digital Gratis: Invoice, PDF, QR Code, Finance, Background Remover & Downloader Gratis')
 @section('meta_description', 'Platform 13+ tools produktivitas digital 100% gratis. Hapus background foto, konversi PDF, buat invoice, QR Code, password generator, catat keuangan dan tools lainnya. Gratis tanpa batas dan bisa langsung pakai.')
-@section('meta_keywords', 'tools online gratis indonesia, invoice generator gratis, hapus background foto, konversi pdf word, qr code generator, media tools, password generator, link tree, memo pengiriman, kelola keuangan')
+@section('meta_keywords', 'tools online gratis, download tiktok ig yt hd, invoice generator gratis, hapus background foto, konversi pdf word, qr code generator, media tools, password generator, link tree, memo pengiriman, kelola keuangan')
 
 @section('content')
 
@@ -122,7 +122,7 @@
         ['image',   'fa-scissors',              'rgba(59,130,246,0.12)',    '#60a5fa',      'Background Remover',               'Hapus background foto otomatis dengan AI BiRefNet — presisi pada rambut.',             null,       'bgremover',            true],
         ['image',   'fa-camera-retro',          'rgba(59,130,246,0.12)',    '#60a5fa',      'FotoBox Photo Booth',              'Sesi foto seru seperti photo booth asli! 10 foto otomatis countdown, 10 template keren & download.','BARU',  'fotobox',    true],
 
-        ['social',  'fa-cloud-arrow-down',      'rgba(139,92,246,0.12)',    '#a78bfa',      'Media Downloader',                 'Download video & audio dari YouTube, TikTok, Instagram dalam hitungan detik.',         null,     'mediadownloader',        true],
+        ['social',  'fa-cloud-arrow-down',      'rgba(139,92,246,0.12)',    '#a78bfa',      'Media Downloader',                 'Download Video YouTube, TikTok & Instagram HD Gratis Tanpa Watermark (MP4 & MP3).',         null,     'mediadownloader',        true],
         ['social',  'fa-link',                  'rgba(139,92,246,0.12)',    '#a78bfa',      'LinkTree Builder',                 'Satukan semua link penting di satu halaman landing yang elegan.',                      'HOT',      'linktree',             true],
         ['social',  'fa-qrcode',                'rgba(139,92,246,0.12)',    '#a78bfa',      'QR Code Generator',                'QR Code custom untuk menu, pembayaran, kontak, atau URL bisnis Anda.',                 null,       'qr',                   true],
 

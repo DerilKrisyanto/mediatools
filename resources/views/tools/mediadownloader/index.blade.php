@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
 @section('og_image', 'mediadownloader')
-@section('title', 'Download Video YouTube TikTok Instagram MP4 MP3 Gratis Tanpa Watermark | MediaTools')
-@section('meta_description', 'Download video YouTube 1080p HD, convert YouTube ke MP3, TikTok tanpa watermark, Instagram Reels gratis. Cukup paste URL — langsung download. Alternatif terbaik SaveFrom.net & SnapTik.')
-@section('meta_keywords', 'download video youtube, youtube downloader gratis, youtube to mp3, download tiktok tanpa watermark, download video instagram, youtube mp3 downloader, savefrom alternative, snaptik alternative, download reels instagram, download video online gratis, yt downloader, youtube 1080p download, tiktok video download, instagram video download')
+@section('title', 'Download Video YouTube, TikTok & Instagram HD Gratis | MP4 MP3 | MediaTools')
+@section('meta_description', 'Download video YouTube, TikTok, dan Instagram HD gratis dalam satu tempat. Convert YouTube ke MP3, download MP4 hingga 1080p, TikTok tanpa watermark, Instagram Reels, Shorts, dan video online tanpa instal aplikasi.')
+@section('meta_keywords', 'download tiktok ig hd, youtube mp3 download video tiktok, mp4 ig tiktok, download video youtube tanpa watermark tiktok, download video youtube tanpa watermark tiktok hd, youtube mp4 tiktok, youtube mp3 tiktok, download video tiktok instagram, download video tiktok ig, download youtube gratis, youtube downloader, youtube to mp3, download tiktok tanpa watermark, instagram downloader, instagram reels downloader, yt downloader online')
 @include('seo.mediadownloader')
 
 {{-- Routes for JS --}}

@@ -126,10 +126,10 @@
             'image'    => 'file-converter',
         ],
         [
-            'name'     => 'Media Downloader — Download YouTube TikTok Instagram Gratis',
+            'name'     => 'Media Downloader — Download YouTube TikTok Instagram HD Gratis',
             'slug'     => 'media-downloader',
-            'desc'     => 'Download video YouTube, TikTok, Instagram Reels, dan Facebook tanpa watermark. Format MP4 & MP3 gratis.',
-            'keywords' => 'download youtube gratis, download tiktok tanpa watermark, download video instagram, youtube downloader, mp4 downloader',
+            'desc'     => 'Download video YouTube, TikTok, dan Instagram HD gratis. Convert YouTube ke MP3, download MP4 hingga 1080p, TikTok tanpa watermark, Instagram Reels, Shorts, dan video online dalam satu halaman.',
+            'keywords' => 'download tiktok ig hd, youtube mp3 download video tiktok, mp4 ig tiktok, download video youtube tanpa watermark tiktok, youtube mp4 tiktok, youtube mp3 tiktok, download video tiktok instagram, download video tiktok ig, youtube downloader, youtube to mp3, instagram downloader, tiktok downloader',
             'category' => 'SoftwareApplication',
             'image'    => 'media-downloader',
         ],

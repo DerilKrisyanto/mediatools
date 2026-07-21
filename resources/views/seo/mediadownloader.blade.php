@@ -3,7 +3,7 @@
     $appUrl = rtrim(config('app.url', 'https://mediatools.cloud'), '/');
     $pageUrl = $appUrl . '/media-downloader';
 
-    $name = 'Media Downloader Gratis — YouTube, TikTok, Instagram MP4 MP3 | MediaTools';
+    $name = 'Download Video YouTube, TikTok & Instagram HD Gratis | MP4 MP3 | MediaTools';
 
     /*
     |-------------------------------------------------------------
@@ -162,7 +162,7 @@
             'applicationSubCategory'=> 'Video Downloader',
             'operatingSystem'       => 'Web Browser',
             'url'                   => $pageUrl,
-            'description'           => 'Download video YouTube 1080p HD, convert YouTube ke MP3, download TikTok tanpa watermark, dan Instagram Reels gratis. Cukup paste URL dan download langsung.',
+            'description' => 'Download video YouTube, TikTok, dan Instagram HD gratis dalam satu halaman. Convert YouTube ke MP3, download MP4 hingga 1080p, TikTok tanpa watermark, Instagram Reels, Shorts, serta video online cukup dengan paste URL.',
             'featureList'           => [
                 'Download YouTube video hingga 1080p Full HD',
                 'Convert YouTube ke MP3 audio kualitas tinggi',
@@ -182,7 +182,7 @@
             'datePublished'          => '2025-05-01',
             'dateModified'           => now()->toDateString(),
             'inLanguage' => 'id-ID',
-            'keywords'   => 'download video youtube gratis, youtube downloader, youtube to mp3, download tiktok tanpa watermark, tiktok downloader, download instagram reels, instagram video downloader, savefrom alternative, snaptik alternative, y2mate alternative, yt downloader online',
+            'keywords' => 'download tiktok ig hd, youtube mp3 download video tiktok, mp4 ig tiktok, download video youtube tanpa watermark tiktok, youtube mp4 tiktok, youtube mp3 tiktok, download video tiktok instagram, download video tiktok ig, download youtube gratis, youtube downloader, youtube to mp3, download tiktok tanpa watermark, instagram downloader, instagram reels downloader, yt downloader online, savefrom alternative, snaptik alternative, y2mate alternative',
         ],
         [
             '@context' => 'https://schema.org',
@@ -233,12 +233,12 @@
 {!! json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
 </script>
 
-<meta name="title" content="Media Downloader Gratis — YouTube, TikTok, Instagram MP4 MP3 | MediaTools">
-<meta name="description" content="Download video YouTube 1080p, TikTok tanpa watermark, Instagram Reels gratis. Cukup paste URL, pilih kualitas, langsung download.">
-<meta name="keywords" content="download video youtube gratis, youtube downloader, youtube to mp3, download tiktok tanpa watermark, tiktok downloader, instagram video downloader">
+<meta name="title" content="Download Video TikTok Instagram YouTube MP4 MP3 Gratis Tanpa Watermark | MediaTools">
+<meta name="description" content="Download video YouTube, TikTok, dan Instagram HD gratis. Convert YouTube ke MP3, download MP4 hingga 1080p, TikTok tanpa watermark, Instagram Reels, Shorts, dan video online langsung dari browser.">
+<meta name="keywords" content="download tiktok ig hd, youtube mp3 download video tiktok, mp4 ig tiktok, download video youtube tanpa watermark tiktok, youtube mp4 tiktok, youtube mp3 tiktok, download video tiktok instagram, download video tiktok ig, youtube downloader, youtube to mp3, instagram downloader, tiktok downloader">
 
-<meta property="og:title" content="Download Video YouTube TikTok Instagram MP4 MP3 Gratis | MediaTools">
-<meta property="og:description" content="Download video YouTube 1080p, TikTok tanpa watermark, Instagram Reels gratis. Cukup paste URL, pilih kualitas, langsung download.">
+<meta property="og:title" content="Download Video YouTube, TikTok & Instagram HD Gratis | MediaTools">
+<meta property="og:description" content="Download video YouTube, TikTok, dan Instagram HD gratis. Convert MP3, download MP4 1080p, TikTok tanpa watermark, Instagram Reels, Shorts, cukup paste URL.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="{{ $pageUrl }}">
 <meta property="og:image" content="{{ asset('images/og/mediadownloader.png') }}">
@@ -249,8 +249,8 @@
 <meta property="og:site_name" content="MediaTools">
 
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="YouTube & TikTok Downloader Gratis — MediaTools">
-<meta name="twitter:description" content="Download video YouTube MP4/MP3, TikTok tanpa watermark, Instagram Reels. Gratis, cepat, tanpa daftar akun.">
+<meta name="twitter:title" content="Download Video YouTube, TikTok & Instagram HD | MediaTools">
+<meta name="twitter:description" content="Download YouTube MP3, MP4 1080p, TikTok tanpa watermark, dan Instagram Reels HD gratis. Paste URL lalu download langsung.">
 <meta name="twitter:image" content="{{ asset('images/og/mediadownloader.png') }}">
 <meta name="twitter:image:alt" content="Media Downloader Gratis — MediaTools">
 
